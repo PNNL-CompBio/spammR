@@ -1,0 +1,15 @@
+Package: spammer
+Title: SPatial Analysis of Multiomics Measurements in R
+Version: 0.0.0.9000
+Authors@R: 
+    person("Sara", "Gosline", , "sara.gosline@pnnl.gov", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Harkirat", "Sohi", , "harkirat.sohi@pnnl.gov", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Spammer provides a suite of tools and a data structure to analyze
+diverse multiomics measurements in a spatial context.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
