@@ -2,9 +2,7 @@
 % Please edit documentation in R/spatialProtUtils.R
 \name{adjustPhophoWithGlobal}
 \alias{adjustPhophoWithGlobal}
-\title{adjustPhosphoWithGlobal
-For some phospho analysis, we might want to investigate the phosphosites that are changing
-indpendently of the proteomiocs data. Therefore we consume two independent data objects and subtract one from the other}
+\title{adjustPhosphoWithGlobal}
 \usage{
 adjustPhophoWithGlobal(phos.obj, prot.obj)
 }
@@ -17,7 +15,6 @@ adjustPhophoWithGlobal(phos.obj, prot.obj)
 phos.obj
 }
 \description{
-adjustPhosphoWithGlobal
 For some phospho analysis, we might want to investigate the phosphosites that are changing
 indpendently of the proteomiocs data. Therefore we consume two independent data objects and subtract one from the other
 }

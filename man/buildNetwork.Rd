@@ -2,12 +2,10 @@
 % Please edit documentation in R/spatialProtUtils.R
 \name{buildNetwork}
 \alias{buildNetwork}
-\title{buildnetwork
-Builds network using SingleCellExpression object and values}
+\title{buildnetwork}
 \usage{
 buildNetwork(sce, featName, beta = 0.5, nrand = 100)
 }
 \description{
-buildnetwork
 Builds network using SingleCellExpression object and values
 }

@@ -2,13 +2,13 @@
 % Please edit documentation in R/spatialProtUtils.R
 \name{calcCorrelationWithScore}
 \alias{calcCorrelationWithScore}
-\title{calcCorrelationWithScore: calculates the correlation of each
-element with a numeric vector of the score, such as distance or
-an immune score, puts value in RowData}
+\title{calcCorrelationWithScore}
 \usage{
 calcCorrelationWithScore(sce, scoreName, protVal = "prot", method = "spearman")
 }
 \arguments{
+\item{sce}{SpatialExperiment object}
+
 \item{scoreName:}{name of score}
 
 \item{protVal:}{name of feature, e.g. prot or substrate}
@@ -19,7 +19,7 @@ calcCorrelationWithScore(sce, scoreName, protVal = "prot", method = "spearman")
 SingleCellExperiment objecti
 }
 \description{
-calcCorrelationWithScore: calculates the correlation of each
+calculates the correlation of each
 element with a numeric vector of the score, such as distance or
 an immune score, puts value in RowData
 }

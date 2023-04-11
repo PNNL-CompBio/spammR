@@ -7,11 +7,13 @@
 
 
 
-#' calcCorrelationWithScore: calculates the correlation of each
+#' calcCorrelationWithScore
+#'
+#' calculates the correlation of each
 #' element with a numeric vector of the score, such as distance or
 #' an immune score, puts value in RowData
 #' @export
-#' @param sce
+#' @param sce SpatialExperiment object
 #' @param scoreName: name of score
 #' @param protVal: name of feature, e.g. prot or substrate
 #' @param method: spearman or pearson
@@ -42,13 +44,14 @@ calcCorrelationWithScore<-function(sce,
 }
 
 
-#' plotFeatureGrid: plots a numeric value of a single feature or set of features
-#' @param sce
-#' @param features
+#' plotFeatureGrid
+#'
+#' plots a numeric value of a single feature or set of features
+#' @param features are list of features to plo
 #' @export
 plotFeatureGrid<-function(sce,feats,featname){
   require(ggplot2)
-  require(SingleCellExperiment)
+  #require(SingleCellExperiment)
 
   p<-calcSigScore(sce,feats,featname)%>%
     plotSigGrid(featname)
@@ -57,9 +60,10 @@ plotFeatureGrid<-function(sce,feats,featname){
 }
 
 
-#'plotSigGrid: plots a numeric value using the Xcoord and Ycoord columns
+#' plotSigGrid
+#' plots a numeric value using the Xcoord and Ycoord columns
 #'takes a numeric score from the colDAta
-#'@param sce SingleCellExperiment
+#' @param sce SingleCellExperiment
 #' @export
 plotSigGrid<-function(sce,sigName){
   require(ggplot2)
@@ -82,6 +86,7 @@ plotSigGrid<-function(sce,sigName){
 
 
 #' buildnetwork
+#'
 #' Builds network using SingleCellExpression object and values
 #' @export
 buildNetwork<-function(sce,featName,beta=.5,nrand=100){
@@ -169,6 +174,7 @@ buildNetwork<-function(sce,featName,beta=.5,nrand=100){
 
 
 #' adjustPhosphoWithGlobal
+#'
 #' For some phospho analysis, we might want to investigate the phosphosites that are changing
 #' indpendently of the proteomiocs data. Therefore we consume two independent data objects and subtract one from the other
 #' @param phos.obj phosphoproteomic data

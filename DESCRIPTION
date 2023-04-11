@@ -23,3 +23,6 @@ Imports:
     remotes,
     S4Vectors,
     SingleCellExperiment
+Depends: 
+    R (>= 2.10)
+LazyData: true

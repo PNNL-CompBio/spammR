@@ -2,10 +2,13 @@
 % Please edit documentation in R/spatialProtUtils.R
 \name{plotFeatureGrid}
 \alias{plotFeatureGrid}
-\title{plotFeatureGrid: plots a numeric value of a single feature or set of features}
+\title{plotFeatureGrid}
 \usage{
 plotFeatureGrid(sce, feats, featname)
 }
+\arguments{
+\item{features}{are list of features to plo}
+}
 \description{
-plotFeatureGrid: plots a numeric value of a single feature or set of features
+plots a numeric value of a single feature or set of features
 }

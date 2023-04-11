@@ -2,7 +2,8 @@
 % Please edit documentation in R/spatialProtUtils.R
 \name{plotSigGrid}
 \alias{plotSigGrid}
-\title{plotSigGrid: plots a numeric value using the Xcoord and Ycoord columns
+\title{plotSigGrid
+plots a numeric value using the Xcoord and Ycoord columns
 takes a numeric score from the colDAta}
 \usage{
 plotSigGrid(sce, sigName)
@@ -11,6 +12,7 @@ plotSigGrid(sce, sigName)
 \item{sce}{SingleCellExperiment}
 }
 \description{
-plotSigGrid: plots a numeric value using the Xcoord and Ycoord columns
+plotSigGrid
+plots a numeric value using the Xcoord and Ycoord columns
 takes a numeric score from the colDAta
 }
