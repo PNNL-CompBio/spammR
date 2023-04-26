@@ -1,5 +1,5 @@
 
-# spammer
+# spammR
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -20,12 +20,29 @@ devtools::github('pnnl-compbio/spammer')
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(spammer)
+library(spammR)
 ## load test data
+data('pancData')
+data('pancMeta')
 
 ## build into spatial object
 
+
+rowData <- data.frame(protein=rownames(pancData))
+rownames(rowData)<-rownames(pancData)
+prowD <- rowData[rownames(pancData),]
+pcolD <- pancMeta[colnames(pancData),]
+
+
+##initialize hte objects
+spe<-SpatialExperiment(assays=list(logcounts=as(as.matrix(pancData),'dgCMatrix')),
+                                  colData=pcolD,
+                                  rowData=prowD)
+
 ## run differential expression
+
+diffex<-spatialDiffEx(spe,column='IsletOrNot',vals=c('Islet','NonIslet'))
+
 ## basic example code
 ```
 

@@ -22,7 +22,7 @@
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
 #' @importClassesFrom S4Vectors DataFrame SimpleList
 setClass("SpatialExperiment",
-         slots=list(coordinates="data.frame"),#,
+       #  slots=list(coordinates="data.frame"),#,
          #int_metadata = "list"),
          contains = "SingleCellExperiment",
          prototype = prototype(
@@ -43,12 +43,13 @@ setClass("SpatialExperiment",
 #' @importFrom methods is as
 #' @importFrom SingleCellExperiment SingleCellExperiment
 #' @importClassesFrom SingleCellExperiment SingleCellExperiment
- SpatialExperiment <- function(..., coords){
+ SpatialExperiment <- function(...){
    se <- SingleCellExperiment(...)
   # if(!is(se, "RangedSummarizedExperiment")) {
  #    se <- as(se, "RangedSummarizedExperiment")
  #  }
-   .sce_to_spe(se, coordinates=coords)
+   #colData(se)<-coords
+   .sce_to_spe(se)
 
  }
 
@@ -68,7 +69,6 @@ setClass("SpatialExperiment",
 
   out <- new("SpatialExperiment", sce)
 
-  coordinates(out)<-coordinates
 
   out
 }
