@@ -2,7 +2,12 @@
 # Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 # Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
 # Default values are specified for metric_display, label_column and interactive, if the user doesn't specify those.
-
+#' @param spe: SpatialExperiment object
+#' @param feature: Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
+#' @param metric_display: Legend title for heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
+#' @param label_column: Colunm in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
+#' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.
+#  Note: grid squares can only be labeled when interactive = FALSE
 spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE){
   spatial<-spatialCoords(spe)%>%
     as.data.frame()
