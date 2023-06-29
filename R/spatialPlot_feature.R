@@ -9,6 +9,10 @@
 #' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.
 #  Note: grid squares can only be labeled when interactive = FALSE
 spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE){
+  library(ggplot2)
+  library(SpatialExperiment)
+  library(dplyr)
+  library(plotly)
   spatial<-spatialCoords(spe)%>%
     as.data.frame()
   spatial$x = as.numeric(spatial$x)
