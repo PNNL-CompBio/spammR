@@ -17,7 +17,7 @@ devtools::github('pnnl-compbio/spammer')
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment object, we then demonstrate the use of different function in SpammR. 
 
 ``` r
 library(spammR)
@@ -25,7 +25,7 @@ library(spammR)
 data('pancData')
 data('pancMeta')
 
-## build into spatial object
+## build into SpatialExperiment object
 
 
 rowData <- data.frame(protein=rownames(pancData))
