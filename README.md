@@ -65,6 +65,28 @@ spe_singleImg = SpatialExperiment(assays=list(logcounts=as(as.matrix(pancData_su
                                 sample_id = rownames(pcolD2))
 spe_singleImg
 
+
+## Spatial plotting demos
+
+# 1. Plot feature values for a single feature on an x-y coordinate system
+# SpammR function: spatialPlot_feature(...)
+# Define parameters needed for this plotting. Example:
+feat = "sp|A0A024RBG1|NUD4B_HUMAN"
+metric_lab = "Protein abundance measure" # Metric represented by color scale; this will be used as the legend label
+label_col = "sample_id" # name of the column to be used for labeling sample locations
+
+# 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE) # Squares can only be labeled when the plot is not interactive.
+# 1b. Same thing but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
+spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
+# or
+spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col, interactive = TRUE)
+spatialPlot_feature(spe_nongrid, feat, metric_lab, NA) # if don't want to label the grid squares
+spatialPlot_feature(spe_nongrid, feat, metric_lab) # if don't want to label the grid squares
+spatialPlot_feature(spe_nongrid, feat) # if want to use the default legend label defined in the function "Protein abundance measure"
+spatialPlot_feature(spe_nongrid, feat, label_column = label_col) # Same thing but now specify which column to use for labeling squares
+
+
 ## run differential expression
 
 diffex<-spatialDiffEx(spe,column='IsletOrNot',vals=c('Islet','NonIslet'))
