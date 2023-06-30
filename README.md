@@ -23,6 +23,7 @@ This is a basic example which demonstrates how to organize spatial omics data in
 
 ``` r
 library(spammR)
+library(SpatialExperiment)
 ## load test data
 data('pancData')
 data('pancMeta')
@@ -69,10 +70,10 @@ spe_singleImg
 ```
 
 
-Spatial plotting demos
+1. Spatial plotting demonstration using the SpammR function spatialPlot_feature(...)
 
-1. Plot feature values for a single feature on an x-y coordinate system
-SpammR function: spatialPlot_feature(...)
+Plot feature values for a single feature on an x-y coordinate system
+
 Define parameters needed for this plotting. Example:
 ``` r
 feat = "sp|A0A024RBG1|NUD4B_HUMAN"
