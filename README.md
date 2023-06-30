@@ -91,9 +91,10 @@ feature,metric_display = "Protein abundance measure",label_column=NA,interactive
   
 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
 ``` r
-spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE) # Grid squares can only be labeled when the plot is not interactive.
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE)
+# Grid squares can only be labeled when the plot is not interactive.
 ```
-1b. Same thing but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
+1b. Same thing as 1a but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
 ``` r
 spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
 # or
