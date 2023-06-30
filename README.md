@@ -73,17 +73,25 @@ spe_singleImg
 ### 1. Produce a spatial heatmap for a chosen feature from the data
 SpammR function to be used: spatialPlot_feature(...)
 
-Plot feature values for a single feature on an x-y coordinate system
+What this function does? Plots feature values for a single feature as a heatmap on an x-y coordinate system
 
-Define parameters needed for this plotting. Example:
+First, define parameters needed for this plotting. Example:
 ``` r
 feat = "sp|A0A024RBG1|NUD4B_HUMAN"
 metric_lab = "Protein abundance measure" # Metric represented by color scale; this will be used as the legend label
-label_col = "sample_id" # name of the column to be used for labeling sample locations
+label_col = "sample_id" # name of the column in colData(spe) to be used for labeling sample locations
 ```
+spatialPlot_feature() accepts the following input parameters:
+feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE
+- spe: A SpatialExperiment object containing data to be plotted
+- feature: Feature (example: protein) whose values are to be plotted. Should be a row name in rowData(spe)
+- (optional) metric_display: legend label for the color legend. If not specified, defaults to "Protein abundance measure"
+- (optional) label_column: name of the column in colData(spe) to be used for labeling sample locations. If not specified, no labels are shown for samples.
+- (optional) interactive: Boolean value (TRUE/FALSE) to make the plot have interactive mouse hovering spatially. Default is an interactive plot.
+  
 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
 ``` r
-spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE) # Squares can only be labeled when the plot is not interactive.
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE) # Grid squares can only be labeled when the plot is not interactive.
 ```
 1b. Same thing but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
 ``` r
