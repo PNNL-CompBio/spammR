@@ -58,13 +58,13 @@ pick_rows = which(pcolD$Image==0)
 pcolD2 = pcolD[pick_rows,]
 x = pancMeta[pick_rows,"Xcoord"]
 y = pancMeta[pick_rows,"Ycoord"]
-spat_xy_nongrid = as.matrix(data.frame(x,y))
-rownames(spat_xy_nongrid) = rownames(pcolD2)
+spat_xy_singleImg = as.matrix(data.frame(x,y))
+rownames(spat_xy_singleImg) = rownames(pcolD2)
 pancData_sub = pancData[,colnames(pancData) %in% rownames(pcolD2)]
 spe_singleImg = SpatialExperiment(assays=list(logcounts=as(as.matrix(pancData_sub),'dgCMatrix')),
                                 colData=pcolD2,
                                 rowData=prowD,
-                                spatialCoords = spat_xy_nongrid,
+                                spatialCoords = spat_xy_singleImg,
                                 sample_id = rownames(pcolD2))
 spe_singleImg
 ```
@@ -82,7 +82,6 @@ metric_lab = "Protein abundance measure" # Metric represented by color scale; th
 label_col = "sample_id" # name of the column in colData(spe) to be used for labeling sample locations
 ```
 spatialPlot_feature() accepts the following input parameters:
-feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE
 - spe: A SpatialExperiment object containing data to be plotted
 - feature: Feature (example: protein) whose values are to be plotted. Should be a row name in rowData(spe)
 - (optional) metric_display: legend label for the color legend. If not specified, defaults to "Protein abundance measure"
