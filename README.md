@@ -73,7 +73,7 @@ spe_singleImg
 ### 1. Produce a spatial heatmap for a chosen feature from the data
 SpammR function to be used: spatialPlot_feature(...)
 
-What this function does? Plots feature values for a single feature as a heatmap on an x-y coordinate system
+This function plots feature values for a single feature as a heatmap on an x-y coordinate system
 
 First, define parameters needed for this plotting. Example:
 ``` r
@@ -99,14 +99,20 @@ spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
 # or
 spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col, interactive = TRUE)
 ``` 
-# 1c. A spatial heatmap without labels for grid squares
+1c. A spatial heatmap without labels for grid squares
+``` r
 spatialPlot_feature(spe_nongrid, feat, metric_lab, NA)
 # or
 spatialPlot_feature(spe_nongrid, feat, metric_lab)
-# 1d. If the user wants to use the default legend label defined in the function "Protein abundance measure" and no labels
+```
+1d. If the user wants to use the default legend label defined in the function "Protein abundance measure" and no labels
+``` r
 spatialPlot_feature(spe_nongrid, feat)
-# 1e. Same thing as 1d but now specify which column to use for labeling grid squares
-spatialPlot_feature(spe_nongrid, feat, label_column = label_col) 
+``` 
+1e. Same thing as 1d but now specify which column to use for labeling grid squares
+``` r
+spatialPlot_feature(spe_nongrid, feat, label_column = label_col)
+``` 
 
 
 ## run differential expression
