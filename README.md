@@ -68,7 +68,7 @@ spe_singleImg
 
 ## Spatial plotting demos
 
-# 1. Plot feature values for a single feature on an x-y coordinate system
+## 1. Plot feature values for a single feature on an x-y coordinate system
 # SpammR function: spatialPlot_feature(...)
 # Define parameters needed for this plotting. Example:
 feat = "sp|A0A024RBG1|NUD4B_HUMAN"
@@ -87,7 +87,7 @@ spatialPlot_feature(spe_nongrid, feat, metric_lab, NA)
 spatialPlot_feature(spe_nongrid, feat, metric_lab)
 # 1d. If the user wants to use the default legend label defined in the function "Protein abundance measure" and no labels
 spatialPlot_feature(spe_nongrid, feat)
-# 1e. Same thing as 1d but now specify which column to use for labeling squares
+# 1e. Same thing as 1d but now specify which column to use for labeling grid squares
 spatialPlot_feature(spe_nongrid, feat, label_column = label_col) 
 
 
