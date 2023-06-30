@@ -41,7 +41,7 @@ y <- pancMeta$Ycoord
 spat_xy = as.matrix(data.frame(x,y))
 rownames(spat_xy) = rownames(pcolD)
 ##initialize the SpatialExperiment object
-# The example datat that we're using represents data from multiple images in an experiment.
+# The example data that we're using here represents data from multiple images in an experiment.
 # In the intiial version of SpammR, we will not worry about providing tools for analyzing data from multiple images.
 # In the later versions of SpammR, we will add functionality to deal with data from multiple images.
 spe_multiImages <-SpatialExperiment(assays=list(logcounts=as(as.matrix(pancData),'dgCMatrix')),
