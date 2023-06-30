@@ -19,6 +19,8 @@ devtools::github('pnnl-compbio/spammer')
 
 This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment object, we then demonstrate the use of different functions in SpammR. 
 
+0. Organize data into a SpatialExperiment object
+
 ``` r
 library(spammR)
 ## load test data
@@ -64,17 +66,19 @@ spe_singleImg = SpatialExperiment(assays=list(logcounts=as(as.matrix(pancData_su
                                 spatialCoords = spat_xy_nongrid,
                                 sample_id = rownames(pcolD2))
 spe_singleImg
+```
 
 
 ## Spatial plotting demos
 
-## 1. Plot feature values for a single feature on an x-y coordinate system
-# SpammR function: spatialPlot_feature(...)
-# Define parameters needed for this plotting. Example:
+1. Plot feature values for a single feature on an x-y coordinate system
+SpammR function: spatialPlot_feature(...)
+Define parameters needed for this plotting. Example:
+``` r
 feat = "sp|A0A024RBG1|NUD4B_HUMAN"
 metric_lab = "Protein abundance measure" # Metric represented by color scale; this will be used as the legend label
 label_col = "sample_id" # name of the column to be used for labeling sample locations
-
+```
 # 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
 spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE) # Squares can only be labeled when the plot is not interactive.
 # 1b. Same thing but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
