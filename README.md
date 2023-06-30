@@ -12,7 +12,7 @@ You can install the development version of spammer like so:
 
 ``` r
 library(devtools)
-devtools::github('pnnl-compbio/spammer')
+devtools::github('pnnl-compbio/spammR')
 ```
 
 ## Example
