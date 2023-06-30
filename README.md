@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of spammer is to provide tools for generic analysis of omics data that is measured in spatial context. 
+The goal of spammR is to provide tools for generic analysis of omics data that is measured in spatial context. 
 
 ## Installation
 
