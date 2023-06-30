@@ -81,10 +81,14 @@ spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FA
 spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
 # or
 spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col, interactive = TRUE)
-spatialPlot_feature(spe_nongrid, feat, metric_lab, NA) # if don't want to label the grid squares
-spatialPlot_feature(spe_nongrid, feat, metric_lab) # if don't want to label the grid squares
-spatialPlot_feature(spe_nongrid, feat) # if want to use the default legend label defined in the function "Protein abundance measure"
-spatialPlot_feature(spe_nongrid, feat, label_column = label_col) # Same thing but now specify which column to use for labeling squares
+# 1c. A spatial heatmap without labels for grid squares
+spatialPlot_feature(spe_nongrid, feat, metric_lab, NA)
+# or
+spatialPlot_feature(spe_nongrid, feat, metric_lab)
+# 1d. If the user wants to use the default legend label defined in the function "Protein abundance measure" and no labels
+spatialPlot_feature(spe_nongrid, feat)
+# 1e. Same thing as 1d but now specify which column to use for labeling squares
+spatialPlot_feature(spe_nongrid, feat, label_column = label_col) 
 
 
 ## run differential expression
