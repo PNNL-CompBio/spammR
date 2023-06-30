@@ -38,16 +38,19 @@ y <- pancMeta$Ycoord
 spat_xy = as.matrix(data.frame(x,y))
 rownames(spat_xy) = rownames(pcolD)
 ##initialize the SpatialExperiment object
+# The example datat that we're using represents data from multiple images in an experiment.
+# In the intiial version of SpammR, we will not worry about providing tools for analyzing data from multiple images.
+# In the later versions of SpammR, we will add functionality to deal with data from multiple images.
 spe_multiImages <-SpatialExperiment(assays=list(logcounts=as(as.matrix(pancData),'dgCMatrix')),
                        colData=pcolD,
                        rowData=prowD,
                        spatialCoords = spat_xy,
                        sample_id = rownames(pcolD))
-spe_multiImage
+spe_multiImages
 
 # Make another SpatialExperiment object, which only has data for one image (I picked image 0)
 # This is to ensure that we don't have multiple samples with the same x,y coordinates
-# Simulating a non-grid experiment dataset
+# We will use this object for demonstration of the spatial plotting functionality in SpammR for data from a single image.
 pick_rows = which(pcolD$Image==0)
 pcolD2 = pcolD[pick_rows,]
 x = pancMeta[pick_rows,"Xcoord"]
