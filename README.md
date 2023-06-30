@@ -69,7 +69,7 @@ spe_singleImg
 ```
 
 
-## Spatial plotting demos
+Spatial plotting demos
 
 1. Plot feature values for a single feature on an x-y coordinate system
 SpammR function: spatialPlot_feature(...)
