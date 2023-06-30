@@ -70,7 +70,8 @@ spe_singleImg
 ```
 
 
-### 1. Spatial plotting demonstration using the SpammR function spatialPlot_feature(...)
+### 1. Produce a spatial heatmap for a chosen feature from the data
+SpammR function to be used: spatialPlot_feature(...)
 
 Plot feature values for a single feature on an x-y coordinate system
 
@@ -80,12 +81,16 @@ feat = "sp|A0A024RBG1|NUD4B_HUMAN"
 metric_lab = "Protein abundance measure" # Metric represented by color scale; this will be used as the legend label
 label_col = "sample_id" # name of the column to be used for labeling sample locations
 ```
-# 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
+1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
+``` r
 spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE) # Squares can only be labeled when the plot is not interactive.
-# 1b. Same thing but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
+```
+1b. Same thing but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
+``` r
 spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
 # or
 spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col, interactive = TRUE)
+``` 
 # 1c. A spatial heatmap without labels for grid squares
 spatialPlot_feature(spe_nongrid, feat, metric_lab, NA)
 # or
