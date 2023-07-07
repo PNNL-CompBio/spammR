@@ -133,6 +133,8 @@ The output diffex_spe is a SpatialExperiment object containing results from diff
 ``` r
 rowData(diffex_spe)
 ```
+2c. Produce a volcano plot to visualize the results from differential experession analysis
+
 ## basic example code
 ```
 
