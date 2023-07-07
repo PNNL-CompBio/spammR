@@ -17,7 +17,7 @@ devtools::github('pnnl-compbio/spammer')
 
 ## Example
 
-This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment object, we then demonstrate the use of different functions in SpammR. 
+This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment (SPE) object, we then demonstrate the use of different functions in SpammR. 
 
 ### 0. Organize data into a SpatialExperiment object
 
