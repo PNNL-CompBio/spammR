@@ -115,10 +115,10 @@ spatialPlot_feature(spe_nongrid, feat, label_column = label_col)
 ``` 
 
 
-### 2. Run differential expression comparing "Islet" and "NonIslet" samples and return a SpatialExperiment object containing results from differential expression, along with all that was present in the input SpatialExperiment object
-
+## 2. Run differential expression comparing "Islet" and "NonIslet" samples and return a SpatialExperiment object containing results from differential expression, along with all that was present in the input SpatialExperiment object
+``` r
 diffex_spe <-spatialDiffEx(spe_singleImg,category_col ='IsletStatus',compare_vals=c('Islet','NonIslet'))
-
+```
 ## basic example code
 ```
 
