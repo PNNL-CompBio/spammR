@@ -95,28 +95,35 @@ spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FA
 ```
 1b. Same thing as 1a but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
 ``` r
-spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col)
 # or
-spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col, interactive = TRUE)
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = TRUE)
 ``` 
 1c. A spatial heatmap without labels for grid squares
 ``` r
-spatialPlot_feature(spe_nongrid, feat, metric_lab, NA)
+spatialPlot_feature(spe_singleImg, feat, metric_lab, NA)
 # or
-spatialPlot_feature(spe_nongrid, feat, metric_lab)
+spatialPlot_feature(spe_singleImg, feat, metric_lab)
 ```
 1d. If the user wants to use the default legend label defined in the function "Protein abundance measure" and no labels
 ``` r
-spatialPlot_feature(spe_nongrid, feat)
+spatialPlot_feature(spe_singleImg, feat)
 ``` 
 1e. Same thing as 1d but now specify which column to use for labeling grid squares
 ``` r
-spatialPlot_feature(spe_nongrid, feat, label_column = label_col)
+spatialPlot_feature(spe_singleImg, feat, label_column = label_col)
 ``` 
 
 
-### 2. Differential expression analysis comparing "Islet" and "NonIslet" samples.
-2a. Run differential expression using spatialDiffEx() function
+### 2. Differential expression analysis comparing two types of samples in the data given in the SPE object
+2a. Run differential expression using spatialDiffEx() function, to compare "Proximal" vs. "Distal" samples in the Pancreas dataset stored in spe_singleImg
+
+spatialDiffEx() requries the following input parameters:
+#' @param spe Spatial Experiment object
+#' @param category_col Name of the column that specifies category of each sample. Example: "IsletStatus"
+#' #Categories from category_col will be compared in the differential expression analysis
+#' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
+#' @returns Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe
 ``` r
 diffex_spe <-spatialDiffEx(spe_singleImg,category_col ='IsletStatus',compare_vals=c('Proximal','Distal'))
 ```
