@@ -91,7 +91,7 @@ spatialPlot_feature() accepts the following input parameters:
 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
 ``` r
 spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE)
-# Grid squares can only be labeled when the plot is not interactive.
+# Note: Grid squares can only be labeled when the plot is not interactive.
 ```
 1b. Same thing as 1a but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
 ``` r
