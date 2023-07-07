@@ -17,7 +17,7 @@ devtools::github('pnnl-compbio/spammer')
 
 ## Example
 
-This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment (SPE) object, we then demonstrate the use of different functions in SpammR. 
+This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment (SPE or spe) object, we then demonstrate the use of different functions in SpammR. 
 
 ### 0. Organize data into a SpatialExperiment object
 
@@ -118,16 +118,16 @@ spatialPlot_feature(spe_singleImg, feat, label_column = label_col)
 ### 2. Differential expression analysis comparing two types of samples in the data given in the SPE object
 2a. Run differential expression using spatialDiffEx() function, to compare "Proximal" vs. "Distal" samples in the Pancreas dataset stored in spe_singleImg
 
-spatialDiffEx() requries the following input parameters:
-#' @param spe Spatial Experiment object
-#' @param category_col Name of the column that specifies category of each sample. Example: "IsletStatus"
-#' #Categories from category_col will be compared in the differential expression analysis
-#' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
-#' @returns Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe
+The spatialDiffEx() function requries the following input parameters:
+spe:  Spatial Experiment object
+category_col:  Name of the column that specifies category of each sample. Example: "IsletStatus"
+Categories from category_col will be compared in the differential expression analysis
+compare_vals: A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
+
 ``` r
 diffex_spe <-spatialDiffEx(spe_singleImg,category_col ='IsletStatus',compare_vals=c('Proximal','Distal'))
 ```
-The output is a SpatialExperiment object containing results from differential expression, along with all that was present in the input SpatialExperiment object
+The output diffex_spe is a SpatialExperiment object containing results from differential expression analysis, in addition to what was already present in the input spe
 
 2b. How to access the differential expression results in the returned SPE object?
 ``` r
