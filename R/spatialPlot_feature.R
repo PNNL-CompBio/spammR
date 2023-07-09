@@ -51,7 +51,8 @@ spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance me
   #   ylim(0,NA)+
   #   ggtitle(title)
   if (interactive){
-    return ggplotly(p)
+    p <- ggplotly(p)
+    return p
   }else{
     return p
   }
