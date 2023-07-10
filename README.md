@@ -17,7 +17,7 @@ devtools::github('pnnl-compbio/spammR')
 
 ## Example
 
-This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment object, we then demonstrate the use of different functions in SpammR. 
+This is a basic example which demonstrates how to organize spatial omics data into a SpatialExperiment object, which is the required format for input data in SpammR. After constructing a SpatialExperiment (SPE or spe) object, we then demonstrate the use of different functions in SpammR. 
 
 ### 0. Organize data into a SpatialExperiment object
 
@@ -91,33 +91,49 @@ spatialPlot_feature() accepts the following input parameters:
 1a. Basic spatial heatmap where all parameters are specified by the user; non-interactive
 ``` r
 spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = FALSE)
-# Grid squares can only be labeled when the plot is not interactive.
+# Note: Grid squares can only be labeled when the plot is not interactive.
 ```
 1b. Same thing as 1a but now an interactive plot; hovering over a square gives it's coordinates, label and colored value
 ``` r
-spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col)
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col)
 # or
-spatialPlot_feature(spe_nongrid, feat, metric_lab, label_col, interactive = TRUE)
+spatialPlot_feature(spe_singleImg, feat, metric_lab, label_col, interactive = TRUE)
 ``` 
 1c. A spatial heatmap without labels for grid squares
 ``` r
-spatialPlot_feature(spe_nongrid, feat, metric_lab, NA)
+spatialPlot_feature(spe_singleImg, feat, metric_lab, NA)
 # or
-spatialPlot_feature(spe_nongrid, feat, metric_lab)
+spatialPlot_feature(spe_singleImg, feat, metric_lab)
 ```
 1d. If the user wants to use the default legend label defined in the function "Protein abundance measure" and no labels
 ``` r
-spatialPlot_feature(spe_nongrid, feat)
+spatialPlot_feature(spe_singleImg, feat)
 ``` 
 1e. Same thing as 1d but now specify which column to use for labeling grid squares
 ``` r
-spatialPlot_feature(spe_nongrid, feat, label_column = label_col)
+spatialPlot_feature(spe_singleImg, feat, label_column = label_col)
 ``` 
 
 
-### 2. Run differential expression; save results in a SpatialExperiment object
+### 2. Differential expression analysis comparing two types of samples in the data given in the SPE object
+2a. Run differential expression using spatialDiffEx() function, to compare "Proximal" vs. "Distal" samples in the Pancreas dataset stored in spe_singleImg
 
-diffex<-spatialDiffEx(spe,column='IsletOrNot',vals=c('Islet','NonIslet'))
+The spatialDiffEx() function requries the following input parameters:
+- spe:  Spatial Experiment object
+- category_col:  Name of the column that specifies category of each sample. Example: "IsletStatus"
+Categories from category_col will be compared in the differential expression analysis
+- compare_vals: A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
+
+``` r
+diffex_spe <-spatialDiffEx(spe_singleImg,category_col ='IsletStatus',compare_vals=c('Proximal','Distal'))
+```
+The output diffex_spe is a SpatialExperiment object containing results from differential expression analysis, in addition to what was already present in the input spe
+
+2b. How to access the differential expression results in the returned SPE object?
+``` r
+rowData(diffex_spe)
+```
+2c. Produce a volcano plot to visualize the results from differential experession analysis
 
 ## basic example code
 ```
