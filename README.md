@@ -8,7 +8,7 @@ The goal of spammR is to provide tools for generic analysis of omics data that i
 
 ## Installation
 
-You can install the development version of spammer like so:
+You can install the development version of spammR like so:
 
 ``` r
 library(devtools)
