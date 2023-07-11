@@ -1,5 +1,5 @@
-# spatialPlot_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
-# and provides the option to label each sample in the x-y plane
+#' Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
+#' and provides the option to label each sample in the x-y plane
 #' @export
 # Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 # Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
@@ -9,6 +9,7 @@
 #' @param metric_display: Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
 #' @param label_column: Colunm in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
 #' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.
+#' @return spatial_plot: Saptail heatmap of the chosen feature
 #  Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE){
   library(ggplot2)
@@ -26,7 +27,7 @@ spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance me
   if (is.na(label_column)){
     lab = NA
   }else{
-    lab = spatial_meta[,label_column] 
+    lab = spatial_meta[,label_column]
   }
   # Switched to using geom_rect instead of goem_raster because geom_raster positioning gets distorted when the plot is made interactive.
   # If not doing interactive hovering, then geom_raster may be more favorable to use.
@@ -34,7 +35,7 @@ spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance me
     geom_rect()+
     scale_fill_viridis_c()+
     geom_label(aes(x=(x+x-1)/2,y=(y+y-1)/2),label.size = NA, fill=NA)+
-    labs(fill = metric)+
+    labs(fill = metric_display)+
     theme_bw()+
     xlim(0,NA)+
     ylim(0,NA)+
