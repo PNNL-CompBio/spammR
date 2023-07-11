@@ -2,10 +2,21 @@
 % Please edit documentation in R/spatialDiffEx.R
 \name{spatialDiffEx}
 \alias{spatialDiffEx}
-\title{spatialDiffEx: does differential expression using annotations in object}
+\title{spatialDiffEx: does differential expression using annotations in objectBiocManager::install("limma")}
 \usage{
-spatialDiffEx(sce, column = "pulpAnnotation", vals = c("red", "white"))
+spatialDiffEx(spe, category_col, compare_vals)
+}
+\arguments{
+\item{spe}{Spatial Experiment object}
+
+\item{category_col}{Name of the column that specifies category of each sample. Example: "IsletStatus"
+#Categories from category_col will be compared in the differential expression analysis}
+
+\item{compare_vals}{A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')}
+}
+\value{
+Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe
 }
 \description{
-spatialDiffEx: does differential expression using annotations in object
+spatialDiffEx: does differential expression using annotations in objectBiocManager::install("limma")
 }
