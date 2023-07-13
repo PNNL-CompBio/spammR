@@ -2,7 +2,8 @@
 % Please edit documentation in R/spatialDiffEx.R
 \name{spatialDiffEx}
 \alias{spatialDiffEx}
-\title{spatialDiffEx: does differential expression using annotations in objectBiocManager::install("limma")}
+\title{spatialDiffEx: does differential expression using annotations in object
+BiocManager::install("limma")}
 \usage{
 spatialDiffEx(spe, category_col, compare_vals)
 }
@@ -18,5 +19,6 @@ spatialDiffEx(spe, category_col, compare_vals)
 Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe
 }
 \description{
-spatialDiffEx: does differential expression using annotations in objectBiocManager::install("limma")
+spatialDiffEx: does differential expression using annotations in object
+BiocManager::install("limma")
 }
