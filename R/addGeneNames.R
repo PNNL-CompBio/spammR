@@ -7,3 +7,6 @@
 #' @param species Name of the species whose data is in spe (example: "human")
 #' @param db_file Path or name of database file containing information for converting from feature ID to gene name. Defaults to database files provided in spammR for the given species
 #' @return spe_withGeneNames Spatial Experiment object containing everything in the input spe, along with a column for gene name.
+addGeneNames <- function(spe, featureID_colname, species, db_file){
+  retrun(spe)
+}
