@@ -135,6 +135,8 @@ rowData(diffex_spe)
 ```
 2c. Produce a volcano plot to visualize the results from differential experession analysis
 
+In spammR, we provide functions to create a typical volcano plot i.e. a plot shoing -log10(pvalue) vs. log2(fold change), along with annotations of points based on criteria of significance provided by the user.
+
 There are two functions in spammR that can be used for this depending on the data structure in which the differential expression results are stored. The functions are volcanoPlot_DiffExSpe() and volcanoPlot_DiffExResults(). 
 
 The input parameters needed for both functions are the same except for the first parameter (the object containing the differential expression results).
