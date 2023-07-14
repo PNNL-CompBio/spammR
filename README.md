@@ -143,16 +143,17 @@ logFC_colname = "IsletStatus.limma.logFC"
 pval_colname = "IsletStatus.limma.P.Value"
 pval_corrected = TRUE
 title = "Differential abundance results for Distal vs. Proximal samples; Pancreas dataset spe_SingleImage"
+thresh = 0.05
 sigLabel_colname = "X"
 ```
 If the differential expression results are stored in a data frame, then use volcanoPlot_DiffExResults():
 ``` r
 diffEx_df = rowData(diffex_spe)
-volcanoPlot_DiffExResults(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname)
+volcanoPlot_DiffExResults(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh, sigLabel_colname)
 ```
 If the differential expression results are stored in an SPE object, then use volcanoPlot_DiffExSpe(). volcanoPlot_DiffExSpe() calls on volcanoPlot_DiffExResults():
 ``` r
-volcanoPlot_DiffExSpe(diffex_spe, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname)
+volcanoPlot_DiffExSpe(diffex_spe, logFC_colname, pval_colname, pval_corrected, title, thresh, sigLabel_colname)
 ```
 ## basic example code
 ```
