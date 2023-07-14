@@ -135,6 +135,25 @@ rowData(diffex_spe)
 ```
 2c. Produce a volcano plot to visualize the results from differential experession analysis
 
+There are two functions in spammR that can be used for this depending on the data structure in which the differential expression results are stored. The functions are volcanoPlot_DiffExSpe() and volcanoPlot_DiffExResults(). The input parameters needed for both functions are the same except for the first parameter (the object containing the differential expression results).
+
+First, define the needed input parameters for both functions
+``` r
+logFC_colname = "IsletStatus.limma.logFC"
+pval_colname = "IsletStatus.limma.P.Value"
+pval_corrected = TRUE
+title = "Differential abundance results for Distal vs. Proximal samples; Pancreas dataset spe_SingleImage"
+sigLabel_colname = "X"
+```
+If the differential expression results are stored in a data frame, then use volcanoPlot_DiffExResults():
+``` r
+diffEx_df = rowData(diffex_spe)
+volcanoPlot_DiffExResults(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname)
+```
+If the differential expression results are stored in an SPE object, then use volcanoPlot_DiffExSpe(). volcanoPlot_DiffExSpe() calls on volcanoPlot_DiffExResults():
+``` r
+volcanoPlot_DiffExSpe(diffex_spe, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname)
+```
 ## basic example code
 ```
 
