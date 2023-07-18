@@ -75,9 +75,9 @@ SpammR function to be used: spatialPlot_feature(...)
 
 This function plots feature values for a single feature as a heatmap on an x-y coordinate system
 
-First, define parameters needed for this plotting. Example:
+First, define parameters needed for this plotting. Let's look at the spatial expression of the insulin protein.
 ``` r
-feat = "sp|A0A024RBG1|NUD4B_HUMAN"
+"sp|P01308|INS_HUMAN" #insulin protein
 metric_lab = "Protein abundance measure" # Metric represented by color scale; this will be used as the legend label
 label_col = "sample_id" # name of the column in colData(spe) to be used for labeling sample locations
 ```
