@@ -15,7 +15,7 @@ spatialDiffEx<-function(spe,category_col, compare_vals){
   if(length(compare_vals)>1){
     samp2<-which(colData(spe)[[category_col]]==compare_vals[2])
   }else{
-    samp2=setdiff(1:ncol(colData(spe)),samp1)
+    samp2=setdiff(1:nrow(colData(spe)),samp1)
   }
 
   fac <- factor(rep(c(2,1),c(length(samp2), length(samp1))))
