@@ -120,12 +120,13 @@ spatialPlot_feature(spe_singleImg, feat, label_column = label_col)
 
 The spatialDiffEx() function requries the following input parameters:
 - spe:  Spatial Experiment object
+- logTransformed: Boolean indicating whether the data given in spe is log2 transformed (TRUE) or not(FALSE)
 - category_col:  Name of the column that specifies category of each sample. Example: "IsletStatus"
 Categories from category_col will be compared in the differential expression analysis
 - compare_vals: A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 
 ``` r
-diffex_spe <-spatialDiffEx(spe_singleImg,category_col ='IsletStatus',compare_vals=c('Proximal','Distal'))
+diffex_spe <-spatialDiffEx(spe_singleImg,TRUE,category_col ='IsletStatus',compare_vals=c('Proximal','Distal'))
 ```
 The output diffex_spe is a SpatialExperiment object containing results from differential expression analysis, in addition to what was already present in the input spe
 
