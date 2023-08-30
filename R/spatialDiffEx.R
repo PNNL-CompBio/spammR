@@ -8,7 +8,7 @@
 #' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 #' If length(compare_vals) = 1, i.e. only one category is specified (example: 'Proximal'), then that category will be compared against all others. Example: Proximal vs. Not proximal
 #' @returns Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe
-spatialDiffEx<-function(spe,category_col, compare_vals){
+spatialDiffEx<-function(spe,logTransformed,category_col, compare_vals){
   library(limma)
 
   #collect samples by factor
