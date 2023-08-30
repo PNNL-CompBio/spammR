@@ -15,6 +15,8 @@ spatialDiffEx(spe, category_col, compare_vals)
 
 \item{compare_vals}{A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 If length(compare_vals) = 1, i.e. only one category is specified (example: 'Proximal'), then that category will be compared against all others. Example: Proximal vs. Not proximal}
+
+\item{logTransformed}{Boolean indicating whether the data given in spe is log2 transformed (TRUE) or not(FALSE)}
 }
 \value{
 Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe

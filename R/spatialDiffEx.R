@@ -2,6 +2,7 @@
 #' BiocManager::install("limma")
 #' @export
 #' @param spe Spatial Experiment object
+#' @param logTransformed Boolean indicating whether the data given in spe is log2 transformed (TRUE) or not(FALSE)
 #' @param category_col Name of the column that specifies category of each sample. Example: "IsletStatus"
 #' #Categories from category_col will be compared in the differential expression analysis
 #' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
@@ -22,7 +23,13 @@ spatialDiffEx<-function(spe,category_col, compare_vals){
   #print(fac)
   design <- model.matrix(~fac)
   #print(design)
-  fit <- lmFit(assay(spe)[,c(samp2,samp1)], design)
+  dat = matrix()
+  if (logTransformed){
+    dat = assay(spe)
+  }else{
+    dat = log2(assay(spe))
+  }
+  fit <- lmFit(dat[,c(samp2,samp1)], design)
   fit <- eBayes(fit)
 
   # print(topTable(fit, coef=2))
