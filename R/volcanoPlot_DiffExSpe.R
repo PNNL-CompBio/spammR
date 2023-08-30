@@ -6,12 +6,11 @@
 #' @param logFC_col column name in differenital expression results that represents log10 fold change
 #' @param pval_col column name in differential epxression results that represents the p-value to be plotted
 #' @param pval_corrected Boolean indicating whether the p-values to be used for thresholding significant results are corrected for multiple hypotheses or not.
-#' @param ylab label for y-axis (Example: Corrected p-value)
 #' @param title title for the plot
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
 #' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
-volcanoPlot_DiffExSpe <- function(spe, logFC_col, pval_col, pval_corrected, ylab, title, thresh=0.05, sigLabel_colname){
+volcanoPlot_DiffExSpe <- function(spe, logFC_col, pval_col, pval_corrected, title, thresh=0.05, sigLabel_colname){
   df = rowData(spe)
-  volcanoPlot_DiffExResults (df, logFC_col, pval_col, pval_corrected, ylab, title, thresh, sigLabel_colname)
+  volcanoPlot_DiffExResults (df, logFC_col, pval_col, pval_corrected, title, thresh, sigLabel_colname)
 }
