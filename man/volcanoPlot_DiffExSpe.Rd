@@ -10,7 +10,7 @@ volcanoPlot_DiffExSpe(
   spe,
   logFC_col,
   pval_col,
-  ylab,
+  pval_corrected,
   title,
   thresh = 0.05,
   sigLabel_colname
@@ -23,7 +23,7 @@ volcanoPlot_DiffExSpe(
 
 \item{pval_col}{column name in differential epxression results that represents the p-value to be plotted}
 
-\item{ylab}{label for y-axis (Example: Corrected p-value)}
+\item{pval_corrected}{Boolean indicating whether the p-values to be used for thresholding significant results are corrected for multiple hypotheses or not.}
 
 \item{title}{title for the plot}
 
