@@ -7,6 +7,7 @@ and provides the option to label each sample in the x-y plane}
 \usage{
 spatialPlot_feature(
   spe,
+  spatial_coord_type,
   feature,
   metric_display = "Protein abundance measure",
   label_column = NA,
@@ -14,10 +15,10 @@ spatialPlot_feature(
 )
 }
 \arguments{
-\item{spe:}{SpatialExperiment object}
-
 \item{spatial_coord_type}{Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"
 Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"}
+
+\item{spe:}{SpatialExperiment object}
 
 \item{feature:}{Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)}
 
