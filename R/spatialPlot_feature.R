@@ -13,7 +13,7 @@
 #' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.
 #' @return spatial_plot: Spatial heatmap of the chosen feature
 #  Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
-spatialPlot_feature<-function(spe,feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE){
+spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE){
   library(ggplot2)
   library(SpatialExperiment)
   library(dplyr)
