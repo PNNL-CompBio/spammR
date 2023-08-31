@@ -2,13 +2,13 @@
 #' BiocManager::install("limma")
 #' @export
 #' @param spe Spatial Experiment object
-#' @param logTransformed Is the data given in spe log2 transformed ("Y") or not ("N")
+#' @param log_transformed Is the data given in spe log2 transformed ("Y") or not ("N")
 #' @param category_col Name of the column that specifies category of each sample. Example: "IsletStatus"
 #' #Categories from category_col will be compared in the differential expression analysis
 #' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 #' If length(compare_vals) = 1, i.e. only one category is specified (example: 'Proximal'), then that category will be compared against all others. Example: Proximal vs. Not proximal
 #' @returns Spatial Experiment object containing results from differential expression analysis, in addition to what was already present in the input spe
-spatialDiffEx<-function(spe,logTransformed,category_col, compare_vals){
+spatialDiffEx<-function(spe,log_transformed,category_col, compare_vals){
   library(limma)
 
   #collect samples by factor

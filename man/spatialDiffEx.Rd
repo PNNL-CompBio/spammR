@@ -5,12 +5,12 @@
 \title{spatialDiffEx: does differential expression using annotations in object
 BiocManager::install("limma")}
 \usage{
-spatialDiffEx(spe, logTransformed, category_col, compare_vals)
+spatialDiffEx(spe, log_transformed, category_col, compare_vals)
 }
 \arguments{
 \item{spe}{Spatial Experiment object}
 
-\item{logTransformed}{Is the data given in spe log2 transformed ("Y") or not ("N")}
+\item{log_transformed}{Is the data given in spe log2 transformed ("Y") or not ("N")}
 
 \item{category_col}{Name of the column that specifies category of each sample. Example: "IsletStatus"
 #Categories from category_col will be compared in the differential expression analysis}
