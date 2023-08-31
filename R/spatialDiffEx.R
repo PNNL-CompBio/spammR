@@ -24,9 +24,9 @@ spatialDiffEx<-function(spe,log_transformed,category_col, compare_vals){
   design <- model.matrix(~fac)
   #print(design)
   dat = matrix()
-  if (logTransformed=="Y"){
+  if (log_transformed=="Y"){
     dat = assay(spe)
-  }else if(logTransformed=="N"){
+  }else if(log_transformed=="N"){
     dat = log2(assay(spe))
   }
   fit <- lmFit(dat[,c(samp2,samp1)], design)
