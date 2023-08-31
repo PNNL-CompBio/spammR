@@ -16,6 +16,9 @@ spatialPlot_feature(
 \arguments{
 \item{spe:}{SpatialExperiment object}
 
+\item{spatial_coord_type}{Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"
+Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"}
+
 \item{feature:}{Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)}
 
 \item{metric_display:}{Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"}
@@ -25,7 +28,7 @@ spatialPlot_feature(
 \item{interactive:}{Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.}
 }
 \value{
-spatial_plot: Saptail heatmap of the chosen feature
+spatial_plot: Spatial heatmap of the chosen feature
 }
 \description{
 Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
