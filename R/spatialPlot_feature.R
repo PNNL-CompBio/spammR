@@ -55,7 +55,7 @@ spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "P
   p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     geom_rect()+
     scale_fill_viridis_c()+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = white)+
+    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = "white")+
     labs(fill = metric_display)+
     theme_bw()+
     xlim(0,NA)+
