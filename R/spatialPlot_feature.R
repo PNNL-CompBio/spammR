@@ -22,6 +22,8 @@ spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "P
     as.data.frame()
   spatial$x = as.numeric(spatial$x)
   spatial$y = as.numeric(spatial$y)
+  x = spatial$x
+  y = spatial$y
   feature_values_toplot = assay(spe)[feature,rownames(spatial)]
   spatial_meta = colData(spe)
   title = paste("Spatial signature for ", feature, sep="")
@@ -46,14 +48,14 @@ spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "P
     x_left = x
     x_right = x + 1
     y_bottom = y-1
-    y_top = y 
+    y_top = y
   }
   midpoint_x = (x_left + x_right)/2
   midpoint_y = (y_bottom + y_top)/2
   p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     geom_rect()+
     scale_fill_viridis_c()+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA)+
+    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = white)+
     labs(fill = metric_display)+
     theme_bw()+
     xlim(0,NA)+
