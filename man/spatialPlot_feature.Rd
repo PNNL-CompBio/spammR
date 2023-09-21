@@ -11,12 +11,15 @@ spatialPlot_feature(
   feature,
   metric_display = "Protein abundance measure",
   label_column = NA,
+  sample_label_color = "white",
   interactive = TRUE
 )
 }
 \arguments{
 \item{spatial_coord_type}{Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"
 Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"}
+
+\item{sample_label_color}{Color to be used for labels of samples/grid squares. Default is white.}
 
 \item{spe:}{SpatialExperiment object}
 

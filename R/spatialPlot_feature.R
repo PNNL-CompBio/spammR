@@ -10,10 +10,11 @@
 #' @param feature: Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
 #' @param metric_display: Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
 #' @param label_column: Colunm in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
+#' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
 #' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.
 #' @return spatial_plot: Spatial heatmap of the chosen feature
 #  Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
-spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "Protein abundance measure",label_column=NA,interactive=TRUE){
+spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
   library(ggplot2)
   library(SpatialExperiment)
   library(dplyr)
@@ -55,7 +56,7 @@ spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "P
   p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     geom_rect()+
     scale_fill_viridis_c()+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = "white")+
+    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color)+
     labs(fill = metric_display)+
     theme_bw()+
     xlim(0,NA)+
