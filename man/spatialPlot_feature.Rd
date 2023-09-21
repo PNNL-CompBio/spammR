@@ -3,8 +3,7 @@
 \name{spatialPlot_feature}
 \alias{spatialPlot_feature}
 \title{Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
-and provides the option to label each sample in the x-y plane
-Test for reoxygen - is it working?}
+and provides the option to label each sample in the x-y plane}
 \usage{
 spatialPlot_feature(
   spe,
@@ -38,5 +37,4 @@ spatial_plot: Spatial heatmap of the chosen feature
 \description{
 Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
 and provides the option to label each sample in the x-y plane
-Test for reoxygen - is it working?
 }
