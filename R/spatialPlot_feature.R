@@ -61,6 +61,7 @@ spatialPlot_feature<-function(spe,spatial_coord_type,feature,metric_display = "P
     theme_bw()+
     xlim(0,NA)+
     ylim(0,NA)+
+    coord_fixed(ratio=1)+
     xlab("x")+
     ylab("y")+
     ggtitle(title)
