@@ -1,5 +1,6 @@
 #' Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
 #' and provides the option to label each sample in the x-y plane
+#' Test for reoxygen - is it working?
 #' @export
 # Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 # Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
