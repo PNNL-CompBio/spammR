@@ -1,5 +1,9 @@
 #' Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
 #' and provides the option to label each sample in the x-y plane
+#' @import ggplot2
+#' @import SpatialExperiment
+#' @import dplyr
+#' @import plotly
 #' @export
 # Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 # Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
