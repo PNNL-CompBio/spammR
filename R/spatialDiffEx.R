@@ -1,6 +1,5 @@
 #' spatialDiffEx: does differential expression using annotations in object
 #' @import limma
-#' BiocManager::install("limma")
 #' @export
 #' @param spe Spatial Experiment object
 #' @param log_transformed Is the data given in spe log2 transformed ("Y") or not ("N")
