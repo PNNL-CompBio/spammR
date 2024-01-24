@@ -1,4 +1,5 @@
 #' spatialDiffEx: does differential expression using annotations in object
+#' @import limma
 #' BiocManager::install("limma")
 #' @export
 #' @param spe Spatial Experiment object
