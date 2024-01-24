@@ -2,6 +2,7 @@
 #' Use this function directly if differential expression results are in a separate data frame and not an spe object
 #' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
 #' -log10(p-value) vs. log2(fold change)
+#' @import ggplot2
 #' @export
 #' @param diffEx_df A dataframe containing results from differential expression
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
