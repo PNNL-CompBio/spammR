@@ -21,7 +21,7 @@ spatialDiffEx <-function(spe,assay_name,log_transformed,category_col, compare_va
     samp1<-which(colData(spe)[[category_col]]==compare_vals[2])
     comparison_name = paste(compare_vals[1],"_vs_",compare_vals[2],sep="")
   }else{
-    samp1=setdiff(1:nrow(colData(spe)),samp1)
+    samp1=setdiff(1:nrow(colData(spe)),samp2)
     comparison_name = paste(compare_vals[1],"_vs_others",sep="")
   }
   
