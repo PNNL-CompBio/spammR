@@ -23,7 +23,7 @@
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
 #' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE.
 #' @return spatial_plot: Spatial heatmap of the chosen feature
-#' @details Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
+#' Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
   library(ggplot2)
   library(SpatialExperiment)
