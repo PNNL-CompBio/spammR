@@ -1,14 +1,14 @@
 #' @description Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
 #' and provides the option to label each sample in the x-y plane
+#' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
+#' Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
+#' Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
+#' Default values are specified for function paramters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
 #' @import ggplot2
 #' @import SpatialExperiment
 #' @import dplyr
 #' @import plotly
 #' @export
-#' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
-#' Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
-#' Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
-#' Default values are specified for function paramters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
 #' @param spe: SpatialExperiment (SPE) object
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
 #' @param plotBackground_img Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)
