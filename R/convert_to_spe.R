@@ -31,7 +31,7 @@
 # image_samples_common_identifier = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
 
 convert_to_spe <-function(omics_measurements_file, metadata_file, meta_colname_sampleIDs, remove_samples, feature_colname, spatilCoords_colnames, samples_common_identifier, image_files, image_ids, image_samples_common_identifier){
-  remove_sample_colnums = which(colnames(dat) %in% remove_samples)
+remove_sample_colnums = which(colnames(dat) %in% remove_samples)
 dat = dat[,-remove_sample_colnums]
 meta_dat = meta_dat[!meta_dat[,meta_colname_sampleIDs] %in% remove_samples,]
 # Separate sample columns and feature meta data columns in dat
