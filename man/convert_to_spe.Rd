@@ -2,15 +2,16 @@
 % Please edit documentation in R/convert_to_spe.R
 \name{convert_to_spe}
 \alias{convert_to_spe}
-\title{convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR function require the input data to be an SPE object.}
+\title{convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.}
 \usage{
 convert_to_spe(
   omics_measurements_file,
+  assay_name,
   metadata_file,
   meta_colname_sampleIDs,
-  remove_samples,
+  remove_samples = NA,
   feature_colname,
-  spatilCoords_colnames,
+  spatialCoords_colnames,
   samples_common_identifier,
   image_files,
   image_ids,
@@ -19,6 +20,8 @@ convert_to_spe(
 }
 \arguments{
 \item{omics_measurements_file}{File path for omics measurements. Rows correspond to features. Samples are in columns. Can have additional columns also describing features.}
+
+\item{assay_name}{Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name}
 
 \item{metadata_file}{File path for metadata for samples. This can include spatial coordinates.}
 
@@ -36,8 +39,6 @@ convert_to_spe(
 
 \item{image_samples_common_identifier}{A list containing names of samples_common_identifier(s) corresponding to images provided in image_files. This identifier links specific samples to a experiment/condition represented by a given image.}
 
-\item{assay_name}{Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name}
-
 \item{spatialCoord_colnames}{A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file.}
 
 \item{spatialCoords_file}{If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified.}
@@ -46,5 +47,5 @@ convert_to_spe(
 spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Ready to be used as input in spammR functions that require SPE object as input.
 }
 \description{
-convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR function require the input data to be an SPE object.
+convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
 }
