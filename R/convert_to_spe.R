@@ -31,6 +31,7 @@
 # image_samples_common_identifier1 = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
 
 convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, meta_colname_sampleIDs, remove_samples=NULL, feature_colname, spatialCoords_colnames, spatialCoords_file=NULL, samples_common_identifier, image_files=NULL, image_ids=NULL, image_samples_common_identifier=NULL){
+  library("SpatialExperiment")
   dat = data.frame(read_excel(path=omics_measurements_file),check.names = FALSE)
   meta_dat = data.frame(read_excel(path=metadata_file),check.names = FALSE)
   if(!is.null(remove_samples)){
