@@ -7,8 +7,8 @@
 #' @param meta_colname_sampleIDs Column name in metadata_file whose entries contain sample identifiers provided in omics_measurements_file.
 #' @param remove_samples Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE.
 #' @param feature_colname Name of column in omics_measurements_file, that is to be used for identifying features.
-#' @param spatialCoord_colnames A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file.
-#' @param spatialCoords_file If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified.
+#' @param spatialCoords_colnames A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.
+#' @param spatialCoords_file If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples.
 #' @param samples_common_identifier A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.
 #' @param image_files A list containing paths of image files to be stored in the SpatialExperiment object. More images can be added later, without using this function.
 #' @param image_ids  A list containing image names/identifiers for image paths provided in image_files
@@ -30,7 +30,7 @@
 # image_ids1 = c("Raw_noMarkings","ROIsMarked") # Image names/identifiers for image paths provided in image_files
 # image_samples_common_identifier1 = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
 
-convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, meta_colname_sampleIDs, remove_samples=NA, feature_colname, spatialCoords_colnames, samples_common_identifier, image_files, image_ids, image_samples_common_identifier){
+convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, meta_colname_sampleIDs, remove_samples=NA, feature_colname, spatialCoords_colnames, spatialCoords_file=NULL, samples_common_identifier, image_files, image_ids, image_samples_common_identifier){
   dat = data.frame(read_excel(path=omics_measurements_file),check.names = FALSE)
   meta_dat = data.frame(read_excel(path=metadata_file),check.names = FALSE)
   if(!is.na(remove_samples)){
@@ -47,10 +47,15 @@ convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, me
   # Keep rows in meta data that have a corresponding sample ID in the omics measurements file
   meta_dat_keep = meta_dat[meta_dat[,meta_colname_sampleIDs] %in% sample_colnames,] # To be specified as colData for SPE
   rownames(meta_dat_keep) = meta_dat[,meta_colname_sampleIDs]
+  if (is.null(spatialCoords_file)){
+    spatialCoords_dat = as.matrix(meta_dat_keep[,spatialCoords_colnames])
+  }else{
+    spatialCoords_dat = as.matrix(data.frame(read_excel(spatialCoords_file),check.names = FALSE))
+  }
   spe.out <-SpatialExperiment(assays=list(as.matrix(dat_samples_only)),
                               colData=meta_dat_keep,
                               rowData=features_info,
-                              spatialCoords = as.matrix(meta_dat_keep[,spatialCoords_colnames]),
+                              spatialCoords = spatialCoords_dat,
                               sample_id = samples_common_identifier)
   names(assays(spe.out)) = c(assay_name)
   # Add image(s) to SPE

@@ -12,6 +12,7 @@ convert_to_spe(
   remove_samples = NA,
   feature_colname,
   spatialCoords_colnames,
+  spatialCoords_file = NULL,
   samples_common_identifier,
   image_files,
   image_ids,
@@ -31,6 +32,10 @@ convert_to_spe(
 
 \item{feature_colname}{Name of column in omics_measurements_file, that is to be used for identifying features.}
 
+\item{spatialCoords_colnames}{A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.}
+
+\item{spatialCoords_file}{If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples.}
+
 \item{samples_common_identifier}{A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.}
 
 \item{image_files}{A list containing paths of image files to be stored in the SpatialExperiment object. More images can be added later, without using this function.}
@@ -38,10 +43,6 @@ convert_to_spe(
 \item{image_ids}{A list containing image names/identifiers for image paths provided in image_files}
 
 \item{image_samples_common_identifier}{A list containing names of samples_common_identifier(s) corresponding to images provided in image_files. This identifier links specific samples to a experiment/condition represented by a given image.}
-
-\item{spatialCoord_colnames}{A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file.}
-
-\item{spatialCoords_file}{If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified.}
 }
 \value{
 spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Ready to be used as input in spammR functions that require SPE object as input.
