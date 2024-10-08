@@ -34,7 +34,7 @@ convert_to_spe(
 
 \item{spatialCoords_colnames}{A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.}
 
-\item{spatialCoords_file}{If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples.}
+\item{spatialCoords_file}{If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples and rownames should have the same sample identifier as 'meta_colname_sampleIDs'}
 
 \item{samples_common_identifier}{A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.}
 

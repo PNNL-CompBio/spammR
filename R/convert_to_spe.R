@@ -8,7 +8,7 @@
 #' @param remove_samples Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.
 #' @param feature_colname Name of column in omics_measurements_file, that is to be used for identifying features.
 #' @param spatialCoords_colnames A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.
-#' @param spatialCoords_file If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples.
+#' @param spatialCoords_file If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples and rownames should have the same sample identifier as 'meta_colname_sampleIDs'
 #' @param samples_common_identifier A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.
 #' @param image_files A list containing paths of image files to be stored in the SpatialExperiment object. More images can be added later, without using this function.
 #' @param image_ids  A list containing image names/identifiers for image paths provided in image_files
@@ -31,7 +31,7 @@
 # image_samples_common_identifier1 = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
 
 convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, meta_colname_sampleIDs, remove_samples=NULL, feature_colname, spatialCoords_colnames, spatialCoords_file=NULL, samples_common_identifier, image_files=NULL, image_ids=NULL, image_samples_common_identifier=NULL){
-  library("SpatialExperiment")
+  #library("SpatialExperiment")
   dat = data.frame(read_excel(path=omics_measurements_file),check.names = FALSE)
   meta_dat = data.frame(read_excel(path=metadata_file),check.names = FALSE)
   if(!is.null(remove_samples)){
