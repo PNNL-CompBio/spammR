@@ -9,14 +9,14 @@ convert_to_spe(
   assay_name,
   metadata_file,
   meta_colname_sampleIDs,
-  remove_samples = NA,
+  remove_samples = NULL,
   feature_colname,
   spatialCoords_colnames,
   spatialCoords_file = NULL,
   samples_common_identifier,
-  image_files,
-  image_ids,
-  image_samples_common_identifier
+  image_files = NULL,
+  image_ids = NULL,
+  image_samples_common_identifier = NULL
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ convert_to_spe(
 
 \item{meta_colname_sampleIDs}{Column name in metadata_file whose entries contain sample identifiers provided in omics_measurements_file.}
 
-\item{remove_samples}{Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE.}
+\item{remove_samples}{Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.}
 
 \item{feature_colname}{Name of column in omics_measurements_file, that is to be used for identifying features.}
 
