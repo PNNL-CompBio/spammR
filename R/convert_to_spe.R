@@ -57,7 +57,7 @@ convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, me
                               rowData=features_info,
                               spatialCoords = spatialCoords_dat,
                               sample_id = samples_common_identifier)
-  names(assay(spe.out)) = c(assay_name)
+  names(assays(spe.out)) = c(assay_name)
   # Add image(s) to SPE
   if (!is.null(image_files)){
     if (is.null(image_ids)){
