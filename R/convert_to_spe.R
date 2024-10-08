@@ -5,7 +5,7 @@
 #' @param assay_name Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name
 #' @param metadata_file File path for metadata for samples. This can include spatial coordinates.
 #' @param meta_colname_sampleIDs Column name in metadata_file whose entries contain sample identifiers provided in omics_measurements_file.
-#' @param remove_samples Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE.
+#' @param remove_samples Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.
 #' @param feature_colname Name of column in omics_measurements_file, that is to be used for identifying features.
 #' @param spatialCoords_colnames A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.
 #' @param spatialCoords_file If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples.
@@ -30,10 +30,10 @@
 # image_ids1 = c("Raw_noMarkings","ROIsMarked") # Image names/identifiers for image paths provided in image_files
 # image_samples_common_identifier1 = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
 
-convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, meta_colname_sampleIDs, remove_samples=NA, feature_colname, spatialCoords_colnames, spatialCoords_file=NULL, samples_common_identifier, image_files, image_ids, image_samples_common_identifier){
+convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, meta_colname_sampleIDs, remove_samples=NULL, feature_colname, spatialCoords_colnames, spatialCoords_file=NULL, samples_common_identifier, image_files=NULL, image_ids=NULL, image_samples_common_identifier=NULL){
   dat = data.frame(read_excel(path=omics_measurements_file),check.names = FALSE)
   meta_dat = data.frame(read_excel(path=metadata_file),check.names = FALSE)
-  if(!is.na(remove_samples)){
+  if(!is.null(remove_samples)){
     remove_sample_colnums = which(colnames(dat) %in% remove_samples)
     dat = dat[,-remove_sample_colnums]
     meta_dat = meta_dat[!meta_dat[,meta_colname_sampleIDs] %in% remove_samples,]
@@ -60,6 +60,12 @@ convert_to_spe <-function(omics_measurements_file, assay_name, metadata_file, me
   names(assays(spe.out)) = c(assay_name)
   # Add image(s) to SPE
   if (!is.null(image_files)){
+    if (is.null(image_ids)){
+      # Throw error: Error: image_ids must be specified
+    }
+    if (!is.null(image_samples_common_identifier)){
+      # Throw error: Error: image_samples_common_identifier must be specified
+    }
     for (i in 1:length(image_files)){
       # scaleFactor under addImg() is a "single numeric scale factor used to rescale spatial coordinates according to the image's resolution."
       # Can turn scaleFactor into a parameter specified by user also, but not needed right now.
