@@ -12,7 +12,7 @@
 #' @returns a list with diffEx_df, a data frame containing the differential expression results and spe_out: Spatial Experiment object containing diffEx, stored in rowData(spe_out)
 #  and assays(spe_out) which contains the dataset on which differential expresssion analysis was carried out
 
-spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_vals){
+spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_vals,feature_colname){
   library(limma)
 
   #collect samples by factor

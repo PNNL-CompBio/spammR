@@ -4,7 +4,14 @@
 \alias{spatialDiffEx}
 \title{spatialDiffEx: does differential expression analysis using annotations in a SpatialExperiment object}
 \usage{
-spatialDiffEx(spe, assay_name, log_transformed, category_col, compare_vals)
+spatialDiffEx(
+  spe,
+  assay_name,
+  log_transformed,
+  category_col,
+  compare_vals,
+  feature_colname
+)
 }
 \arguments{
 \item{spe}{Spatial Experiment object containing data to be used for differential expression analysis}
