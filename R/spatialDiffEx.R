@@ -46,7 +46,7 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
   res = data.frame(cbind(rownames(res),res))
   colnames(res) = c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
-  diffEx <- data.frame(full_join(data.frame(rowData(spe)),res,by=feature_colname))
+  diffEx <- data.frame(full_join(data.frame(rowData(spe)),res,by=join_by(feature_colname)))
   rowData(spe_out) <- as.matrix(diffEx)
   return(list("diffEx_df" = diffEx, "spe_out"= spe_out))
 }
