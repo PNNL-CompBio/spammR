@@ -42,17 +42,11 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
   assays(spe_out) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
   # Differential expression results will be stored in rowData(spe_out)
   res <- topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
-  colnames(res)<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
-  # res<-res%>%
-  #   tibble::rownames_to_column(feature_colname) # Turn rownames into a column whose name is given by feature_colname, so it can be matched with the column in the spe
+  colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
   res = data.frame(cbind(rownames(res),res))
-  colnames(res) = c(feature_colname,colnames(res))
+  colnames(res) = c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
-  diffEx <- data.frame(full_join(rowData(spe),res,by=feature_colname))
-  # diffEx<-rowData(spe)%>%
-  #   as.data.frame()%>%
-  #   full_join(res)
+  diffEx <- data.frame(full_join(data.frame(rowData(spe)),res,by=feature_colname))
   rowData(spe_out) <- as.matrix(diffEx)
-  #return(spe)
   return(list("diffEx_df" = diffEx, "spe_out"= spe_out))
 }
