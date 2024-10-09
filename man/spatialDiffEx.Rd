@@ -2,12 +2,12 @@
 % Please edit documentation in R/spatialDiffEx.R
 \name{spatialDiffEx}
 \alias{spatialDiffEx}
-\title{spatialDiffEx_test: does differential expression analysis using annotations in object}
+\title{spatialDiffEx: does differential expression analysis using annotations in a SpatialExperiment object}
 \usage{
 spatialDiffEx(spe, assay_name, log_transformed, category_col, compare_vals)
 }
 \arguments{
-\item{spe}{Spatial Experiment object}
+\item{spe}{Spatial Experiment object containing data to be used for differential expression analysis}
 
 \item{assay_name}{Name of the dataset stored in the spe object, that is to be used for the differential expression analysis. Example: znormalized_log2}
 
@@ -18,10 +18,12 @@ spatialDiffEx(spe, assay_name, log_transformed, category_col, compare_vals)
 
 \item{compare_vals}{A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 If length(compare_vals) = 1, i.e. only one category is specified (example: 'Proximal'), then that category will be compared against all others. Example: Proximal vs. Not proximal}
+
+\item{feature_colname}{Name of column in rowData(spe), that is to be used for identifying features. Example: "PG.ProteinNames"}
 }
 \value{
 a list with diffEx_df, a data frame containing the differential expression results and spe_out: Spatial Experiment object containing diffEx, stored in rowData(spe_out)
 }
 \description{
-spatialDiffEx_test: does differential expression analysis using annotations in object
+spatialDiffEx: does differential expression analysis using annotations in a SpatialExperiment object
 }
