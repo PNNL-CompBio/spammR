@@ -31,6 +31,7 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
   design <- model.matrix(~fac)
   #print(design)
   dat = assays(spe)[[ assay_name ]]
+  rownames(dat) = rowData(spe)[,feature_colname]
   if(log_transformed=="N"){
     dat = log2(dat)
   }
