@@ -44,7 +44,7 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
   res <- topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
   colnames(res)<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
   res<-res%>%
-    tibble::rownames_to_column('feature_colname') # Turn rownames into a column whose name is given by feature_colname, so it can be matched with the column in the spe
+    tibble::rownames_to_column(feature_colname) # Turn rownames into a column whose name is given by feature_colname, so it can be matched with the column in the spe
   diffEx<-rowData(spe)%>%
     as.data.frame()%>%
     full_join(res)
