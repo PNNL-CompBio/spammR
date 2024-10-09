@@ -3,12 +3,12 @@
 #' @export
 #' @param spe Spatial Experiment object containing data to be used for differential expression analysis
 #' @param assay_name Name of the dataset stored in the spe object, that is to be used for the differential expression analysis. Example: znormalized_log2
-#' @param feature_colname Name of column in rowData(spe), that is to be used for identifying features. Example: "PG.ProteinNames"
 #' @param log_transformed Is the data given in spe log2 transformed ("Y") or not ("N")
 #' @param category_col Name of the column that specifies category of each sample. Example: "IsletStatus"
 #' #Categories from category_col will be compared in the differential expression analysis
 #' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 #' If length(compare_vals) = 1, i.e. only one category is specified (example: 'Proximal'), then that category will be compared against all others. Example: Proximal vs. Not proximal
+#' @param feature_colname Name of column in rowData(spe), that is to be used for identifying features. Example: "PG.ProteinNames"
 #' @returns a list with diffEx_df, a data frame containing the differential expression results and spe_out: Spatial Experiment object containing diffEx, stored in rowData(spe_out)
 #  and assays(spe_out) which contains the dataset on which differential expresssion analysis was carried out
 
