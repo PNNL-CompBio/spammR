@@ -31,7 +31,7 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
   design <- model.matrix(~fac)
   #print(design)
   dat = assays(spe)[[ assay_name ]]
-  rownames(dat) = rowData(spe)[,feature_colname]
+  rownames(dat) = rowData(spe)[,feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
   if(log_transformed=="N"){
     dat = log2(dat)
   }
@@ -40,7 +40,8 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
 
   spe_out = spe # initialize
   assays(spe_out) = list()
-  assays(spe_out) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
+  assays(spe_out,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
+  # withDimnames=FALSE drops rownames from dat while saving into the assay. We want this because rownames(spe.out) may not necessarily have rownames, depending on how the spe was defined.
   # Differential expression results will be stored in rowData(spe_out)
   res <- topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
   colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
