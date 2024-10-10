@@ -9,8 +9,8 @@
 #' @param compare_vals A vector containing names of categories from category_col to be compared. example: c('Proximal','Distal')
 #' If length(compare_vals) = 1, i.e. only one category is specified (example: 'Proximal'), then that category will be compared against all others. Example: Proximal vs. Not proximal
 #' @param feature_colname Name of column in rowData(spe), that is to be used for identifying features. Example: "PG.ProteinNames"
-#' @returns a list with diffEx_df, a data frame containing the differential expression results and spe_out: Spatial Experiment object containing diffEx, stored in rowData(spe_out)
-#  and assays(spe_out) which contains the dataset on which differential expresssion analysis was carried out
+#' @returns a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
+#  and assays(diffEx.spe) which contains the dataset on which differential expresssion analysis was carried out
 
 spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_vals,feature_colname){
   library(limma)
@@ -38,17 +38,17 @@ spatialDiffEx<-function(spe,assay_name,log_transformed,category_col, compare_val
   fit <- lmFit(dat[,c(samp2,samp1)], design)
   fit <- eBayes(fit)
 
-  spe_out = spe # initialize
-  assays(spe_out) = list()
-  assays(spe_out,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
+  diffex.spe = spe # initialize
+  assays(diffex.spe) = list()
+  assays(diffex.spe,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
   # withDimnames=FALSE drops rownames from dat while saving into the assay. We want this because rownames(spe.out) may not necessarily have rownames, depending on how the spe was defined.
-  # Differential expression results will be stored in rowData(spe_out)
+  # Differential expression results will be stored in rowData(diffex.spe)
   res <- topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
   colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
   res = data.frame(cbind(rownames(res),res))
   colnames(res) = c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
   diffEx <- data.frame(full_join(data.frame(rowData(spe)),res))
-  rowData(spe_out) <- as.matrix(diffEx)
-  return(list("diffEx_df" = diffEx, "spe_out"= spe_out))
+  rowData(diffex.spe) <- as.matrix(diffEx)
+  return(list("diffEx.df" = diffEx, "diffEx.spe"= diffex.spe))
 }

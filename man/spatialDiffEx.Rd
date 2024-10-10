@@ -29,7 +29,7 @@ If length(compare_vals) = 1, i.e. only one category is specified (example: 'Prox
 \item{feature_colname}{Name of column in rowData(spe), that is to be used for identifying features. Example: "PG.ProteinNames"}
 }
 \value{
-a list with diffEx_df, a data frame containing the differential expression results and spe_out: Spatial Experiment object containing diffEx, stored in rowData(spe_out)
+a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
 }
 \description{
 spatialDiffEx: does differential expression analysis using annotations in a SpatialExperiment object
