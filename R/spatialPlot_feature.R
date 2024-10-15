@@ -1,15 +1,15 @@
-#' @description Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
+#' spatialPlot_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
 #' and provides the option to label each sample in the x-y plane
 #' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
-#' Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
-#' Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
-#' Default values are specified for function paramters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
+#' @details Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
+#' @details Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
+#' @details Default values are specified for function paramters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
 #' @import ggplot2
 #' @import SpatialExperiment
 #' @import dplyr
 #' @import plotly
 #' @export
-#' @param spe: SpatialExperiment (SPE) object
+#' @param spe SpatialExperiment (SPE) object
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
 #' @param plotBackground_img Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)
 #' @param image_sample_ids c(sample_id, image_id) The names of the background image's sample_id and image_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
@@ -18,10 +18,10 @@
 #' @details Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
 #' @param feature_type: Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)
 #' @param feature: Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
-#' @param metric_display: Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
-#' @param label_column: Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
+#' @param metric_display Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
+#' @param label_column Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
-#' @param interactive: Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
+#' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
 spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
   library(ggplot2)
