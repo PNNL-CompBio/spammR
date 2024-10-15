@@ -25,6 +25,7 @@
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
 spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
   library(ggplot2)
+  library(ggnewscale)
   library(SpatialExperiment)
   library(dplyr)
   library(plotly)
@@ -83,12 +84,19 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
   xmax_image = image_boundaries[3]
   ymax_image = image_boundaries[4]
   #img_png = readPNG(background_img)
+  # Scale feature_values_toplot to show relative values. Scale from 0 to 1. This scale is useful when comparing spatial plots of different proteins
+  rescaled_feature_values = rescale(spatial[,feature_values_toplot],to=c(0,1))
+  spatial = cbind(spatial,rescaled_feature_values)
   p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     background_image(background_img)+
     geom_rect()+
     scale_fill_viridis_c()+
     geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=1.75)+
     labs(fill = metric_display)+
+    new_scale_color()+
+    geom_rect(data=spatial, aes(fill=rescaled_feature_values))+
+    scale_fill_viridis_c()+
+    labs(fill = "Scaled values")+
     theme_bw()+
     xlim(xmin_image,xmax_image)+
     ylim(ymin_image,ymax_image)+
