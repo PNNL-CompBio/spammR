@@ -12,6 +12,7 @@ spatialPlot_feature(
   image_sample_ids,
   image_boundaries,
   spatial_coord_type,
+  spatial_coord_names,
   feature_type = NA,
   feature,
   metric_display = "Protein abundance measure",
@@ -32,6 +33,8 @@ spatialPlot_feature(
 \item{image_boundaries}{Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).}
 
 \item{spatial_coord_type}{Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"}
+
+\item{spatial_coord_names}{Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord,Ycoord) or c(X,Y).}
 
 \item{metric_display}{Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"}
 

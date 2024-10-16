@@ -15,6 +15,7 @@
 #' @param image_sample_ids c(sample_id, image_id) The names of the background image's sample_id and image_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
 #' @param image_boundaries Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).
 #' @param spatial_coord_type Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"
+#' @param spatial_coord_names Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord,Ycoord) or c(X,Y).
 #' @details Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
 #' @param feature_type: Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)
 #' @param feature: Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
@@ -23,7 +24,7 @@
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
-spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
+spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
   library(ggplot2)
   library(ggnewscale)
   library(SpatialExperiment)
@@ -31,12 +32,13 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
   library(plotly)
   library(ggpubr)
   library(png)
-  spatial<-spatialCoords(spe)%>%
-    as.data.frame()
-  spatial$x = as.numeric(spatial$x)
-  spatial$y = as.numeric(spatial$y)
-  x = spatial$x
-  y = spatial$y
+  spatial = as.data.frame(spatialCoords(spe))
+  xcoord_name = spatial_coord_names[1]
+  ycoord_name = spatial_coord_names[2]
+  spatial[,xcoord_name] = as.numeric(spatial[,xcoord_name])
+  spatial[,ycoord_name] = as.numeric(spatial[,ycoord_name])
+  x = spatial[,xcoord_name]
+  y = spatial[,ycoord_name]
   f = assays(spe)[[ assay_name ]]
   feature_values_toplot = c()
   if (is.na(feature_type)){ # default is protein name which can be accessed through rownames of f
