@@ -18,6 +18,7 @@ spatialPlot_feature(
   metric_display = "Protein abundance measure",
   label_column = NA,
   sample_label_color = "white",
+  sample_label_size = 1.75,
   interactive = TRUE
 )
 }
@@ -41,6 +42,8 @@ spatialPlot_feature(
 \item{label_column}{Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.}
 
 \item{sample_label_color}{Color to be used for labels of samples/grid squares. Default is white.}
+
+\item{sample_label_size}{Font size for sample labels. Default is 1.75.}
 
 \item{interactive}{Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.}
 

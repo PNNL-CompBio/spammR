@@ -24,9 +24,10 @@
 #' @param metric_display Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
 #' @param label_column Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
+#' @param sample_label_size Font size for sample labels. Default is 1.75.
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
-spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",interactive=TRUE){
+spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,interactive=TRUE){
   library(ggplot2)
   library(ggnewscale)
   library(SpatialExperiment)
@@ -96,12 +97,11 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
     background_image(background_img)+
     geom_rect()+
     scale_fill_viridis_c()+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=1.75)+
+    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
     labs(fill = metric_display)+
     new_scale_fill()+
-    #structure(ggplot2::standardise_aes_names("colour"), class = "new_aes") +
     geom_rect(aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=1.75)+
+    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
     scale_fill_viridis_c(limits=c(0,1))+
     labs(fill = "Scaled values (min=0, max=1)")+
     theme_bw()+
