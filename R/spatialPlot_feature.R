@@ -87,7 +87,7 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
   ymax_image = image_boundaries[4]
   #img_png = readPNG(background_img)
   # Scale feature_values_toplot to show relative values. Scale from 0 to 1. This scale is useful when comparing spatial plots of different proteins
-  rescaled_feature_values = rescale(spatial[,feature_values_toplot],to=c(0,1))
+  rescaled_feature_values = rescale(feature_values_toplot,to=c(0,1))
   #spatial = cbind(spatial,rescaled_feature_values)
   p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     background_image(background_img)+
