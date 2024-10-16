@@ -41,7 +41,7 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
   y = spatial[,ycoord_name]
   f = assays(spe)[[ assay_name ]]
   feature_values_toplot = c()
-  if (is.na(feature_type)){ # default is protein name which can be accessed through rownames of f
+  if (is.na(feature_type)){ # default is whatever is used for rownames of f
     feature_values_toplot = as.numeric(f[feature,rownames(spatial)])
   }else{
     rowNum_toplot = grep(feature,rowData(spe)[,feature_type])
@@ -88,7 +88,7 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
   #img_png = readPNG(background_img)
   # Scale feature_values_toplot to show relative values. Scale from 0 to 1. This scale is useful when comparing spatial plots of different proteins
   rescaled_feature_values = rescale(spatial[,feature_values_toplot],to=c(0,1))
-  spatial = cbind(spatial,rescaled_feature_values)
+  #spatial = cbind(spatial,rescaled_feature_values)
   p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     background_image(background_img)+
     geom_rect()+
