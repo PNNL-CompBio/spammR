@@ -83,7 +83,7 @@ spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sa
   img_image_id = image_sample_ids[2]
   # Row corresponding to the background image of interest, to be used for plotting
   imgData_rowNum = which(imgData(spe)$sample_id==img_sample_id & imgData(spe)$image_id==img_image_id)
-  background_img = imgData(spe[imgData_rowNum,])$data[[1]]
+  background_img = imgData(spe)$data[[imgData_rowNum]]
   # Background image boundaries
   xmin_image = image_boundaries[1]
   ymin_image = image_boundaries[2]
