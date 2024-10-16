@@ -62,7 +62,7 @@ Assumes that colData(spe) and spatialCoords(spe) are provided in the same order 
 
 Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
 
-Default values are specified for function paramters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
+Default values are specified for function parameters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
 
 Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
 }

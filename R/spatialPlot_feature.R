@@ -3,11 +3,13 @@
 #' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 #' @details Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
 #' @details Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
-#' @details Default values are specified for function paramters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
+#' @details Default values are specified for function parameters 'metric_display', 'label_column' and 'interactive,' if the user doesn't specify those.
 #' @import ggplot2
+#' @import ggnewscale
 #' @import SpatialExperiment
 #' @import dplyr
 #' @import plotly
+#' @import scales
 #' @export
 #' @param spe SpatialExperiment (SPE) object
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
@@ -32,6 +34,7 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
   library(plotly)
   library(ggpubr)
   library(png)
+  library(scales)
   spatial = as.data.frame(spatialCoords(spe))
   xcoord_name = spatial_coord_names[1]
   ycoord_name = spatial_coord_names[2]
@@ -95,10 +98,12 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
     scale_fill_viridis_c()+
     geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=1.75)+
     labs(fill = metric_display)+
-    new_scale_color()+
-    geom_rect(data=spatial, aes(fill=rescaled_feature_values))+
-    scale_fill_viridis_c()+
-    labs(fill = "Scaled values")+
+    new_scale_fill()+
+    #structure(ggplot2::standardise_aes_names("colour"), class = "new_aes") +
+    geom_rect(aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
+    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=1.75)+
+    scale_fill_viridis_c(limits=c(0,1))+
+    labs(fill = "Scaled values (min=0, max=1)")+
     theme_bw()+
     xlim(xmin_image,xmax_image)+
     ylim(ymin_image,ymax_image)+
@@ -106,16 +111,6 @@ spatialPlot_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sampl
     xlab("x")+
     ylab("y")+
     ggtitle(title)
-  # geom_raster version
-  # p<-ggplot(spatial,aes(x=x,y=y, fill=feature_values_toplot, label = lab))+
-  #   geom_raster(hjust = 0, vjust = 0) +
-  #   scale_fill_viridis_c()+
-  #   geom_label(label.size = NA, fill=NA)+
-  #   labs(fill = metric)+
-  #   theme_bw()+
-  #   xlim(0,NA)+
-  #   ylim(0,NA)+
-  #   ggtitle(title)
   if (interactive){
     p <- ggplotly(p)
   }
