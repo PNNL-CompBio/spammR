@@ -65,6 +65,8 @@ spatialHeatmap_feature(
 
 \item{interactive}{Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.}
 
+\item{plot_title}{Title to be given to the spatial heatmap. Default is "Spatial signature for XYZ" where XYZ is the name of the specified feature}
+
 \item{feature_type:}{Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)}
 
 \item{feature:}{Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)}

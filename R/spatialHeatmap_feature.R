@@ -25,9 +25,10 @@
 #' @param label_column Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
 #' @param sample_label_size Font size for sample labels. Default is 1.75.
+#' @param plot_title Title to be given to the spatial heatmap. Default is "Spatial signature for XYZ" where XYZ is the name of the specified feature
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
-spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,interactive=TRUE){
+spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,plot_title=NULL,interactive=TRUE){
   library(ggplot2)
   library(ggnewscale)
   library(SpatialExperiment)
@@ -52,7 +53,12 @@ spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sa
     feature_values_toplot = as.numeric(f[rowNum_toplot,rownames(spatial)])
   }
   spatial_meta = colData(spe)
-  title = paste("Spatial signature for ", feature, sep="")
+  title=""
+  if (is.null(plot_title)){
+    title = paste("Spatial signature for ", feature, sep="")
+  }else{
+    title = plot_title
+  }
   lab = ""
   if (is.na(label_column)){
     lab = NA
