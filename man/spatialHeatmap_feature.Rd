@@ -3,8 +3,7 @@
 %   R/spatialPlot_feature.R
 \name{spatialHeatmap_feature}
 \alias{spatialHeatmap_feature}
-\title{spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
-and provides the option to label each sample in the x-y plane}
+\title{spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane}
 \usage{
 spatialHeatmap_feature(
   spe,
@@ -77,8 +76,7 @@ spatial_plot: Spatial heatmap of the chosen feature
 spatial_plot: Spatial heatmap of the chosen feature
 }
 \description{
-spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
-and provides the option to label each sample in the x-y plane
+spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
 
 spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
 and provides the option to label each sample in the x-y plane

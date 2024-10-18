@@ -1,5 +1,4 @@
-#' spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe)
-#' and provides the option to label each sample in the x-y plane
+#' spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
 #' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 #' @details Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
 #' @details Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
