@@ -53,7 +53,7 @@ spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sa
   }
   spatial_meta = colData(spe)
   if (is.null(plot_title)){
-    title = paste("Spatial signature for test ", feature, sep="")
+    title = paste("Spatial signature for ", feature, sep="")
   }else{
     title = plot_title
   }
