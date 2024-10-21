@@ -3,7 +3,7 @@
 export(convert_to_spe)
 export(distance_based_analysis)
 export(enrich_ORA)
-export(impute_data)
+export(impute_df)
 export(spatialDiffEx)
 export(spatialHeatmap_feature)
 export(volcanoPlot_DiffExResults)

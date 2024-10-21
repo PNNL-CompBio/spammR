@@ -1,25 +1,27 @@
-#' spammR_impute: carries out imputation for missing data using a range of methods
+#' impute_df: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a dataframe (df).
 #' @import matrixStats
 #' @import impute
 #' @export
-#' @param dat Data frame containing data to be imputed
-#' @param method Method of imputation to be used
-#' @param metadata This should correspond to colData(spe) and should be specified if the imputation method is spatial specific
-#' @param spatial_unit_col Column name that specifies spatial unit information. Example: ROI_abbreviation.
+#' @param dat Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.
+#' @param method Method of imputation to be used. See details.
+#' @param metadata A dataframe containing metadata for dat, where rows correspond to samples, and columns contain meta information about samples. This is required to be specified if the imputation method is spatial specific. At the very minimum, columns corresponding to sample identifier, spatial unit (if relevant) and spatial coordinates should be specified. Default is NULL.
+#' @param spatial_unit_colname Column name in metadata that specifies spatial unit information. Example: ROI_abbreviation.
+#' @param spatialCoord_x_colname Column name in metadata that specifies the X coordinate for each sample.
+#' @param spatialCoord_y_colname Column name in metadata that specifies the Y coordinate for each sample.
 #' @returns a data frame containing the imputed dataset using the specified method.
 
-#' @details Methods options and description
-#' zero: replace missing values with 0
-#' median_a : replace missing values with global median per protein
-#' median_b : replace missing values with 1/2 global median per protein
-#' global_mean: replace missing values with global mean per protein
-#' mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein
-#' knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs
-#' knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
-#' knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
-#' knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
+#' @details Methods options and descriptions
+#' zero: replace missing values with 0\n
+#' median_a : replace missing values with global median per protein\n
+#' median_b : replace missing values with 1/2 global median per protein\n
+#' global_mean: replace missing values with global mean per protein\n
+#' mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein\n
+#' knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs\n
+#' knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)\n
+#' knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.\n
+#' knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.\n
 
-impute_data <- function(dat,method,knn_k=NULL,allowed_missingness_perProtein=NULL, allowed_missingness_perSample=NULL,metadata, spatial_unit_col){
+impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_colname, spatialCoord_y_colname, knn_k=NULL,allowed_missingness_perProtein=NULL, allowed_missingness_perSample=NULL){
   library(matrixStats)
   library(impute)
   # # Set defult values if not specified by user
@@ -41,7 +43,7 @@ impute_data <- function(dat,method,knn_k=NULL,allowed_missingness_perProtein=NUL
     replace_vals = 0.5* rowMedians(as.matrix(dat),na.rm=TRUE)
   }else if (method == "mean_perSpatialUnit" | method=="knn_proteins_perSpatialUnit"){
     # extract column with spatial unit specification in the metadata
-    spatUnits = unique(metadata[,spatial_unit_col])
+    spatUnits = unique(metadata[,spatial_unit_colname])
     imputed_data = c()
     for (s in 1:length(spatUnits)){
       ROI_indices = grep(spatUnits[s],colnames(dat))
