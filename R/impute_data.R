@@ -8,16 +8,16 @@
 #' @param spatial_unit_col Column name that specifies spatial unit information. Example: ROI_abbreviation.
 #' @returns a data frame containing the imputed dataset using the specified method.
 
-# Methods options and description
-# zero: replace missing values with 0
-# median_a : replace missing values with global median per protein
-# median_b : replace missing values with 1/2 global median per protein
-# global_mean: replace missing values with global mean per protein
-# mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein
-# knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs
-# knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
-# knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
-# knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
+#' @details Methods options and description
+#' zero: replace missing values with 0
+#' median_a : replace missing values with global median per protein
+#' median_b : replace missing values with 1/2 global median per protein
+#' global_mean: replace missing values with global mean per protein
+#' mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein
+#' knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs
+#' knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
+#' knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
+#' knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
 
 impute_data <- function(dat,method,knn_k=NULL,allowed_missingness_perProtein=NULL, allowed_missingness_perSample=NULL,metadata, spatial_unit_col){
   library(matrixStats)
