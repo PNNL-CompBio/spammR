@@ -1,4 +1,4 @@
-#' impute_df: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a dataframe (df).
+#' impute_df: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
 #' @import matrixStats
 #' @import impute
 #' @export
