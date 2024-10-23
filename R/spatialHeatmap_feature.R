@@ -43,7 +43,7 @@ spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sa
   spatial[,ycoord_name] = as.numeric(spatial[,ycoord_name])
   x = spatial[,xcoord_name]
   y = spatial[,ycoord_name]
-  f = assays(spe)[[ assay_name ]]
+  f = assays(spe,withDimnames=FALSE)[[ assay_name ]]
   feature_values_toplot = c()
   if (is.na(feature_type)){ # default is whatever is used for rownames of f
     feature_values_toplot = as.numeric(f[feature,rownames(spatial)])
