@@ -49,9 +49,9 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
       ROI_indices = grep(spatUnits[s],colnames(dat))
       ROI_data = dat[,ROI_indices]
       if (method == "mean_perSpatialUnit"){
-        imputed_ROI_data = impute_data(ROI_data,method="global_mean")
+        imputed_ROI_data = impute_df(ROI_data,method="global_mean")
       }else if (method == "knn_proteins_perSpatialUnit"){
-        imputed_ROI_data = impute_data(ROI_data,method="knn_proteins_global",knn_k,allowed_missingness_perProtein,allowed_missingness_perSample)
+        imputed_ROI_data = impute_df(ROI_data,method="knn_proteins_global",knn_k,allowed_missingness_perProtein,allowed_missingness_perSample)
       }
       if (s==1){
         imputed_data = imputed_ROI_data
