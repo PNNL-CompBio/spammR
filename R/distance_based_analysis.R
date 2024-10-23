@@ -1,6 +1,7 @@
 #' distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
 #' protein/feature abundance differences between samples.
 
+#' @import SpatialExperiment
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data
 #' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
@@ -17,7 +18,7 @@
 
 
 distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCategoryCol, sampleCategoryValue,corr_type="pearson",corr_thresh,min_samplePoints_forCorr=6){
-
+  library(SpatialExperiment)
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
   sample_dim_x = sample_dimensions[1]
   sample_dim_y = sample_dimensions[2]
