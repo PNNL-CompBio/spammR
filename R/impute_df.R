@@ -51,9 +51,9 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
       ROI_indices = grep(spatUnits[s],colnames(dat))
       ROI_data = dat[,ROI_indices]
       if (method == "mean_perSpatialUnit"){
-        imputed_ROI_data = impute_df(ROI_data,method="global_mean")
+        imputed_ROI_data = impute_df(ROI_data,method="global_mean",allowed_missingness_perProtein)
       }else if (method == "knn_proteins_perSpatialUnit"){
-        imputed_ROI_data = impute_df(ROI_data,method="knn_proteins_global",knn_k,allowed_missingness_perProtein,allowed_missingness_perSample)
+        imputed_ROI_data = impute_df(ROI_data,method="knn_proteins_global",knn_k,allowed_missingness_perProtein)
       }
       if (s==1){
         imputed_data = imputed_ROI_data
@@ -106,6 +106,13 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
     #don't change data_imputed
   }else{
     data_imputed = c() #start with this, then replace na values
+    # Update replace_vals to reflect allowed_missingness_perProtein criteria.
+    # replace_vals should retain NAs (missing values) for proteins above the allowed_missingness_perProtein criteria for the following methods
+    dontImpute_rows = c()
+    if (method=="median_a" | method=="median_b" | method=="global_mean"){
+      dontImpute_rows = which ( (rowSums(is.na(dat))/dim(dat)[2]) > allowed_missingness_perProtein)
+    }
+    replace_vals[dontImpute_rows] = NA
     for (i in 1:dim(dat)[1]){
       this.row = dat[i,]
       this.row.na_indices = which(is.na(this.row))
