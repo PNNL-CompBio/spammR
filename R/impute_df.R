@@ -70,6 +70,7 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
     # By default, impute.knn uses the mean of all proteins in a sample for this case, which is not that meaningful.
     # Instead, we replace the missing values (for the case when missingness in a row is greater than rowmax) with global_mean or na for that row
     fix_prots = which( (rowSums(is.na(dat))/dim(dat)[2]) > allowed_missingness_perProtein )
+    print(fix_prots)
     for (f in fix_prots){
       na_indices = which(is.na(dat[f,]))
       #knn_imputed_proteins_global$dat[f,na_indices] = mean(dat[f,],na.rm=TRUE)
