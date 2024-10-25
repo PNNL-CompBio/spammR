@@ -1,6 +1,7 @@
 #' impute_df: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
 #' @import matrixStats
 #' @import impute
+#' @import spdep
 #' @export
 #' @param dat Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.
 #' @param method Method of imputation to be used. See details.
@@ -26,6 +27,7 @@
 impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_colname, spatialCoord_y_colname, knn_k=NULL,allowed_missingness_perProtein=NULL, allowed_missingness_perSample=NULL){
   library(matrixStats)
   library(impute)
+  library(spdep)
   # # Set defult values if not specified by user
   # if (is.null(allowed_missingness_perProtein)){ # Only used for knn methods
   #   allowed_missingness_perProtein = 0.75
