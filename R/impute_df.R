@@ -51,9 +51,9 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
       ROI_indices = grep(spatUnits[s],colnames(dat))
       ROI_data = dat[,ROI_indices]
       if (method == "mean_perSpatialUnit"){
-        imputed_ROI_data = impute_df(ROI_data,method="global_mean",allowed_missingness_perProtein)
+        imputed_ROI_data = impute_df(ROI_data,method="global_mean",allowed_missingness_perProtein=allowed_missingness_perProtein)
       }else if (method == "knn_proteins_perSpatialUnit"){
-        imputed_ROI_data = impute_df(ROI_data,method="knn_proteins_global",knn_k,allowed_missingness_perProtein)
+        imputed_ROI_data = impute_df(ROI_data,method="knn_proteins_global",knn_k=knn_k,allowed_missingness_perProtein=allowed_missingness_perProtein)
       }
       if (s==1){
         imputed_data = imputed_ROI_data
@@ -74,6 +74,9 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
       na_indices = which(is.na(dat[f,]))
       #knn_imputed_proteins_global$dat[f,na_indices] = mean(dat[f,],na.rm=TRUE)
       knn_imputed_proteins_global$dat[f,na_indices] = NA #Keep those missing values as NA since there is not enough dat to impute reliably.
+    }
+    if (!is.null(fix_prots)){
+      print("impute.knn function uses mean imputation for rows with more than the specified missingness. spammR's imputation function reverts these missing values back to NA.")
     }
     data_imputed = knn_imputed_proteins_global$dat
   }else if (method == "knn_samples_global_proteinData"){
