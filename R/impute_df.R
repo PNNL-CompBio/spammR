@@ -83,13 +83,23 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
   }else if (method == "knn_samples_global_proteinData"){
     transposed_data = as.matrix(t(dat))
     knn_imputed_samples_global_protData = impute.knn(transposed_data,k = knn_k, rowmax = allowed_missingness_perSample, colmax = 1, maxp = dim(transposed_data)[1], rng.seed=12345)
-    fix_samples = which( (rowSums(is.na(transposed_data))/dim(transposed_data)[2]) > allowed_missingness_perSample )
+    imputed_temp =  t(knn_imputed_samples_global_protData$dat)
+    fix_samples = which( (colSums(is.na(dat))/dim(dat)[1]) > allowed_missingness_perSample )
     for (f in fix_samples){
-      na_indices = which(is.na(transposed_data[f,]))
+      na_indices = which(is.na(dat[,f]))
       #knn_imputed_proteins_global$data[f,na_indices] = mean(data[f,],na.rm=TRUE)
-      knn_imputed_samples_global_protData$data[f,na_indices] = NA #Keep those missing values as NA since there is not enough data to impute reliably.
+      imputed_temp[na_indices,f] = NA #Keep those missing values as NA since there is not enough data to impute reliably.
     }
-    data_imputed = t(knn_imputed_samples_global_protData$dat)
+    fix_prots = which( (rowSums(is.na(dat))/dim(dat)[2]) > allowed_missingness_perProtein )
+    for (f in fix_prots){
+      na_indices = which(is.na(dat[f,]))
+      #knn_imputed_proteins_global$data[f,na_indices] = mean(data[f,],na.rm=TRUE)
+      imputed_temp[f,na_indices] = NA #Keep those missing values as NA since there is not enough data to impute reliably.
+    }
+    # if (!is.null(fix_samples)){
+    #   print("impute.knn function uses mean imputation for rows with more than the specified missingness. spammR's imputation function reverts these missing values back to NA.")
+    # }
+    data_imputed = imputed_temp
   }else if (method == "knn_samples_global_spatialCoords"){
     d_for_nearestNeighb = as.matrix(metadata[,c("Xcoord","Ycoord")])
     # Find k-nearest neighbors based on spatial distance (x,y coordinates)
