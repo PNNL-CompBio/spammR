@@ -28,6 +28,10 @@ impute_df(
 \item{spatialCoord_x_colname}{Column name in metadata that specifies the X coordinate for each sample.}
 
 \item{spatialCoord_y_colname}{Column name in metadata that specifies the Y coordinate for each sample.}
+
+\item{allowed_missingness_perProtein}{Proportion of samples allowed to have missing data for a protein in the given spatial unit specified by the imputation method. Example: When method="global_mean," an allowed_missingness_perProtein of 0.5 indicates that any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="mean_perSpatialUnit," then allowed_missingness_perProtein of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified spatial unit (example: a brain ROI) to be used in the imputation algorithm and to be imputed. This argument is only needed for methods that rely on statistics based on per protein. It is used for the following methods: median_a, median_b, global_mean, mean_perSpatialUnit, knn_proteins_global and knn_proteins_perSpatialUnit.}
+
+\item{allowed_missingness_perSample}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
 }
 \value{
 a data frame containing the imputed dataset using the specified method.
