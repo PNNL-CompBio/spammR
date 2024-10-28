@@ -17,7 +17,7 @@
 #' dist_based_results is also saved as .RData object under results_dir.
 
 
-distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCategoryCol, sampleCategoryValue,corr_type="pearson",corr_thresh,min_samplePoints_forCorr=6){
+distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCategoryCol, sampleCategoryValue,corr_type="pearson",corr_thresh,min_samplePoints_forCorr=6,results_dir){
   library(SpatialExperiment)
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
   sample_dim_x = sample_dimensions[1]

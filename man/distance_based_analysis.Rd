@@ -13,7 +13,8 @@ distance_based_analysis(
   sampleCategoryValue,
   corr_type = "pearson",
   corr_thresh,
-  min_samplePoints_forCorr = 6
+  min_samplePoints_forCorr = 6,
+  results_dir
 )
 }
 \arguments{
