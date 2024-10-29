@@ -67,10 +67,14 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
     data_used = rep(assayName, length(diffVec))
     dist_AbundDiffs_vectors[[ j ]] = data.frame(distVec,diffVec, sample_i, sample_j, data_used)
     colnames(dist_AbundDiffs_vectors[[ j ]]) = c("Distance_between_samples","Abundance_difference_between_samples (sample_i - sample_j)","sample_i", "sample_j","Data_used")
-    # if (grep(";",j)){ # Feature name has multiple names (this was a special case for the brain ROI data)
-    #   j_shortened =
-    # }
-    write_xlsx(dist_AbundDiffs_vectors[[j]], path=paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep=""))
+    dist_calcs_filepath = ""
+    if (grep(";",j)){ # Feature name has multiple names (this was a special case for the brain ROI data)
+      j_shortened = (strsplit(j, split=";"))[1]
+      dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j_shortened,"_dist_calcs.xlsx",sep="")
+    }else{
+      dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep="")
+    }
+    write_xlsx(dist_AbundDiffs_vectors[[j]], path=dist_calcs_filepath)
     if (num_samplePoints >= min_samplePoints_forCorr){ # Must have at least the specified number of values to calculate correlation
       print(j)
       print(length(diffVec))
