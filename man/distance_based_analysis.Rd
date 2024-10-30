@@ -35,6 +35,8 @@ distance_based_analysis(
 \item{min_samplePoints_forCorr}{Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
 
 \item{results_dir}{Path of output directory where results from this function should be saved}
+
+\item{featuresNameCol}{Name of column containing features (example: proteins) in rowData(spe). It is assumed that the data provided in assay(spe) is in the same order as the order in which the features are listed under the featuresNameCol}
 }
 \value{
 dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.

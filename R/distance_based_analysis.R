@@ -8,6 +8,7 @@
 #' @param sample_dimensions A vector containing the x and y dimensions of samples. Example: c(1,1) Sample Dimension units should match the units of spatial coordinates specified in spatialCoords(spe)
 #' @param sampleCategoryCol Column name in metadata (colData(spe)) that should be used for selecting samples of certain type, to define the "origin" region for distance based analysis
 #' @param sampleCategoryValue Sample category to be used for defining the "origin" region for distance based analysis
+#' @param featuresNameCol Name of column containing features (example: proteins) in rowData(spe). It is assumed that the data provided in assay(spe) is in the same order as the order in which the features are listed under the featuresNameCol
 #' @param corr_type Choose from "pearson" (default), "spearman." Correlation method to be used for calculating correlation between distance between samples and protein abundance differences. Both types of correlation provide a measure of monotonic association between two variables. Pearson is better suited for linear relationships while Spearman is better for non-linear monotonic relationships.
 #' @param corr_thresh Minimum correlation value to be used for identifying proteins that have a correlation between protein abundance differences and distance between samples. Values greater than or equal to this theshold will be used.
 #' @param min_samplePoints_forCorr Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.
@@ -31,6 +32,7 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
   dist_between_samples = as.matrix(dist(centroid_coords, method = "euclidean", diag=T))
 
   assay_data = assays(spe)[[assayName]]
+  rownames(assay_data) = rowData(spe)[,featuresNameCol]
   source_samples_indices = which(colData(spe)[,sampleCategoryCol]==sampleCategoryValue)
   source_samples = colnames(assay_data)[source_samples_indices]
   source_samples_data = assay_data[, source_samples_indices]
