@@ -11,6 +11,7 @@ distance_based_analysis(
   sample_dimensions,
   sampleCategoryCol,
   sampleCategoryValue,
+  featuresNameCol,
   corr_type = "pearson",
   corr_thresh,
   min_samplePoints_forCorr = 6,
@@ -28,6 +29,8 @@ distance_based_analysis(
 
 \item{sampleCategoryValue}{Sample category to be used for defining the "origin" region for distance based analysis}
 
+\item{featuresNameCol}{Name of column containing features (example: proteins) in rowData(spe). It is assumed that the data provided in assay(spe) is in the same order as the order in which the features are listed under the featuresNameCol}
+
 \item{corr_type}{Choose from "pearson" (default), "spearman." Correlation method to be used for calculating correlation between distance between samples and protein abundance differences. Both types of correlation provide a measure of monotonic association between two variables. Pearson is better suited for linear relationships while Spearman is better for non-linear monotonic relationships.}
 
 \item{corr_thresh}{Minimum correlation value to be used for identifying proteins that have a correlation between protein abundance differences and distance between samples. Values greater than or equal to this theshold will be used.}
@@ -35,8 +38,6 @@ distance_based_analysis(
 \item{min_samplePoints_forCorr}{Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
 
 \item{results_dir}{Path of output directory where results from this function should be saved}
-
-\item{featuresNameCol}{Name of column containing features (example: proteins) in rowData(spe). It is assumed that the data provided in assay(spe) is in the same order as the order in which the features are listed under the featuresNameCol}
 }
 \value{
 dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.
