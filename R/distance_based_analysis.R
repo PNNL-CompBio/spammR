@@ -70,8 +70,8 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
     dist_AbundDiffs_vectors[[ j ]] = data.frame(distVec,diffVec, sample_i, sample_j, data_used)
     colnames(dist_AbundDiffs_vectors[[ j ]]) = c("Distance_between_samples","Abundance_difference_between_samples (sample_i - sample_j)","sample_i", "sample_j","Data_used")
     dist_calcs_filepath = ""
-    if (grep(";",j)){ # Feature name has multiple names (this was a special case for the brain ROI data)
-      j_shortened = (strsplit(j, split=";"))[1]
+    if (length(grep(";",j)) > 0){ # Feature name has multiple names (this was a special case for the brain ROI data)
+      j_shortened = (strsplit(j, split=";"))[1] # Just keep the first name
       dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j_shortened,"_dist_calcs.xlsx",sep="")
     }else{
       dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep="")
