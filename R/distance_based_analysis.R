@@ -2,6 +2,7 @@
 #' protein/feature abundance differences between samples.
 
 #' @import SpatialExperiment
+#' @import writexl
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data
 #' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
@@ -20,6 +21,7 @@
 
 distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCategoryCol, sampleCategoryValue,featuresNameCol,corr_type="pearson",corr_thresh,min_samplePoints_forCorr=6,results_dir){
   library(SpatialExperiment)
+  library(writexl)
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
   sample_dim_x = sample_dimensions[1]
   sample_dim_y = sample_dimensions[2]
@@ -73,7 +75,7 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
     if (length(grep(";",j)) > 0){ # Feature name has multiple names (this was a special case for the brain ROI data)
       j_shortened = unlist(strsplit(j, split=";"))[1] # Just keep the first name
       dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j_shortened,"_dist_calcs.xlsx",sep="")
-      print("Feature name in output filename shortened to ",j_shortened," instead of ", j," to avoid issues associated with long file names",sep="")
+      print(paste("Feature name in output filename shortened to ",j_shortened," instead of ", j," to avoid issues associated with long file names",sep=""))
     }else{
       dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep="")
     }
