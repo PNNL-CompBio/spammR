@@ -24,8 +24,8 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
   sample_dim_x = sample_dimensions[1]
   sample_dim_y = sample_dimensions[2]
   spatial_coords = data.frame(spatialCoords(spe))
-  centroid_x = as.numeric(spatial_coords$x + sample_dim_x/2)
-  centroid_y = as.numeric(spatial_coords$y - sample_dim_y/2)
+  centroid_x = as.numeric(spatial_coords[,1] + sample_dim_x/2)
+  centroid_y = as.numeric(spatial_coords[,2] - sample_dim_y/2)
   centroid_coords = data.frame(cbind(centroid_x,centroid_y))
   rownames(centroid_coords) = rownames(spatial_coords)
   # Compute distance between samples
