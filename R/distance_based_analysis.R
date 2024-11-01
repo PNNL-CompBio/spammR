@@ -46,7 +46,7 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
   dist_AbundDiffs_vectors = list()
   pval_corr_dist_protAbund_Diffs = c()
   num_samplePoints_forCorrCalc = c()
-  results_dir2 = paste(results_dir,"/dataType",assayName,"/",corr_type,"_correlation/",sampleCategoryValue,sep="")
+  results_dir2 = paste(results_dir,"/dataType_",assayName,"/",corr_type,"_correlation/",sampleCategoryValue,sep="")
   results_dir3 = paste(results_dir2,"/calculations_per_feature",sep="")
   if (!dir.exists(results_dir3)){
     dir.create(results_dir3,recursive=TRUE)
@@ -102,7 +102,7 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
   dist_based_results [["pairwise_calculations_betweenSamples"]] = dist_AbundDiffs_vectors
   dist_based_results [["corr_and_pval_thresholded"]] = corr_and_pval_thresholded
   dist_based_results [["corr_and_pval_all"]] = corr_and_pval_all
-  return(dist_based_results)
   save(dist_based_results,file=paste(results_dir2,"/",sampleCategoryValue,"_dist_based_results_",corr_type,".RData",sep=""))
+  return(dist_based_results)
   #plot(distVec,diffVec,xlab=paste("Distance from samples in ",sampleCategoryValue,"\n1 distance unit = 200 um",sep=""),ylab=paste("Protein abundance gradient realtive to samples in ",sampleCategoryValue,sep=""))
 }
