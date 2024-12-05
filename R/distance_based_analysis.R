@@ -17,6 +17,12 @@
 #' @returns dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.
 #' b.) corr_pval_all and c.) corr_pval_thresholded which are data frames containing the correlation value, p-value and number of sample points used for the correlation calculation for each feature. corr_pval_thresholded only contains results with correlation > corr_thresh.
 #' dist_based_results is also saved as .RData object under results_dir.
+#' @examples
+#' data(pancData)
+#' data(pancMeta)
+#'
+#'
+
 
 
 distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCategoryCol, sampleCategoryValue,featuresNameCol,corr_type="pearson",corr_thresh,min_samplePoints_forCorr=6,results_dir){
