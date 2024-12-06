@@ -17,7 +17,7 @@
 #' @examples
 #' data(pancData)
 #' data(pancMeta)
-#' allImages<-lapply(unique(pancMeta$Image),function(x) convert_to_spe(pancData,subset(pancMeta,Image==x),samples_common_identifier=x))
+#' allImages <- convert_to_spe(pancData,pancMeta,samples_common_identifier='')
 #
 # Example input parameters (remove this once we have it all in examples)
 # samples_common_identifier1 = "Image0" # Name of a common identifier for samples
@@ -58,12 +58,13 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
 
   other_dat<-setdiff(colnames(dat),rownames(meta_dat))#sample_colnums)] # to be specified as rowData for SPE
 
-  if(length(other_dat)>0)
-    features_info = dat[,other_dat]
-  else
-    features_info = data.frame(proteins=rownames(dat))|>
-      tibble::column_to_rownames('proteins')
-
+  if(length(other_dat)>0){
+    features_info = dat[,other_dat]|>
+      dplyr::mutate(proteins=rownames(dat))
+  }else{
+    features_info = data.frame(proteins=rownames(dat))
+    rownames(features_info)<-rownames(dat)
+    }
   # The list of samples specified in the data and metadata to be stored in the SPE object should be exactly the same.
   # Keep rows in meta data that have a corresponding sample ID in the omics measurements file
   meta_dat_keep = meta_dat[sample_colnames,] # To be specified as colData for SPE

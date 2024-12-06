@@ -20,7 +20,7 @@
 #' @examples
 #' data(pancData)
 #' data(pancMeta)
-#'
+#' spe <- convert_to_spe(pancData,pancMeta)
 #'
 
 
