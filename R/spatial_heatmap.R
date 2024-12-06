@@ -1,4 +1,4 @@
-#' spatialHeatmap_feature: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
+#' spatial_heatmap: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
 #' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 #' @details Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
 #' @details Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
@@ -9,6 +9,8 @@
 #' @import dplyr
 #' @import plotly
 #' @import scales
+#' @import ggpubr
+#' @import png
 #' @export
 #' @param spe SpatialExperiment (SPE) object
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
@@ -27,7 +29,11 @@
 #' @param plot_title Title to be given to the spatial heatmap. Default is "Spatial signature for XYZ" where XYZ is the name of the specified feature
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
-spatialHeatmap_feature<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,plot_title=NULL,interactive=TRUE){
+#' @examples
+#' # data(pancData)
+#' # data(pancMeta)
+#'
+spatial_heatmap<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,plot_title=NULL,interactive=TRUE){
   library(ggplot2)
   library(ggnewscale)
   library(SpatialExperiment)

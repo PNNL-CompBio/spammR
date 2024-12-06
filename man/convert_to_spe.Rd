@@ -5,36 +5,33 @@
 \title{convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.}
 \usage{
 convert_to_spe(
-  omics_measurements_file,
-  assay_name,
-  metadata_file,
-  meta_colname_sampleIDs,
+  dat,
+  meta_dat,
+  assay_name = "proteomics",
+  sample_colname = NULL,
   remove_samples = NULL,
-  feature_colname,
-  spatialCoords_colnames,
-  spatialCoords_file = NULL,
-  samples_common_identifier,
+  feature_colname = NULL,
+  spatialCoords_colnames = c("Xcoord", "Ycoord"),
+  samples_common_identifier = "sample",
   image_files = NULL,
   image_ids = NULL,
   image_samples_common_identifier = NULL
 )
 }
 \arguments{
-\item{omics_measurements_file}{File path for omics measurements. Rows correspond to features. Samples are in columns. Can have additional columns also describing features.}
+\item{dat}{Matrix or data frame with omics measurements. Rows or \code{feature_colname} are features, columns are samples}
+
+\item{meta_dat}{Data frame of metadata with either \code{sample_colname} or rownames as samples (if empty)}
 
 \item{assay_name}{Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name}
 
-\item{metadata_file}{File path for metadata for samples. This can include spatial coordinates.}
+\item{sample_colname}{Column name in metadata_file whose entries contain sample identifiers provided in omics_measurements_file.}
 
-\item{meta_colname_sampleIDs}{Column name in metadata_file whose entries contain sample identifiers provided in omics_measurements_file.}
-
-\item{remove_samples}{Names of samples (as they occur in meta_colname_sampleIDs) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.}
+\item{remove_samples}{List of names of samples (as they occur in sample_colname) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.}
 
 \item{feature_colname}{Name of column in omics_measurements_file, that is to be used for identifying features.}
 
-\item{spatialCoords_colnames}{A list containing names of columns in metadata_file that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.}
-
-\item{spatialCoords_file}{If spatial coordinates are not provided in the metadata_file, then a file path for the spatial coordinates file should be specified. This file should contain only columns corresponding to spatial coordinates. Rows should represent samples and rownames should have the same sample identifier as 'meta_colname_sampleIDs'}
+\item{spatialCoords_colnames}{A list containing names of columns in \code{meta_dat} that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.}
 
 \item{samples_common_identifier}{A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.}
 
@@ -49,4 +46,9 @@ spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Re
 }
 \description{
 convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
+}
+\examples{
+data(pancData)
+data(pancMeta)
+allImages <- convert_to_spe(pancData,pancMeta,samples_common_identifier='')
 }

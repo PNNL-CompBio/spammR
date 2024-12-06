@@ -2,7 +2,6 @@
 #' protein/feature abundance differences between samples.
 
 #' @import SpatialExperiment
-#' @import writexl
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data
 #' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
@@ -17,11 +16,25 @@
 #' @returns dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.
 #' b.) corr_pval_all and c.) corr_pval_thresholded which are data frames containing the correlation value, p-value and number of sample points used for the correlation calculation for each feature. corr_pval_thresholded only contains results with correlation > corr_thresh.
 #' dist_based_results is also saved as .RData object under results_dir.
+#' @examples
+#' data(pancData)
+#' data(pancMeta)
+#' spe <- convert_to_spe(pancData,pancMeta)
+#'
 
 
-distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCategoryCol, sampleCategoryValue,featuresNameCol,corr_type="pearson",corr_thresh,min_samplePoints_forCorr=6,results_dir){
+
+distance_based_analysis <- function(spe,
+                                    assayName,
+                                    sample_dimensions,
+                                    sampleCategoryCol,
+                                    sampleCategoryValue,
+                                    featuresNameCol,
+                                    corr_type="pearson",
+                                    corr_thresh,
+                                    min_samplePoints_forCorr=6,
+                                    results_dir){
   library(SpatialExperiment)
-  library(writexl)
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
   sample_dim_x = sample_dimensions[1]
   sample_dim_y = sample_dimensions[2]
@@ -46,11 +59,11 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
   dist_AbundDiffs_vectors = list()
   pval_corr_dist_protAbund_Diffs = c()
   num_samplePoints_forCorrCalc = c()
-  results_dir2 = paste(results_dir,"/dataType_",assayName,"/",corr_type,"_correlation/",sampleCategoryValue,sep="")
-  results_dir3 = paste(results_dir2,"/calculations_per_feature",sep="")
-  if (!dir.exists(results_dir3)){
-    dir.create(results_dir3,recursive=TRUE)
-  }
+  #results_dir2 = paste(results_dir,"/dataType_",assayName,"/",corr_type,"_correlation/",sampleCategoryValue,sep="")
+ # results_dir3 = paste(results_dir2,"/calculations_per_feature",sep="")
+ # if (!dir.exists(results_dir3)){
+#    dir.create(results_dir3,recursive=TRUE)
+#  }
   for (j in rownames(new_dat)){ # for each protein/feature
     abund_currProt = new_dat[j,] # protein abundance values for current protein/feature
     # Call helper function calcl_diff_pairwiseSamples() that we defined outside of this script, for computing pairwise differences between sample values
@@ -79,7 +92,7 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
     }else{
       dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep="")
     }
-    write_xlsx(dist_AbundDiffs_vectors[[j]], path=dist_calcs_filepath)
+    #write_xlsx(dist_AbundDiffs_vectors[[j]], path=dist_calcs_filepath)
     if (num_samplePoints >= min_samplePoints_forCorr){ # Must have at least the specified number of values to calculate correlation
       print(j)
       print(length(diffVec))
@@ -102,7 +115,7 @@ distance_based_analysis <- function(spe,assayName,sample_dimensions,sampleCatego
   dist_based_results [["pairwise_calculations_betweenSamples"]] = dist_AbundDiffs_vectors
   dist_based_results [["corr_and_pval_thresholded"]] = corr_and_pval_thresholded
   dist_based_results [["corr_and_pval_all"]] = corr_and_pval_all
-  save(dist_based_results,file=paste(results_dir2,"/",sampleCategoryValue,"_dist_based_results_",corr_type,".RData",sep=""))
+  #save(dist_based_results,file=paste(results_dir2,"/",sampleCategoryValue,"_dist_based_results_",corr_type,".RData",sep=""))
   return(dist_based_results)
   #plot(distVec,diffVec,xlab=paste("Distance from samples in ",sampleCategoryValue,"\n1 distance unit = 200 um",sep=""),ylab=paste("Protein abundance gradient realtive to samples in ",sampleCategoryValue,sep=""))
 }

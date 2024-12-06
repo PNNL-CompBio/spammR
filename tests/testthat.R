@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(spammer)
+library(spammR)
 
-test_check("spammer")
+test_check("spammR")
