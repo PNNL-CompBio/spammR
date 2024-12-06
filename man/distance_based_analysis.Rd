@@ -48,3 +48,9 @@ dist_based_results is also saved as .RData object under results_dir.
 distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
 protein/feature abundance differences between samples.
 }
+\examples{
+data(pancData)
+data(pancMeta)
+spe <- convert_to_spe(pancData,pancMeta)
+
+}

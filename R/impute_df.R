@@ -43,7 +43,7 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
     replace_vals = rowMeans(dat,na.rm=TRUE)
   }else if (method=="median_a"){
     replace_vals = rowMedians(as.matrix(dat),na.rm=TRUE)
-  }else if (method == "median_b"){
+    }else if (method == "median_b"){
     replace_vals = 0.5* rowMedians(as.matrix(dat),na.rm=TRUE)
   }else if (method == "mean_perSpatialUnit" | method=="knn_proteins_perSpatialUnit"){
     # extract column with spatial unit specification in the metadata

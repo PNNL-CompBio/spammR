@@ -10,7 +10,7 @@ Description: Spammer provides a suite of tools and a data structure to analyze d
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
@@ -18,6 +18,10 @@ LazyData: true
 biocViews: 
   SpatialProteomics,
   SpatialOmics
+Depends:
+    SpatialExperiment,
+    limma,
+    R (>= 3.5.0)
 Imports: 
     BiocGenerics,
     BiocManager,
@@ -27,7 +31,11 @@ Imports:
     methods,
     remotes,
     S4Vectors,
-    SpatialExperiment,
-    plotly
-Depends: 
-    R (>= 3.5.0)
+    plotly,
+    ggnewscale,
+    ggpubr,
+    png,
+    impute,
+    matrixStats,
+    scales,
+    spdep

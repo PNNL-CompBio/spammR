@@ -1,4 +1,4 @@
-#' enrich_ORA: Does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
+#' enrich_ora: Does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
 #' This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
 #' specified in this function.
 #' For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
@@ -15,7 +15,7 @@
 #' @param comparison_name Example: "RSPv_vs_others" Text to indicate in results data frame, which spatial groups were compared for the interest list of genes
 #' @returns a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 
-enrich_ORA <-function(spe,
+enrich_ora <-function(spe,
 #included in object                      patialDiffEx_results,
                       pval_type_forThresh='adjusted_pval',
                       pval_thresh = 0.5,
@@ -28,7 +28,6 @@ enrich_ORA <-function(spe,
                       sortResultsBy,
                       comparison_name){
   library(leapR)
-  library(readxl)
 
     if (!is.na(geneset_spammR)){
     # Mouse geneset databases (downloaded from MSigDB as .gmt files) have been added to the data under spammR package
@@ -39,7 +38,7 @@ enrich_ORA <-function(spe,
     geneset_path = paste("Geneset_Databases/",species,"/misgdb/",geneset_spammR,"/",sep="")
     symbols.gmt_filename = list.files(path=geneset_path,pattern="sybmols.gmt")
     symbols.gmt_file = data(paste(geneset_path,"/",symbols.gmt_file,sep=""))
-    geneset_leapR = read_gene_sets(symbols.gmt_file)
+    geneset_leapR = leapR::read_gene_sets(symbols.gmt_file)
   }else{
     # add code for handling the case of an external geneset file or list
     geneset_name = "geneset_external"
@@ -48,7 +47,7 @@ enrich_ORA <-function(spe,
   # Current assumption is that spatialDiffEx results file has columns for protein names and corresponding gene names. "PG.genes"
   # If gene names are not present in spatialDiffEx results, a helper function (which I will add later), can be run to obtain gene names from the UniProt db files
   # and have a "PG.genes" column added to spatialDiffEx results excel file.
-  sp_diffEx = data.frame(read_excel(spatialDiffEx_results))
+  sp_diffEx = rowData(spe$diffEx.spe) #data.frame(read_excel(spatialDiffEx_results))
   if (pval_type_forThresh=="adjusted_pval"){
     pval_col_text = "adj.P.Val"
   }else if (pval_type_forThresh=="pval"){
@@ -83,12 +82,12 @@ enrich_ORA <-function(spe,
   es_sorted = cbind(rep(comparison_name,num_sets), rownames(es_sorted), es_sorted)
   colnames(es_sorted)[1:2] = c("Comparison", geneset_name)
   # Output enrichment results for the ROI
-  if (!dir.exists(ora_dir)){
-    dir.create(ora_dir,recursive=TRUE)
-  }
-  es_file = paste("ORA_",comparison_name,".xlsx",sep="")
-  int_list_filename = paste("intList_",comparison_name,".xlsx",sep="")
-  write_xlsx(es_sorted,path=paste(ora_dir,es_file_name,sep="/"))
-  write_xlsx(int_list,path=paste(ora_dir,int_list_filename,sep="/"))
+  #if (!dir.exists(ora_dir)){
+  #  dir.create(ora_dir,recursive=TRUE)
+  #}
+ # es_file = paste("ORA_",comparison_name,".xlsx",sep="")
+#  int_list_filename = paste("intList_",comparison_name,".xlsx",sep="")
+ # write_xlsx(es_sorted,path=paste(ora_dir,es_file_name,sep="/"))
+#  write_xlsx(int_list,path=paste(ora_dir,int_list_filename,sep="/"))
   return(es_sorted)
 }

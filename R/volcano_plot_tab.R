@@ -3,7 +3,6 @@
 #' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
 #' -log10(p-value) vs. log2(fold change)
 #' @import ggplot2
-#' @export
 #' @param diffEx_df A dataframe containing results from differential expression
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
 #' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
@@ -12,7 +11,7 @@
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
 #' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
-volcanoPlot_DiffExResults <- function(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname){
+volcano_plot_tab <- function(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname){
   require('ggrepel')
   diffEx_df = data.frame(diffEx_df)
   pval_type_lbl = ""
