@@ -42,8 +42,8 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
 
   # Separate sample columns and feature meta data columns in dat
   if(!is.null(sample_colname)){
-    meta_dat <- meta_dat|>
-      tibble::column_to_rownames(sample_colname)
+    meta_dat <- meta_dat
+    rownames(meta_dat)<-meta_dat[[sample_colname]]
   }
 
   ##remove problematic samples - do we need this?
