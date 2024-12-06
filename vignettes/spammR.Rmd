@@ -19,39 +19,29 @@ vignette: |
 
 # Getting started
 
-To enable the _Bioconductor_ style in your R Markdown vignette you need to include the following in the `DESCRIPTION` file:
-
-    VignetteBuilder: knitr
-    Suggests: BiocStyle, knitr, rmarkdown
-
-
-# Style macros
-
-_BiocStyle_ introduces the following macros for referring to _R_ packages:
-
-* `r Biocpkg("IRanges")`, for _Bioconductor_ software, annotation and experiment data packages,
-* `r CRANpkg("data.table")`, for _R_ packages available on CRAN,
-* `r Githubpkg("rstudio/rmarkdown")`, for _R_ packages available on GitHub,
-* `r Rpackage("MyPkg")`, for _R_ packages that are _not_ available on _Bioconductor_, CRAN or GitHub.
-
-
-# Figures
-
-Assign captions to figures in the code chunk option `fig.cap` to automatically number them, and to be able to reference them, see Figure \@ref(fig:plot). The figure label is generated from the code chunk label by prefixing it with `fig:`.
-
-```{r plot, fig.cap="Regular figure. The first sentence of the figure caption is automatically emphasized to serve as figure title.", echo=FALSE}
-plot(cars)
+To install the package currently you must install directly from `GitHub` along with the leapR dependency as shown below.
+```
+library(devtools)
+devtools::install_github('PNNL-CompBio/leapR')
+devtools::install_github('PNNL-CompBio/spammR')
 ```
 
-Small and wide figures can be specified by `fig.small` and `fig.wide` code chunk options.
+Once the package is installed you can begin to evaluate the functionality. 
 
-```{r small, fig.cap="Small figure. A plot produced by a code chunk with option `fig.small = TRUE`.", fig.small=TRUE, echo=FALSE}
-plot(cars)
-```
+# Pancreatic spatial proteomic measurements
 
-```{r wide, fig.cap="Wide figure. A plot produced by a code chunk with option `fig.wide = TRUE`.", fig.wide=TRUE, echo=FALSE}
-plot(cars)
-```
+To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measused from 7 independent regions of a single human pancreas. Each image is segemented into nine 'voxels', with one voxel per image representing a cluster of islet cells. 
+
+# Loading data into SpatialExperiment object
+
+We first include functionality to load the data into a `SpatialExperiment` object. 
+
+
+
+# Differential Expression
+
+# Distance based measurements
+
 
 
 # Equations
@@ -88,6 +78,8 @@ Footnotes are displayed as side notes on the right margin^[this is a side note e
 
 # References {.unnumbered}
 
+1. Gosline et al.
+2. Spatial Experiment
 
 # Session info
 
