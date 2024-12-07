@@ -34,7 +34,7 @@ distance_based_analysis <- function(spe,
                                     corr_thresh,
                                     min_samplePoints_forCorr=6,
                                     results_dir){
-  library(SpatialExperiment)
+  #library(SpatialExperiment)
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
   sample_dim_x = sample_dimensions[1]
   sample_dim_y = sample_dimensions[2]
@@ -44,11 +44,11 @@ distance_based_analysis <- function(spe,
   centroid_coords = data.frame(cbind(centroid_x,centroid_y))
   rownames(centroid_coords) = rownames(spatial_coords)
   # Compute distance between samples
-  dist_between_samples = as.matrix(dist(centroid_coords, method = "euclidean", diag=T))
+  dist_between_samples = as.matrix(stats::dist(centroid_coords, method = "euclidean", diag=T))
 
-  assay_data = assays(spe)[[assayName]]
-  rownames(assay_data) = rowData(spe)[,featuresNameCol]
-  source_samples_indices = which(colData(spe)[,sampleCategoryCol]==sampleCategoryValue)
+  assay_data = SpatialExperiment::assays(spe)[[assayName]]
+  rownames(assay_data) = SpatialExperiment::rowData(spe)[,featuresNameCol]
+  source_samples_indices = which(SpatialExperiment::colData(spe)[,sampleCategoryCol]==sampleCategoryValue)
   source_samples = colnames(assay_data)[source_samples_indices]
   source_samples_data = assay_data[, source_samples_indices]
   # Remove features that don't have data for any source samples
@@ -85,13 +85,13 @@ distance_based_analysis <- function(spe,
     dist_AbundDiffs_vectors[[ j ]] = data.frame(distVec,diffVec, sample_i, sample_j, data_used)
     colnames(dist_AbundDiffs_vectors[[ j ]]) = c("Distance_between_samples","Abundance_difference_between_samples (sample_i - sample_j)","sample_i", "sample_j","Data_used")
     dist_calcs_filepath = ""
-    if (length(grep(";",j)) > 0){ # Feature name has multiple names (this was a special case for the brain ROI data)
-      j_shortened = unlist(strsplit(j, split=";"))[1] # Just keep the first name
-      dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j_shortened,"_dist_calcs.xlsx",sep="")
-      print(paste("Feature name in output filename shortened to ",j_shortened," instead of ", j," to avoid issues associated with long file names",sep=""))
-    }else{
-      dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep="")
-    }
+   # if (length(grep(";",j)) > 0){ # Feature name has multiple names (this was a special case for the brain ROI data)
+  #    j_shortened = unlist(strsplit(j, split=";"))[1] # Just keep the first name
+  #    dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j_shortened,"_dist_calcs.xlsx",sep="")
+  #    print(paste("Feature name in output filename shortened to ",j_shortened," instead of ", j," to avoid issues associated with long file names",sep=""))
+  #  }else{
+  #    dist_calcs_filepath = paste(results_dir3,"/",sampleCategoryValue,"_",j,"_dist_calcs.xlsx",sep="")
+  #  }
     #write_xlsx(dist_AbundDiffs_vectors[[j]], path=dist_calcs_filepath)
     if (num_samplePoints >= min_samplePoints_forCorr){ # Must have at least the specified number of values to calculate correlation
       print(j)

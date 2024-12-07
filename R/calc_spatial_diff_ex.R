@@ -1,5 +1,6 @@
 #' calc_spatial_diff_ex: does differential expression analysis using annotations in a SpatialExperiment object
 #' @import limma
+#' @import SpatialExperiment
 #' @export
 #' @param spe Spatial Experiment object containing data to be used for differential expression analysis
 #' @param assay_name Name of the dataset stored in the spe object, that is to be used for the differential expression analysis. Example: znormalized_log2
@@ -22,10 +23,8 @@ calc_spatial_diff_ex<-function(spe,
                                category_col,
                                compare_vals,
                                feature_colname='proteins'){
-  library(limma)
-
   #collect samples by factor
-  factors<-unique(colData(spe)[[category_col]])
+  factors<-unique(SpatialExperiment::colData(spe)[[category_col]])
   if(length(factors)<1){
     ##throw error we need at least two categories
   }else if(length(factors)>2){
@@ -36,8 +35,8 @@ calc_spatial_diff_ex<-function(spe,
   }
 
   ##now select the samples for each category
-  samp1<-which(colData(spe)[[category_col]]==factors[1])
-  samp2<-which(colData(spe)[[category_col]]==factors[2]) #Later, limma call does samp2 vs. samp1 analysis
+  samp1<-which(SpatialExperiment::colData(spe)[[category_col]]==factors[1])
+  samp2<-which(SpatialExperiment::colData(spe)[[category_col]]==factors[2]) #Later, limma call does samp2 vs. samp1 analysis
   comparison_name = paste(factors[1],"_vs_",factors[2],sep="")
 
   ##create design matrix with two factors
@@ -45,8 +44,8 @@ calc_spatial_diff_ex<-function(spe,
   #print(fac)
   design <- stats::model.matrix(~fac)
   #print(design)
-  dat = assays(spe)[[ assay_name ]]
-  rownames(dat) = rowData(spe)[,feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
+  dat = SpatialExperiment::assays(spe)[[ assay_name ]]
+  rownames(dat) = SpatialExperiment::rowData(spe)[,feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
   if(!log_transformed){
     dat = log2(dat)
   }
@@ -54,16 +53,16 @@ calc_spatial_diff_ex<-function(spe,
   fit <- limma::eBayes(fit)
 
   diffex.spe = spe # initialize
-  assays(diffex.spe) = list()
-  assays(diffex.spe,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
+  SpatialExperiment::assays(diffex.spe) = list()
+  SpatialExperiment::assays(diffex.spe,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
   # withDimnames=FALSE drops rownames from dat while saving into the assay. We want this because rownames(spe.out) may not necessarily have rownames, depending on how the spe was defined.
   # Differential expression results will be stored in rowData(diffex.spe)
-  res <- topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
+  res <- limma::topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
   colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
   res = data.frame(cbind(rownames(res),res))
   colnames(res) = c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
   diffEx <- data.frame(dplyr::full_join(data.frame(rowData(spe)),res))
-  rowData(diffex.spe) <- as.matrix(diffEx)
+  SpatialExperiment::rowData(diffex.spe) <- as.matrix(diffEx)
   return(list("diffEx.df" = diffEx, "diffEx.spe"= diffex.spe))
 }

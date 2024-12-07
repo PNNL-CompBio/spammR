@@ -1,6 +1,7 @@
 #' convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
 
 #' @export
+#' @import SpatialExperiment
 #' @param dat Matrix or data frame with omics measurements. Rows or `feature_colname` are features, columns are samples
 #' @param meta_dat Data frame of metadata with either `sample_colname` or rownames as samples (if empty)
 #' @param assay_name Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name
@@ -38,7 +39,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
                           image_files=NULL,
                           image_ids=NULL,
                           image_samples_common_identifier=NULL){
-  library("SpatialExperiment")
+  #ibrary("SpatialExperiment")
 
   # Separate sample columns and feature meta data columns in dat
   if(!is.null(sample_colname)){
@@ -77,7 +78,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
                               rowData=features_info,
                               spatialCoords = spatialCoords_dat,
                               sample_id = samples_common_identifier)
-  assayNames(spe.out) = c(assay_name)
+  SpatialExperiment::assayNames(spe.out) = c(assay_name)
   # Add image(s) to SPE
   if (!is.null(image_files)){
     if (is.null(image_ids)){

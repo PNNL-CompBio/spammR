@@ -34,14 +34,14 @@
 #' # data(pancMeta)
 #'
 spatial_heatmap<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,plot_title=NULL,interactive=TRUE){
-  library(ggplot2)
-  library(ggnewscale)
-  library(SpatialExperiment)
-  library(dplyr)
-  library(plotly)
-  library(ggpubr)
-  library(png)
-  library(scales)
+ # library(ggplot2)
+  #library(ggnewscale)
+  #library(SpatialExperiment)
+  #library(dplyr)
+  #library(plotly)
+  #library(ggpubr)
+  #library(png)
+  #library(scales)
   spatial = as.data.frame(spatialCoords(spe))
   xcoord_name = spatial_coord_names[1]
   ycoord_name = spatial_coord_names[2]
@@ -49,15 +49,15 @@ spatial_heatmap<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_id
   spatial[,ycoord_name] = as.numeric(spatial[,ycoord_name])
   x = spatial[,xcoord_name]
   y = spatial[,ycoord_name]
-  f = assays(spe,withDimnames=FALSE)[[ assay_name ]]
+  f = SpatialExperiment::assays(spe,withDimnames=FALSE)[[ assay_name ]]
   feature_values_toplot = c()
   if (is.na(feature_type)){ # default is whatever is used for rownames of f
     feature_values_toplot = as.numeric(f[feature,rownames(spatial)])
   }else{
-    rowNum_toplot = grep(feature,rowData(spe)[,feature_type])
+    rowNum_toplot = grep(feature,SpatialExperiment::rowData(spe)[,feature_type])
     feature_values_toplot = as.numeric(f[rowNum_toplot,rownames(spatial)])
   }
-  spatial_meta = colData(spe)
+  spatial_meta = SpatialExperiment::colData(spe)
   if (is.null(plot_title)){
     title = paste("Spatial signature for ", feature, sep="")
   }else{
@@ -92,37 +92,37 @@ spatial_heatmap<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_id
   img_sample_id = image_sample_ids[1]
   img_image_id = image_sample_ids[2]
   # Row corresponding to the background image of interest, to be used for plotting
-  imgData_rowNum = which(imgData(spe)$sample_id==img_sample_id & imgData(spe)$image_id==img_image_id)
-  background_img = imgData(spe)$data[[imgData_rowNum]]
+  imgData_rowNum = which(SpatialExperiment::imgData(spe)$sample_id==img_sample_id & SpatialExperiment::imgData(spe)$image_id==img_image_id)
+  background_img = SpatialExperiment::imgData(spe)$data[[imgData_rowNum]]
   # Background image boundaries
   xmin_image = image_boundaries[1]
   ymin_image = image_boundaries[2]
   xmax_image = image_boundaries[3]
   ymax_image = image_boundaries[4]
-  #img_png = readPNG(background_img)
+  #img_png = ping::readPNG(background_img)
   # Scale feature_values_toplot to show relative values. Scale from 0 to 1. This scale is useful when comparing spatial plots of different proteins
-  rescaled_feature_values = rescale(feature_values_toplot,to=c(0,1))
+  rescaled_feature_values = scales::rescale(feature_values_toplot,to=c(0,1))
   #spatial = cbind(spatial,rescaled_feature_values)
-  p<- ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
+  p<- ggplot2::ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
     background_image(background_img)+
-    geom_rect()+
-    scale_fill_viridis_c()+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
-    labs(fill = metric_display)+
-    new_scale_fill()+
-    geom_rect(aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
-    geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
-    scale_fill_viridis_c(limits=c(0,1))+
-    labs(fill = "Scaled values (min=0, max=1)")+
-    theme_bw()+
-    xlim(xmin_image,xmax_image)+
-    ylim(ymin_image,ymax_image)+
-    coord_fixed(ratio=1,expand=FALSE)+  # expand=FALSE to make sure the origin for the image is where it should be (without padding), to make sure the image lines up correctly with samples' coordinates
-    xlab("x")+
-    ylab("y")+
-    ggtitle(title)
+    ggplot2::geom_rect()+
+    ggplot2::scale_fill_viridis_c()+
+    ggplot2::geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
+    ggplot2:: labs(fill = metric_display)+
+    ggnewscale::new_scale_fill()+
+    ggplot2::geom_rect(aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
+    ggplot2:: geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
+    ggplot2::scale_fill_viridis_c(limits=c(0,1))+
+    ggplot2::labs(fill = "Scaled values (min=0, max=1)")+
+    ggplot2::theme_bw()+
+    ggplot2::xlim(xmin_image,xmax_image)+
+    ggplot2::ylim(ymin_image,ymax_image)+
+    ggplot2::coord_fixed(ratio=1,expand=FALSE)+  # expand=FALSE to make sure the origin for the image is where it should be (without padding), to make sure the image lines up correctly with samples' coordinates
+    ggplot2::xlab("x")+
+    ggplot2::ylab("y")+
+    ggplot2::ggtitle(title)
   if (interactive){
-    p <- ggplotly(p)
+    p <- plotly::ggplotly(p)
   }
   return(p)
 }

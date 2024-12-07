@@ -3,6 +3,7 @@
 #' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
 #' -log10(p-value) vs. log2(fold change)
 #' @import ggplot2
+#' @import ggrepel
 #' @param diffEx_df A dataframe containing results from differential expression
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
 #' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
@@ -12,7 +13,8 @@
 #' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
 volcano_plot_tab <- function(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname){
-  require('ggrepel')
+  #require('ggrepel')
+  #library('ggplot2')
   diffEx_df = data.frame(diffEx_df)
   pval_type_lbl = ""
   if(pval_corrected){
@@ -40,14 +42,14 @@ volcano_plot_tab <- function(diffEx_df, logFC_colname, pval_colname, pval_correc
     p_title = paste(p_title,"\nAnnotated points show ",sigLabel_colname," names",sep="")
   }
   text_xcoord = ( min(xdat,na.rm = TRUE) + max(xdat,na.rm=TRUE) ) / 2 #midpoint of x-axis
-  p2 <- ggplot(diffEx_df, aes(get(logFC_colname), -log10(get(pval_colname)), label = pt_lbls)) +
-    geom_point(color = pt_colors)+
-    geom_hline(yintercept = -log10(thresh), color = "blue") +
-    annotate("text", x=text_xcoord + 0.2*text_xcoord, y= (-log10(thresh) + 0.05), label=paste(pval_type_lbl," < ",thresh,sep=""), color = "blue")+
-    geom_text_repel()+
-    labs(title = p_title)+
-    xlab("log2 (fold change)")+
-    ylab(yaxis_lbl)
+  p2 <- ggplot2::ggplot(diffEx_df, aes(get(logFC_colname), -log10(get(pval_colname)), label = pt_lbls)) +
+    ggplot2::geom_point(color = pt_colors)+
+    ggplot2::geom_hline(yintercept = -log10(thresh), color = "blue") +
+    ggplot2::annotate("text", x=text_xcoord + 0.2*text_xcoord, y= (-log10(thresh) + 0.05), label=paste(pval_type_lbl," < ",thresh,sep=""), color = "blue")+
+    ggrepel::geom_text_repel()+
+    ggplot2::labs(title = p_title)+
+    ggplot2::xlab("log2 (fold change)")+
+    ggplot2::ylab(yaxis_lbl)
   #pdf(file = paste(plot_dir_curr,"/volcanoPlot2_DiffAbundance_ ",group1_name,"_vs_",group2_name,".pdf",sep=""),width=11, height=7)
   #print(p2)
   #dev.off()

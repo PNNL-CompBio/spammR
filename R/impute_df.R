@@ -14,20 +14,20 @@
 #' @returns a data frame containing the imputed dataset using the specified method.
 
 #' @details Methods options and descriptions
-#' zero: replace missing values with 0\n
-#' median_a : replace missing values with global median per protein\n
-#' median_b : replace missing values with 1/2 global median per protein\n
-#' global_mean: replace missing values with global mean per protein\n
-#' mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein\n
-#' knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs\n
-#' knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)\n
-#' knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.\n
-#' knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.\n
+#' zero: replace missing values with 0
+#' median_a : replace missing values with global median per protein
+#' median_b : replace missing values with 1/2 global median per protein
+#' global_mean: replace missing values with global mean per protein
+#' mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein
+#' knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs
+#' knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
+#' knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
+#' knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
 
 impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_colname, spatialCoord_y_colname, knn_k=NULL,allowed_missingness_perProtein=NULL, allowed_missingness_perSample=NULL){
-  library(matrixStats)
-  library(impute)
-  library(spdep)
+  #library(matrixStats)
+  #library(impute)
+  #library(spdep)
   # # Set defult values if not specified by user
   # if (is.null(allowed_missingness_perProtein)){ # Only used for knn methods
   #   allowed_missingness_perProtein = 0.75
@@ -42,9 +42,9 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
   }else if (method=="global_mean"){
     replace_vals = rowMeans(dat,na.rm=TRUE)
   }else if (method=="median_a"){
-    replace_vals = rowMedians(as.matrix(dat),na.rm=TRUE)
+    replace_vals = matrixStats::rowMedians(as.matrix(dat),na.rm=TRUE)
     }else if (method == "median_b"){
-    replace_vals = 0.5* rowMedians(as.matrix(dat),na.rm=TRUE)
+    replace_vals = 0.5* matrixStats::rowMedians(as.matrix(dat),na.rm=TRUE)
   }else if (method == "mean_perSpatialUnit" | method=="knn_proteins_perSpatialUnit"){
     # extract column with spatial unit specification in the metadata
     spatUnits = unique(metadata[,spatial_unit_colname])
@@ -67,7 +67,7 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
     imputed_data = imputed_data[,colnames(dat)]
     data_imputed = imputed_data
   }else if (method == "knn_proteins_global"){
-    knn_imputed_proteins_global = impute.knn(as.matrix(dat),k = knn_k, rowmax = allowed_missingness_perProtein, colmax = 1, maxp = dim(dat)[1], rng.seed=12345)
+    knn_imputed_proteins_global = imput::impute.knn(as.matrix(dat),k = knn_k, rowmax = allowed_missingness_perProtein, colmax = 1, maxp = dim(dat)[1], rng.seed=12345)
     # Fix immputed values for rows (proteins) that are missing more than rowmax proportion of samples.
     # By default, impute.knn uses the mean of all proteins in a sample for this case, which is not that meaningful.
     # Instead, we replace the missing values (for the case when missingness in a row is greater than rowmax) with global_mean or na for that row
@@ -84,7 +84,7 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
     data_imputed = knn_imputed_proteins_global$dat
   }else if (method == "knn_samples_global_proteinData"){
     transposed_data = as.matrix(t(dat))
-    knn_imputed_samples_global_protData = impute.knn(transposed_data,k = knn_k, rowmax = allowed_missingness_perSample, colmax = 1, maxp = dim(transposed_data)[1], rng.seed=12345)
+    knn_imputed_samples_global_protData = impute::impute.knn(transposed_data,k = knn_k, rowmax = allowed_missingness_perSample, colmax = 1, maxp = dim(transposed_data)[1], rng.seed=12345)
     imputed_temp =  t(knn_imputed_samples_global_protData$dat)
     fix_samples = which( (colSums(is.na(dat))/dim(dat)[1]) > allowed_missingness_perSample )
     for (f in fix_samples){
@@ -105,7 +105,7 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
   }else if (method == "knn_samples_global_spatialCoords"){
     d_for_nearestNeighb = as.matrix(metadata[,c("Xcoord","Ycoord")])
     # Find k-nearest neighbors based on spatial distance (x,y coordinates)
-    knn <- knearneigh(d_for_nearestNeighb, k= knn_k)
+    knn <- spdep::knearneigh(d_for_nearestNeighb, k= knn_k)
     # nearest neighbor indices are in knn$nn
     nn = knn$nn
     for (prot in 1:dim(dat)[1]){

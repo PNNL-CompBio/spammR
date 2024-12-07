@@ -41,13 +41,13 @@ impute_df: carries out imputation for missing data in a data frame (df) using a 
 }
 \details{
 Methods options and descriptions
-zero: replace missing values with 0\n
-median_a : replace missing values with global median per protein\n
-median_b : replace missing values with 1/2 global median per protein\n
-global_mean: replace missing values with global mean per protein\n
-mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein\n
-knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs\n
-knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)\n
-knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.\n
-knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.\n
+zero: replace missing values with 0
+median_a : replace missing values with global median per protein
+median_b : replace missing values with 1/2 global median per protein
+global_mean: replace missing values with global mean per protein
+mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein
+knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs
+knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
+knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
+knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
 }

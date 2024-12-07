@@ -27,14 +27,9 @@ Depends:
     limma,
     R (>= 3.5.0)
 Imports: 
-    BiocGenerics,
-    BiocManager,
     dplyr,
     ggplot2,
     limma,
-    methods,
-    remotes,
-    S4Vectors,
     plotly,
     ggnewscale,
     ggpubr,
@@ -42,4 +37,6 @@ Imports:
     impute,
     matrixStats,
     scales,
-    spdep
+    spdep,
+    ggrepel,
+    leapR

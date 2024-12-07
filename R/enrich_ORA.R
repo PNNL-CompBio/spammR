@@ -3,6 +3,7 @@
 #' specified in this function.
 #' For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 #' @export
+#' @import leapR
 #' @param spe SpatialExperiment object containing spatial omics data and spatial diffex results
 #' @param pval_type_forThresh Choose from "adjusted_pval" or "pval". Type of p-value that should be used for filtering statistically significant results. Default is adjusted p-value for multiple hypotheses correction.
 #' @param pval_thresh value to use for filtering based on pval_type_forThreshold. Default is 0.05. Values less than pval_thresh will be kept.
@@ -27,7 +28,7 @@ enrich_ora <-function(spe,
                       geneset_external=NA,
                       sortResultsBy,
                       comparison_name){
-  library(leapR)
+  #library(leapR)
 
     if (!is.na(geneset_spammR)){
     # Mouse geneset databases (downloaded from MSigDB as .gmt files) have been added to the data under spammR package
@@ -35,9 +36,9 @@ enrich_ora <-function(spe,
     # Load appropriate mouse geneset databases
     #########################
     geneset_name = geneset_spammR
-    geneset_path = paste("Geneset_Databases/",species,"/misgdb/",geneset_spammR,"/",sep="")
+    geneset_path = paste("Geneset_Databases/",eneset_spammR_species,"/misgdb/",geneset_spammR,"/",sep="")
     symbols.gmt_filename = list.files(path=geneset_path,pattern="sybmols.gmt")
-    symbols.gmt_file = data(paste(geneset_path,"/",symbols.gmt_file,sep=""))
+    symbols.gmt_file = utils::data(paste(geneset_path,"/",symbols.gmt_file,sep=""))
     geneset_leapR = leapR::read_gene_sets(symbols.gmt_file)
   }else{
     # add code for handling the case of an external geneset file or list
@@ -47,7 +48,7 @@ enrich_ora <-function(spe,
   # Current assumption is that spatialDiffEx results file has columns for protein names and corresponding gene names. "PG.genes"
   # If gene names are not present in spatialDiffEx results, a helper function (which I will add later), can be run to obtain gene names from the UniProt db files
   # and have a "PG.genes" column added to spatialDiffEx results excel file.
-  sp_diffEx = rowData(spe$diffEx.spe) #data.frame(read_excel(spatialDiffEx_results))
+  sp_diffEx = SpatialExperiment::rowData(spe$diffEx.spe) #data.frame(read_excel(spatialDiffEx_results))
   if (pval_type_forThresh=="adjusted_pval"){
     pval_col_text = "adj.P.Val"
   }else if (pval_type_forThresh=="pval"){
@@ -73,7 +74,7 @@ enrich_ora <-function(spe,
   es_sorted = c()
   # Over-representation analysis: Run Enrichment in Sets (es) in leapR
   background_genes = rowData(spe)[,"PG.Genes"]
-  es= leapR(geneset=geneset_leapR,
+  es= leapR::leapR(geneset=geneset_leapR,
             enrichment_method='enrichment_in_sets',
             targets=int_list_geneNames, background = background_genes)
   # Sort results by column name specified by user
