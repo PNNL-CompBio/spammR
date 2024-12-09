@@ -24,7 +24,14 @@
 #' knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
 #' knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
 
-impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_colname, spatialCoord_y_colname, knn_k=NULL,allowed_missingness_perProtein=NULL, allowed_missingness_perSample=NULL){
+impute_df <- function(dat,
+                      method,metadata,
+                      spatial_unit_colname,
+                      spatialCoord_x_colname,
+                      spatialCoord_y_colname,
+                      knn_k=NULL,
+                      allowed_missingness_perProtein=NULL,
+                      allowed_missingness_perSample=NULL){
   #library(matrixStats)
   #library(impute)
   #library(spdep)
@@ -67,7 +74,7 @@ impute_df <- function(dat,method,metadata, spatial_unit_colname, spatialCoord_x_
     imputed_data = imputed_data[,colnames(dat)]
     data_imputed = imputed_data
   }else if (method == "knn_proteins_global"){
-    knn_imputed_proteins_global = imput::impute.knn(as.matrix(dat),k = knn_k, rowmax = allowed_missingness_perProtein, colmax = 1, maxp = dim(dat)[1], rng.seed=12345)
+    knn_imputed_proteins_global = impute::impute.knn(as.matrix(dat),k = knn_k, rowmax = allowed_missingness_perProtein, colmax = 1, maxp = dim(dat)[1], rng.seed=12345)
     # Fix immputed values for rows (proteins) that are missing more than rowmax proportion of samples.
     # By default, impute.knn uses the mean of all proteins in a sample for this case, which is not that meaningful.
     # Instead, we replace the missing values (for the case when missingness in a row is greater than rowmax) with global_mean or na for that row

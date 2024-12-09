@@ -34,8 +34,8 @@ a list with diffEx.df, a data frame containing the differential expression resul
 calc_spatial_diff_ex: does differential expression analysis using annotations in a SpatialExperiment object
 }
 \examples{
-# data(pancData)
-# data(pancMeta)
+data(pancData)
+data(pancMeta)
 spe <- convert_to_spe(pancData,pancMeta)
 diffex <- calc_spatial_diff_ex(spe,category_col='IsletOrNot')
 }

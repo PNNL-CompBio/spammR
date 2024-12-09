@@ -9,9 +9,15 @@
 #' @param pval_corrected Boolean indicating whether the p-values to be used for thresholding significant results are corrected for multiple hypotheses or not.
 #' @param title title for the plot
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
-#' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
+#' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
-volcano_plot <- function(spe, logFC_col, pval_col, pval_corrected, title, thresh=0.05, sigLabel_colname){
-  df = SpatialExperiment::rowData(spe)
+volcano_plot <- function(spe,
+                         logFC_col,
+                         pval_col,
+                         pval_corrected,
+                         title,
+                         thresh=0.05,
+                         sigLabel_colname){
+  df = SummarizedExperiment::rowData(spe)
   volcano_plot_tab (df, logFC_col, pval_col, pval_corrected, title, thresh, sigLabel_colname)
 }

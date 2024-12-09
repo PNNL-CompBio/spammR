@@ -12,8 +12,8 @@
 #' @returns a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
 #  and assays(diffEx.spe) which contains the dataset on which differential expresssion analysis was carried out
 #' @examples
-#' # data(pancData)
-#' # data(pancMeta)
+#' data(pancData)
+#' data(pancMeta)
 #' spe <- convert_to_spe(pancData,pancMeta)
 #' diffex <- calc_spatial_diff_ex(spe,category_col='IsletOrNot')
 
@@ -24,7 +24,7 @@ calc_spatial_diff_ex<-function(spe,
                                compare_vals,
                                feature_colname='proteins'){
   #collect samples by factor
-  factors<-unique(SpatialExperiment::colData(spe)[[category_col]])
+  factors<-unique(SummarizedExperiment::colData(spe)[[category_col]])
   if(length(factors)<1){
     ##throw error we need at least two categories
   }else if(length(factors)>2){
@@ -35,8 +35,8 @@ calc_spatial_diff_ex<-function(spe,
   }
 
   ##now select the samples for each category
-  samp1<-which(SpatialExperiment::colData(spe)[[category_col]]==factors[1])
-  samp2<-which(SpatialExperiment::colData(spe)[[category_col]]==factors[2]) #Later, limma call does samp2 vs. samp1 analysis
+  samp1<-which(SummarizedExperiment::colData(spe)[[category_col]]==factors[1])
+  samp2<-which(SummarizedExperiment::colData(spe)[[category_col]]==factors[2]) #Later, limma call does samp2 vs. samp1 analysis
   comparison_name = paste(factors[1],"_vs_",factors[2],sep="")
 
   ##create design matrix with two factors
@@ -44,8 +44,8 @@ calc_spatial_diff_ex<-function(spe,
   #print(fac)
   design <- stats::model.matrix(~fac)
   #print(design)
-  dat = SpatialExperiment::assays(spe)[[ assay_name ]]
-  rownames(dat) = SpatialExperiment::rowData(spe)[,feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
+  dat = SummarizedExperiment::assays(spe)[[ assay_name ]]
+  rownames(dat) = SummarizedExperiment::rowData(spe)[,feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
   if(!log_transformed){
     dat = log2(dat)
   }
@@ -53,8 +53,8 @@ calc_spatial_diff_ex<-function(spe,
   fit <- limma::eBayes(fit)
 
   diffex.spe = spe # initialize
-  SpatialExperiment::assays(diffex.spe) = list()
-  SpatialExperiment::assays(diffex.spe,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
+  SummarizedExperiment::assays(diffex.spe) = list()
+  SummarizedExperiment::assays(diffex.spe,withDimnames=FALSE) [[ assay_name ]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
   # withDimnames=FALSE drops rownames from dat while saving into the assay. We want this because rownames(spe.out) may not necessarily have rownames, depending on how the spe was defined.
   # Differential expression results will be stored in rowData(diffex.spe)
   res <- limma::topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
@@ -62,7 +62,7 @@ calc_spatial_diff_ex<-function(spe,
   res = data.frame(cbind(rownames(res),res))
   colnames(res) = c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
-  diffEx <- data.frame(dplyr::full_join(data.frame(rowData(spe)),res))
-  SpatialExperiment::rowData(diffex.spe) <- as.matrix(diffEx)
+  diffEx <- data.frame(dplyr::full_join(data.frame(SummarizedExperiment::rowData(spe)),res))
+  SummarizedExperiment::rowData(diffex.spe) <- as.matrix(diffEx)
   return(list("diffEx.df" = diffEx, "diffEx.spe"= diffex.spe))
 }

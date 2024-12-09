@@ -12,7 +12,6 @@
 #' @param corr_type Choose from "pearson" (default), "spearman." Correlation method to be used for calculating correlation between distance between samples and protein abundance differences. Both types of correlation provide a measure of monotonic association between two variables. Pearson is better suited for linear relationships while Spearman is better for non-linear monotonic relationships.
 #' @param corr_thresh Minimum correlation value to be used for identifying proteins that have a correlation between protein abundance differences and distance between samples. Values greater than or equal to this theshold will be used.
 #' @param min_samplePoints_forCorr Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.
-#' @param results_dir Path of output directory where results from this function should be saved
 #' @returns dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.
 #' b.) corr_pval_all and c.) corr_pval_thresholded which are data frames containing the correlation value, p-value and number of sample points used for the correlation calculation for each feature. corr_pval_thresholded only contains results with correlation > corr_thresh.
 #' dist_based_results is also saved as .RData object under results_dir.
@@ -31,9 +30,8 @@ distance_based_analysis <- function(spe,
                                     sampleCategoryValue,
                                     featuresNameCol,
                                     corr_type="pearson",
-                                    corr_thresh,
-                                    min_samplePoints_forCorr=6,
-                                    results_dir){
+                                    corr_thresh = 0.5,
+                                    min_samplePoints_forCorr=6){
   #library(SpatialExperiment)
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
   sample_dim_x = sample_dimensions[1]
@@ -46,9 +44,9 @@ distance_based_analysis <- function(spe,
   # Compute distance between samples
   dist_between_samples = as.matrix(stats::dist(centroid_coords, method = "euclidean", diag=T))
 
-  assay_data = SpatialExperiment::assays(spe)[[assayName]]
-  rownames(assay_data) = SpatialExperiment::rowData(spe)[,featuresNameCol]
-  source_samples_indices = which(SpatialExperiment::colData(spe)[,sampleCategoryCol]==sampleCategoryValue)
+  assay_data = SummarizedExperiment::assays(spe)[[assayName]]
+  rownames(assay_data) = SummarizedExperiment::rowData(spe)[,featuresNameCol]
+  source_samples_indices = which(SummarizedExperiment::colData(spe)[,sampleCategoryCol]==sampleCategoryValue)
   source_samples = colnames(assay_data)[source_samples_indices]
   source_samples_data = assay_data[, source_samples_indices]
   # Remove features that don't have data for any source samples
@@ -97,7 +95,7 @@ distance_based_analysis <- function(spe,
       print(j)
       print(length(diffVec))
       print(length(distVec))
-      corr_results = cor.test(distVec, diffVec, method=corr_type,use="pariwise.complete.obs")
+      corr_results = stats::cor.test(distVec, diffVec, method=corr_type,use="pariwise.complete.obs")
       corr_dist_protAbund_Diffs [j] = corr_results$estimate
       pval_corr_dist_protAbund_Diffs [j] = corr_results$p.value
     }else{

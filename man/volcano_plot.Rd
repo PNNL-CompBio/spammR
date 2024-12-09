@@ -29,7 +29,7 @@ volcano_plot(
 
 \item{thresh}{Threshold for p-value to be used to annotate significant results on the plot}
 
-\item{sigLabel_col}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
+\item{sigLabel_colname}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
 }
 \value{
 ggplot Volcano plot

@@ -36,7 +36,7 @@ enrich_ora <-function(spe,
     # Load appropriate mouse geneset databases
     #########################
     geneset_name = geneset_spammR
-    geneset_path = paste("Geneset_Databases/",eneset_spammR_species,"/misgdb/",geneset_spammR,"/",sep="")
+    geneset_path = paste("Geneset_Databases/",geneset_spammR_species,"/misgdb/",geneset_spammR,"/",sep="")
     symbols.gmt_filename = list.files(path=geneset_path,pattern="sybmols.gmt")
     symbols.gmt_file = utils::data(paste(geneset_path,"/",symbols.gmt_file,sep=""))
     geneset_leapR = leapR::read_gene_sets(symbols.gmt_file)
@@ -48,7 +48,7 @@ enrich_ora <-function(spe,
   # Current assumption is that spatialDiffEx results file has columns for protein names and corresponding gene names. "PG.genes"
   # If gene names are not present in spatialDiffEx results, a helper function (which I will add later), can be run to obtain gene names from the UniProt db files
   # and have a "PG.genes" column added to spatialDiffEx results excel file.
-  sp_diffEx = SpatialExperiment::rowData(spe$diffEx.spe) #data.frame(read_excel(spatialDiffEx_results))
+  sp_diffEx = SummarizedExperiment::rowData(spe$diffEx.spe) #data.frame(read_excel(spatialDiffEx_results))
   if (pval_type_forThresh=="adjusted_pval"){
     pval_col_text = "adj.P.Val"
   }else if (pval_type_forThresh=="pval"){
@@ -73,7 +73,7 @@ enrich_ora <-function(spe,
   es = c()
   es_sorted = c()
   # Over-representation analysis: Run Enrichment in Sets (es) in leapR
-  background_genes = rowData(spe)[,"PG.Genes"]
+  background_genes = SummarizedExperiment::rowData(spe)[,"PG.Genes"]
   es= leapR::leapR(geneset=geneset_leapR,
             enrichment_method='enrichment_in_sets',
             targets=int_list_geneNames, background = background_genes)

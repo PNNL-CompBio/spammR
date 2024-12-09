@@ -37,6 +37,10 @@ spatial_heatmap(
 
 \item{spatial_coord_names}{Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord,Ycoord) or c(X,Y).}
 
+\item{feature_type}{Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)}
+
+\item{feature}{Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)}
+
 \item{metric_display}{Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"}
 
 \item{label_column}{Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.}
@@ -48,10 +52,6 @@ spatial_heatmap(
 \item{plot_title}{Title to be given to the spatial heatmap. Default is "Spatial signature for XYZ" where XYZ is the name of the specified feature}
 
 \item{interactive}{Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.}
-
-\item{feature_type:}{Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)}
-
-\item{feature:}{Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)}
 }
 \value{
 spatial_plot: Spatial heatmap of the chosen feature

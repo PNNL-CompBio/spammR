@@ -12,7 +12,13 @@
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
 #' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
-volcano_plot_tab <- function(diffEx_df, logFC_colname, pval_colname, pval_corrected, title, thresh=0.05, sigLabel_colname){
+volcano_plot_tab <- function(diffEx_df,
+                             logFC_colname,
+                             pval_colname,
+                             pval_corrected,
+                             title,
+                             thresh=0.05,
+                             sigLabel_colname){
   #require('ggrepel')
   #library('ggplot2')
   diffEx_df = data.frame(diffEx_df)

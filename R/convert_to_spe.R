@@ -78,7 +78,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
                               rowData=features_info,
                               spatialCoords = spatialCoords_dat,
                               sample_id = samples_common_identifier)
-  SpatialExperiment::assayNames(spe.out) = c(assay_name)
+  SummarizedExperiment::assayNames(spe.out) = c(assay_name)
   # Add image(s) to SPE
   if (!is.null(image_files)){
     if (is.null(image_ids)){

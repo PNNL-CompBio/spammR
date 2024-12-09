@@ -20,8 +20,8 @@
 #' @param spatial_coord_type Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"
 #' @param spatial_coord_names Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord,Ycoord) or c(X,Y).
 #' @details Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
-#' @param feature_type: Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)
-#' @param feature: Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
+#' @param feature_type Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)
+#' @param feature Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
 #' @param metric_display Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
 #' @param label_column Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
@@ -33,7 +33,21 @@
 #' # data(pancData)
 #' # data(pancMeta)
 #'
-spatial_heatmap<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_ids,image_boundaries,spatial_coord_type,spatial_coord_names,feature_type=NA,feature,metric_display = "Protein abundance measure",label_column=NA,sample_label_color="white",sample_label_size=1.75,plot_title=NULL,interactive=TRUE){
+spatial_heatmap<-function(spe,
+                          assay_name,
+                          plotBackground_img=TRUE,
+                          image_sample_ids,
+                          image_boundaries,
+                          spatial_coord_type,
+                          spatial_coord_names,
+                          feature_type=NA,
+                          feature,
+                          metric_display = "Protein abundance measure",
+                          label_column=NA,
+                          sample_label_color="white",
+                          sample_label_size=1.75,
+                          plot_title=NULL,
+                          interactive=TRUE){
  # library(ggplot2)
   #library(ggnewscale)
   #library(SpatialExperiment)
@@ -49,15 +63,15 @@ spatial_heatmap<-function(spe,assay_name,plotBackground_img=TRUE,image_sample_id
   spatial[,ycoord_name] = as.numeric(spatial[,ycoord_name])
   x = spatial[,xcoord_name]
   y = spatial[,ycoord_name]
-  f = SpatialExperiment::assays(spe,withDimnames=FALSE)[[ assay_name ]]
+  f = SummarizedExperiment::assays(spe,withDimnames=FALSE)[[ assay_name ]]
   feature_values_toplot = c()
   if (is.na(feature_type)){ # default is whatever is used for rownames of f
     feature_values_toplot = as.numeric(f[feature,rownames(spatial)])
   }else{
-    rowNum_toplot = grep(feature,SpatialExperiment::rowData(spe)[,feature_type])
+    rowNum_toplot = grep(feature,SummarizedExperiment::rowData(spe)[,feature_type])
     feature_values_toplot = as.numeric(f[rowNum_toplot,rownames(spatial)])
   }
-  spatial_meta = SpatialExperiment::colData(spe)
+  spatial_meta = SummarizedExperiment::colData(spe)
   if (is.null(plot_title)){
     title = paste("Spatial signature for ", feature, sep="")
   }else{
