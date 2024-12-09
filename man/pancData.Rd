@@ -16,6 +16,6 @@ Row names indicate individual proteins, columns indicate sample identifiers desc
 \code{pancMeta}. Individual values show un-transformed abundance values for each protein.
 }
 \references{
-\url{data_blah.com}
+\url{panc paper}
 }
 \keyword{datasets}

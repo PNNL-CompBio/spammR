@@ -6,11 +6,13 @@
 \usage{
 convert_to_spe(
   dat,
-  meta_dat,
+  sample_meta,
+  feature_meta,
   assay_name = "proteomics",
   sample_colname = NULL,
   remove_samples = NULL,
-  feature_colname = NULL,
+  feature_data_colname = NULL,
+  feature_meta_colname = NULL,
   spatialCoords_colnames = c("Xcoord", "Ycoord"),
   samples_common_identifier = "sample",
   image_files = NULL,
@@ -21,15 +23,19 @@ convert_to_spe(
 \arguments{
 \item{dat}{Matrix or data frame with omics measurements. Rows or \code{feature_colname} are features, columns are samples}
 
-\item{meta_dat}{Data frame of metadata with either \code{sample_colname} or rownames as samples (if empty)}
+\item{sample_meta}{Data frame of metadata with either \code{sample_colname} or rownames as samples (if empty)}
+
+\item{feature_meta}{Data frame of metadata with either \code{sample_colname} or rownames as samples (if empty)}
 
 \item{assay_name}{Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name}
 
-\item{sample_colname}{Column name in metadata_file whose entries contain sample identifiers provided in omics_measurements_file.}
+\item{sample_colname}{Column name in \code{sample_meta} table whose entries contain sample identifiers provided in \code{dat}.}
 
 \item{remove_samples}{List of names of samples (as they occur in sample_colname) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.}
 
-\item{feature_colname}{Name of column in omics_measurements_file, that is to be used for identifying features.}
+\item{feature_data_colname}{Name of column in \code{dat}, that is to be used for identifying features. If missing defaults to rownames.}
+
+\item{feature_meta_colname}{Name of column in \code{feature_meta}, that is to be used for identifying features. If missing defaults to rownames.}
 
 \item{spatialCoords_colnames}{A list containing names of columns in \code{meta_dat} that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.}
 
@@ -50,5 +56,7 @@ convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corre
 \examples{
 data(pancData)
 data(pancMeta)
-allImages <- convert_to_spe(pancData,pancMeta,samples_common_identifier='')
+data(protMeta)
+panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,\
+            feature_meta_colname='pancProts',samples_common_identifier='')
 }

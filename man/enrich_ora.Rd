@@ -9,22 +9,26 @@ For ORA using an external or already defined interest list of genes and gene set
 \usage{
 enrich_ora(
   spe,
+  geneset,
+  feature_column,
   pval_type_forThresh = "adjusted_pval",
-  pval_thresh = 0.5,
+  pval_thresh = 0.05,
   logFC_lowerThresh = NA,
   logFC_upperThresh = NA,
-  geneset_spammR = "M2_curated_all",
-  geneset_spammR_species = "human",
-  geneset_external_type = NA,
-  geneset_external = NA,
+  geneset_name = "msigdb",
   sortResultsBy,
-  comparison_name
+  comparison_name = ""
 )
 }
 \arguments{
 \item{spe}{SpatialExperiment object containing spatial omics data and spatial diffex results}
 
-\item{pval_type_forThresh}{Choose from "adjusted_pval" or "pval". Type of p-value that should be used for filtering statistically significant results. Default is adjusted p-value for multiple hypotheses correction.}
+\item{geneset}{in GMT format}
+
+\item{feature_column}{Column of rowData that maps to gene set}
+
+\item{pval_type_forThresh}{Choose from "adjusted_pval" or "pval". Type of p-value that should be used for
+filtering statistically significant results. Default is adjusted p-value for multiple hypotheses correction.}
 
 \item{pval_thresh}{value to use for filtering based on pval_type_forThreshold. Default is 0.05. Values less than pval_thresh will be kept.}
 
@@ -32,11 +36,7 @@ enrich_ora(
 
 \item{logFC_upperThresh}{Upper threshold for log Fold Change, to be used for filtering spatialDiffEx results. Default is NA}
 
-\item{geneset_spammR}{Geneset to be used from spammR. Choose from: NA, "M2_curated_all" (default),"M2_cp_biocarta", "M2_cp_reactome","M5_GO_all", "M5_GO_bp", "M5_GO_cc", "M5_GO_mf"}
-
-\item{geneset_external_type}{If not using a spammR provided geneset, specify type of geneset_external file. Options are ".gmt" or "list." If "list," make sure it is compatible with leapR format. Default is NA.}
-
-\item{geneset_external}{If not using a spammR provided geneset, provide the filepath for the gene set file or the list object containing geneset information in leapR format. Default is NA.}
+\item{geneset_name}{Name of geneset provided}
 
 \item{sortResultsBy}{For sorting ORA results, choose from the following column names: "BH_pvalue" (default)}
 
@@ -50,4 +50,19 @@ enrich_ora: Does over-representation analysis (ORA) using an interest list of ge
 This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
 specified in this function.
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
+}
+\examples{
+
+#data(pancData)
+#data(pancMet)
+#data(protMeta)
+#panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,
+              feature_meta_colname='pancProts',samples_common_identifier='')
+#diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',
+               feature_colname='pancProts')
+#library(leapR)
+#data('msigdb')
+#ora.spe <- enrich_ora(diffex.spe,geneset=msigdb,geneset_name='msigdb',
+            feature_column='PrimaryGeneName')
+
 }

@@ -14,15 +14,18 @@
 #' @examples
 #' data(pancData)
 #' data(pancMeta)
-#' spe <- convert_to_spe(pancData,pancMeta)
-#' diffex <- calc_spatial_diff_ex(spe,category_col='IsletOrNot')
+#' data(protMeta)
+#' panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,
+#'             feature_meta_colname='pancProts',samples_common_identifier='')
+#' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',
+#'               feature_colname='pancProts')
 
 calc_spatial_diff_ex<-function(spe,
                                assay_name='proteomics',
                                log_transformed=FALSE,
                                category_col,
                                compare_vals,
-                               feature_colname='proteins'){
+                               feature_colname){
   #collect samples by factor
   factors<-unique(SummarizedExperiment::colData(spe)[[category_col]])
   if(length(factors)<1){
@@ -45,7 +48,7 @@ calc_spatial_diff_ex<-function(spe,
   design <- stats::model.matrix(~fac)
   #print(design)
   dat = SummarizedExperiment::assays(spe)[[ assay_name ]]
-  rownames(dat) = SummarizedExperiment::rowData(spe)[,feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
+  rownames(dat) = SummarizedExperiment::rowData(spe)[rownames(dat),feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
   if(!log_transformed){
     dat = log2(dat)
   }
@@ -59,10 +62,14 @@ calc_spatial_diff_ex<-function(spe,
   # Differential expression results will be stored in rowData(diffex.spe)
   res <- limma::topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
   colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
+
   res = data.frame(cbind(rownames(res),res))
+
   colnames(res) = c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
   diffEx <- data.frame(dplyr::full_join(data.frame(SummarizedExperiment::rowData(spe)),res))
-  SummarizedExperiment::rowData(diffex.spe) <- as.matrix(diffEx)
-  return(list("diffEx.df" = diffEx, "diffEx.spe"= diffex.spe))
+  SummarizedExperiment::rowData(diffex.spe) <- diffEx
+  #return(list("diffEx.df" = diffEx, "diffEx.spe"= diffex.spe))
+  #i dont think we need to return the data frame separately
+  return(diffex.spe)
 }

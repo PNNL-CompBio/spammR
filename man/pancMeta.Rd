@@ -13,4 +13,7 @@ pancMeta
 \description{
 Sample metadata for the \code{pancData} file.
 }
+\references{
+\url{panc paper}
+}
 \keyword{datasets}

@@ -10,7 +10,7 @@ calc_spatial_diff_ex(
   log_transformed = FALSE,
   category_col,
   compare_vals,
-  feature_colname = "proteins"
+  feature_colname
 )
 }
 \arguments{
@@ -36,6 +36,9 @@ calc_spatial_diff_ex: does differential expression analysis using annotations in
 \examples{
 data(pancData)
 data(pancMeta)
-spe <- convert_to_spe(pancData,pancMeta)
-diffex <- calc_spatial_diff_ex(spe,category_col='IsletOrNot')
+data(protMeta)
+panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,
+            feature_meta_colname='pancProts',samples_common_identifier='')
+diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',
+              feature_colname='pancProts')
 }
