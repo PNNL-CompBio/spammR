@@ -23,7 +23,7 @@
 #' data(pancMeta)
 #' data(protMeta)
 #' panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#
+#' spe0<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
 # Example input parameters (remove this once we have it all in examples)
 # samples_common_identifier1 = "Image0" # Name of a common identifier for samples
 # img1 = "/Users/sohi472/Library/CloudStorage/OneDrive-PNNL/Projects/BICCN/data/brain_14ROIs_data_Aug24_2023/tissue_images_forPlotting/Image0_Raw_noMarkings_cropped_forPlotting.png"
