@@ -13,9 +13,8 @@ distance_based_analysis(
   sampleCategoryValue,
   featuresNameCol,
   corr_type = "pearson",
-  corr_thresh,
-  min_samplePoints_forCorr = 6,
-  results_dir
+  corr_thresh = 0.5,
+  min_samplePoints_forCorr = 6
 )
 }
 \arguments{
@@ -36,8 +35,6 @@ distance_based_analysis(
 \item{corr_thresh}{Minimum correlation value to be used for identifying proteins that have a correlation between protein abundance differences and distance between samples. Values greater than or equal to this theshold will be used.}
 
 \item{min_samplePoints_forCorr}{Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
-
-\item{results_dir}{Path of output directory where results from this function should be saved}
 }
 \value{
 dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.
@@ -47,4 +44,10 @@ dist_based_results is also saved as .RData object under results_dir.
 \description{
 distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
 protein/feature abundance differences between samples.
+}
+\examples{
+data(pancData)
+data(pancMeta)
+spe <- convert_to_spe(pancData,pancMeta)
+
 }
