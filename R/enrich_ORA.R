@@ -22,14 +22,11 @@
 #' #data(pancData)
 #' #data(pancMet)
 #' #data(protMeta)
-#' #panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,
-#'               feature_meta_colname='pancProts',samples_common_identifier='')
-#' #diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',
-#'                feature_colname='pancProts')
+#' #panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' #diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',feature_colname='pancProts')
 #' #library(leapR)
 #' #data('msigdb')
-#' #ora.spe <- enrich_ora(diffex.spe,geneset=msigdb,geneset_name='msigdb',
-#'             feature_column='PrimaryGeneName')
+#' #ora.spe <- enrich_ora(diffex.spe,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
 #'
 
 enrich_ora <-function(spe,

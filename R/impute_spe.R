@@ -3,9 +3,8 @@
 #' @import impute
 #' @import spdep
 #' @export
-#' @param dat SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.
+#' @param spe SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.
 #' @param method Method of imputation to be used. See details.
-#' @param metadata A dataframe containing metadata for dat, where rows correspond to samples, and columns contain meta information about samples. This is required to be specified if the imputation method is spatial specific. At the very minimum, columns corresponding to sample identifier, spatial unit (if relevant) and spatial coordinates should be specified. Default is NULL.
 #' @param spatial_unit_colname Column name in metadata that specifies spatial unit information. Example: ROI_abbreviation.
 #' @param knn_k
 #' @param spatialCoord_x_colname Column name in metadata that specifies the X coordinate for each sample.
@@ -28,7 +27,6 @@
 impute_spe <- function(spe,
                       assay_name,
                       method = c('zero','median','median_half','global_mean','spatial_unit_mean','knn_global','spatial_unit_knn','knn_global','knn_splatial'),
-                      metadata,
                       spatial_unit_colname,
                       spatialCoord_x_colname,
                       spatialCoord_y_colname,
@@ -44,6 +42,26 @@ impute_spe <- function(spe,
   #   allowed_missingness_perSample = 0.80
   # }
   dat <-SummarizedExperiment::assays(spe)[[assay_name]]
+  metadata<-SummarizedExperiment::colData(spe)
+
+    data_imputed<-imput_df(dat,method,metdata,spatial_unit_colname,spatialCoord_x_colname,
+                         spatialCoord_y_colname,knn_k,  allowed_missingness_perProtein,
+                          allowed_missingness_perSample)
+
+  assays(spe)<-list(assays(spe),imputed=data_imputed)
+  return (spe)
+}
+
+
+impute_df<-function(dat,
+                    method = c('zero','median','median_half','global_mean','spatial_unit_mean','knn_global','spatial_unit_knn','knn_global','knn_splatial'),
+                    metadata,
+                    spatial_unit_colname,
+                    spatialCoord_x_colname,
+                    spatialCoord_y_colname,
+                    knn_k=NULL,
+                    allowed_missingness_perProtein=NULL,
+                    allowed_missingness_perSample=NULL){
   data_imputed = c()
   replace_vals = c()
   if (method=="zero"){
@@ -52,7 +70,7 @@ impute_spe <- function(spe,
     replace_vals = rowMeans(dat,na.rm=TRUE)
   }else if (method=="median"){
     replace_vals = matrixStats::rowMedians(as.matrix(dat),na.rm=TRUE)
-    }else if (method == "median_half"){
+  }else if (method == "median_half"){
     replace_vals = 0.5* matrixStats::rowMedians(as.matrix(dat),na.rm=TRUE)
   }else if (method == "spatial_unit_mean" | method=="spatial_unit_knn"){
     # extract column with spatial unit specification in the metadata
@@ -60,7 +78,7 @@ impute_spe <- function(spe,
     imputed_data = c()
     for (s in 1:length(spatUnits)){
       ROI_indices = rownames(SummarizedExperiment::colData(spe))[which(SummarizedExperiment::colData(spe)[,spatial_unit_colname]==s)]
-#        grep(spatUnits[s],colnames(dat)) ##FIX: spatial unit should not be in column name
+      #        grep(spatUnits[s],colnames(dat)) ##FIX: spatial unit should not be in column name
       ROI_data = dat[,ROI_indices]
       if (method == "spatial_unit_mean"){
         imputed_ROI_data = impute_df(ROI_data,method="global_mean",allowed_missingness_perProtein=allowed_missingness_perProtein)
@@ -154,6 +172,4 @@ impute_spe <- function(spe,
   }
   data_imputed = data.frame(data_imputed, row.names=rownames(dat))
   colnames(data_imputed) = colnames(dat)
-  assays(spe)<-list(assays(spe),imputed=data_imputed)
-  return (spe)
 }

@@ -57,6 +57,5 @@ convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corre
 data(pancData)
 data(pancMeta)
 data(protMeta)
-panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,\
-            feature_meta_colname='pancProts',samples_common_identifier='')
+panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 }

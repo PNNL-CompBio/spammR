@@ -9,7 +9,6 @@ impute_spe(
   assay_name,
   method = c("zero", "median", "median_half", "global_mean", "spatial_unit_mean",
     "knn_global", "spatial_unit_knn", "knn_global", "knn_splatial"),
-  metadata,
   spatial_unit_colname,
   spatialCoord_x_colname,
   spatialCoord_y_colname,
@@ -19,9 +18,9 @@ impute_spe(
 )
 }
 \arguments{
-\item{method}{Method of imputation to be used. See details.}
+\item{spe}{SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.}
 
-\item{metadata}{A dataframe containing metadata for dat, where rows correspond to samples, and columns contain meta information about samples. This is required to be specified if the imputation method is spatial specific. At the very minimum, columns corresponding to sample identifier, spatial unit (if relevant) and spatial coordinates should be specified. Default is NULL.}
+\item{method}{Method of imputation to be used. See details.}
 
 \item{spatial_unit_colname}{Column name in metadata that specifies spatial unit information. Example: ROI_abbreviation.}
 
@@ -32,8 +31,6 @@ impute_spe(
 \item{allowed_missingness_perProtein}{Proportion of samples allowed to have missing data for a protein in the given spatial unit specified by the imputation method. Example: When method="global_mean," an allowed_missingness_perProtein of 0.5 indicates that any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="mean_perSpatialUnit," then allowed_missingness_perProtein of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified spatial unit (example: a brain ROI) to be used in the imputation algorithm and to be imputed. This argument is only needed for methods that rely on statistics based on per protein. It is used for the following methods: median_a, median_b, global_mean, mean_perSpatialUnit, knn_proteins_global and knn_proteins_perSpatialUnit.}
 
 \item{allowed_missingness_perSample}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
-
-\item{dat}{SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.}
 }
 \value{
 an SPE with an 'imputed' data frame

@@ -22,8 +22,7 @@
 #' data(pancData)
 #' data(pancMeta)
 #' data(protMeta)
-#' panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,\
-#'             feature_meta_colname='pancProts',samples_common_identifier='')
+#' panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 #
 # Example input parameters (remove this once we have it all in examples)
 # samples_common_identifier1 = "Image0" # Name of a common identifier for samples

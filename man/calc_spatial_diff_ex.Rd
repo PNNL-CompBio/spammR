@@ -37,8 +37,6 @@ calc_spatial_diff_ex: does differential expression analysis using annotations in
 data(pancData)
 data(pancMeta)
 data(protMeta)
-panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,
-            feature_meta_colname='pancProts',samples_common_identifier='')
-diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',
-              feature_colname='pancProts')
+panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
 }
