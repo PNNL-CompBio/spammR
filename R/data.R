@@ -16,3 +16,8 @@
 #' Protein metadata for general uniprot data, including the pancProts column for the panc data
 #' @source Uniprot
 "protMeta"
+
+#'
+#' List of proteomic measurements in a list sorted from individual regions of the pancreas.
+#'
+protDataList
