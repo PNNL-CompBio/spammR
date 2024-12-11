@@ -2,40 +2,48 @@
 % Please edit documentation in R/volcano_plot.R
 \name{volcano_plot}
 \alias{volcano_plot}
-\title{Generate a volcano plot to visualize results from differential expression analysis.
-In spammR, these could be results obtained from the spatialDiffEx() function.
-log10(p-value) vs. log2(fold change)}
+\title{Generate a volcano plot to visualize results from differential expression analysis stored in a data frame.
+Use this function directly if differential expression results are in a separate data frame and not an spe object
+Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
+-log10(p-value) vs. log2(fold change)}
 \usage{
 volcano_plot(
-  spe,
-  logFC_col,
-  pval_col,
-  pval_corrected,
+  diffex.spe,
+  logFC_colname,
+  pval_colname,
+  pval_corrected = TRUE,
   title,
   thresh = 0.05,
   sigLabel_colname
 )
 }
 \arguments{
-\item{spe}{SpatialExperiment object containing results from differential expression}
+\item{logFC_colname}{column name in differenital expression results that represents log10 fold change}
 
-\item{logFC_col}{column name in differenital expression results that represents log10 fold change}
+\item{pval_colname}{column name in differential epxression results that represents the p-value to be plotted}
 
-\item{pval_col}{column name in differential epxression results that represents the p-value to be plotted}
-
-\item{pval_corrected}{Boolean indicating whether the p-values to be used for thresholding significant results are corrected for multiple hypotheses or not.}
+\item{pval_corrected}{Boolean indicating whether pval_colname represents the corrected p-value or not}
 
 \item{title}{title for the plot}
 
 \item{thresh}{Threshold for p-value to be used to annotate significant results on the plot}
 
-\item{sigLabel_colname}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
+\item{diffEx_df}{A dataframe containing results from differential expression}
+
+\item{sigLabel_col}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
 }
 \value{
 ggplot Volcano plot
+data(pancData)
+data(pancMeta)
+data(protMeta)
+panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
+volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
 }
 \description{
-Generate a volcano plot to visualize results from differential expression analysis.
-In spammR, these could be results obtained from the spatialDiffEx() function.
-log10(p-value) vs. log2(fold change)
+Generate a volcano plot to visualize results from differential expression analysis stored in a data frame.
+Use this function directly if differential expression results are in a separate data frame and not an spe object
+Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
+-log10(p-value) vs. log2(fold change)
 }

@@ -71,7 +71,7 @@ Default values are specified for function parameters 'metric_display', 'label_co
 Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
 }
 \examples{
-# data(pancData)
-# data(pancMeta)
+data(pancMeta)
+data(pancDataList)
 
 }

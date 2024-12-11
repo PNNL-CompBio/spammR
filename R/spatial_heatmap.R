@@ -30,8 +30,8 @@
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
 #' @returns spatial_plot: Spatial heatmap of the chosen feature
 #' @examples
-#' # data(pancData)
-#' # data(pancMeta)
+#' data(pancMeta)
+#' data(pancDataList)
 #'
 spatial_heatmap<-function(spe,
                           assay_name,

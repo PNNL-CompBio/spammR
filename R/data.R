@@ -20,4 +20,4 @@
 #'
 #' List of proteomic measurements in a list sorted from individual regions of the pancreas.
 #'
-protDataList
+"pancDataList"

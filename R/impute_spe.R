@@ -44,7 +44,7 @@ impute_spe <- function(spe,
   dat <-SummarizedExperiment::assays(spe)[[assay_name]]
   metadata<-SummarizedExperiment::colData(spe)
 
-    data_imputed<-imput_df(dat,method,metdata,spatial_unit_colname,spatialCoord_x_colname,
+  data_imputed<-impute_df(dat,method,metadata,spatial_unit_colname,spatialCoord_x_colname,
                          spatialCoord_y_colname,knn_k,  allowed_missingness_perProtein,
                           allowed_missingness_perSample)
 
