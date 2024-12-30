@@ -1,4 +1,5 @@
-#' calc_spatial_diff_ex: does differential expression analysis using annotations in a SpatialExperiment object
+#' calc_spatial_diff_ex
+#' Calculates differential expression analysis using annotations in a SpatialExperiment object
 #' @import limma
 #' @import SpatialExperiment
 #' @export
@@ -15,9 +16,9 @@
 #' data(pancData)
 #' data(pancMeta)
 #' data(protMeta)
-#' panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
-
+#' pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
+#'
 calc_spatial_diff_ex<-function(spe,
                                assay_name='proteomics',
                                log_transformed=FALSE,

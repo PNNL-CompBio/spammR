@@ -5,7 +5,7 @@
 \alias{pancMeta}
 \title{Sample metadata for the \code{pancData} file.}
 \format{
-An object of class \code{data.frame} with 63 rows and 7 columns.
+An object of class \code{data.frame} with 63 rows and 15 columns.
 }
 \usage{
 pancMeta

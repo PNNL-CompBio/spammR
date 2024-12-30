@@ -2,7 +2,8 @@
 % Please edit documentation in R/enrich_ora.R
 \name{enrich_ora}
 \alias{enrich_ora}
-\title{enrich_ora: Does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
+\title{enrich_ora
+enrich_ora does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
 This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
 specified in this function.
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly}
@@ -46,7 +47,8 @@ filtering statistically significant results. Default is adjusted p-value for mul
 a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 }
 \description{
-enrich_ora: Does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
+enrich_ora
+enrich_ora does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
 This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
 specified in this function.
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
@@ -60,6 +62,6 @@ For ORA using an external or already defined interest list of genes and gene set
 #diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',feature_colname='pancProts')
 #library(leapR)
 #data('msigdb')
-#ora.spe <- enrich_ora(diffex.spe,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
+#ora.res <- enrich_ora(diffex.spe,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
 
 }

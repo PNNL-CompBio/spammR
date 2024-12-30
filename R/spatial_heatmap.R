@@ -15,10 +15,12 @@
 #' @param spe SpatialExperiment (SPE) object
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
 #' @param plotBackground_img Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)
-#' @param image_sample_ids c(sample_id, image_id) The names of the background image's sample_id and image_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
+#' @param sample_id The names of the background image's sample_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
+#'.@param image_id The name of the background image image_id. Together with the `sample_id` this provides a unique imge to plot.
 #' @param image_boundaries Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).
-#' @param spatial_coord_type Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner"
-#' @param spatial_coord_names Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord,Ycoord) or c(X,Y).
+#' @param spatial_coord_type Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner". Default is blank, which assumes coordinates are bottom right.
+#' @param spatial_coord_names Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord","Ycoord") or c("X","Y").
+#' @param spot_size Is a vector of length 2 describing the width and height of each spot.
 #' @details Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
 #' @param feature_type Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)
 #' @param feature Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
@@ -32,43 +34,42 @@
 #' @examples
 #' data(pancMeta)
 #' data(pancDataList)
-#'
+#' data(protMeta)
+#' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_ids='with_grid')
+#' res = spatial_heatmap(img0.spe, feature='INS', sample_id='Image0', image_id='with_grid', spatial_coord_names=c('x_pixels','y_pixels'), spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),label_column='IsletOrNot', interactive=FALSE)
 spatial_heatmap<-function(spe,
-                          assay_name,
+                          feature, ##feature to plot!
+                          feature_type='PrimaryGeneName', #element of rowdata to use
+                          assay_name = 'proteomics',
                           plotBackground_img=TRUE,
-                          image_sample_ids,
+                          sample_id,
+                          image_id,
                           image_boundaries,
-                          spatial_coord_type,
-                          spatial_coord_names,
-                          feature_type=NA,
-                          feature,
+                          spatial_coord_type='',
+                          spatial_coord_names = c('Xcoord','Ycoord'),
+                          spot_size = c(1,1), ##change this to default to 1 pixel
                           metric_display = "Protein abundance measure",
                           label_column=NA,
                           sample_label_color="white",
                           sample_label_size=1.75,
                           plot_title=NULL,
-                          interactive=TRUE){
- # library(ggplot2)
-  #library(ggnewscale)
-  #library(SpatialExperiment)
-  #library(dplyr)
-  #library(plotly)
-  #library(ggpubr)
-  #library(png)
-  #library(scales)
-  spatial = as.data.frame(spatialCoords(spe))
+                          interactive=FALSE){
+
   xcoord_name = spatial_coord_names[1]
   ycoord_name = spatial_coord_names[2]
+  spatial = colData(spe)[,c(xcoord_name,ycoord_name)]###this isnt getting rownames: as.data.frame(spatialCoords(spe))
+
   spatial[,xcoord_name] = as.numeric(spatial[,xcoord_name])
   spatial[,ycoord_name] = as.numeric(spatial[,ycoord_name])
   x = spatial[,xcoord_name]
   y = spatial[,ycoord_name]
+  rownames(spatial)<-rownames(colData(spe))
   f = SummarizedExperiment::assays(spe,withDimnames=FALSE)[[ assay_name ]]
   feature_values_toplot = c()
   if (is.na(feature_type)){ # default is whatever is used for rownames of f
     feature_values_toplot = as.numeric(f[feature,rownames(spatial)])
   }else{
-    rowNum_toplot = grep(feature,SummarizedExperiment::rowData(spe)[,feature_type])
+    rowNum_toplot = which(SummarizedExperiment::rowData(spe)[,feature_type]==feature)
     feature_values_toplot = as.numeric(f[rowNum_toplot,rownames(spatial)])
   }
   spatial_meta = SummarizedExperiment::colData(spe)
@@ -90,21 +91,27 @@ spatial_heatmap<-function(spe,
   y_botton = c()
   y_top = c()
   if (spatial_coord_type == "topright_corner"){
-    x_left = x-1
+    x_left = x-spot_size[1]
     x_right = x
-    y_bottom = y-1
+    y_bottom = y-spot_size[2]
     y_top = y
   }else if (spatial_coord_type == "topleft_corner"){
     x_left = x
-    x_right = x + 1
-    y_bottom = y-1
+    x_right = x + spot_size[1]
+    y_bottom = y-spot_size[2]
     y_top = y
+  }else{ ##default to bottom left corner
+    x_left = x
+    x_right = x+spot_size[1]
+    y_bottom = y
+    y_top=y+spot_size[2]
   }
   midpoint_x = (x_left + x_right)/2
   midpoint_y = (y_bottom + y_top)/2
-  # Background image
-  img_sample_id = image_sample_ids[1]
-  img_image_id = image_sample_ids[2]
+  # Background image has to match sample and image identifier
+  img_sample_id = sample_id
+  img_image_id=image_id
+
   # Row corresponding to the background image of interest, to be used for plotting
   imgData_rowNum = which(SpatialExperiment::imgData(spe)$sample_id==img_sample_id & SpatialExperiment::imgData(spe)$image_id==img_image_id)
   background_img = SpatialExperiment::imgData(spe)$data[[imgData_rowNum]]
@@ -116,18 +123,22 @@ spatial_heatmap<-function(spe,
   #img_png = ping::readPNG(background_img)
   # Scale feature_values_toplot to show relative values. Scale from 0 to 1. This scale is useful when comparing spatial plots of different proteins
   rescaled_feature_values = scales::rescale(feature_values_toplot,to=c(0,1))
-  #spatial = cbind(spatial,rescaled_feature_values)
-  p<- ggplot2::ggplot(spatial, aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=feature_values_toplot, label = lab))+
-    background_image(background_img)+
+
+  spatial = cbind(spatial,feature_values_toplot,rescaled_feature_values,
+                  x_left,x_right,y_bottom,y_top,midpoint_x,midpoint_y)|>
+    as.data.frame()
+ # print(spatial)
+  p<- ggplot2::ggplot(spatial, ggplot2::aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, alpha=0.8, fill=feature_values_toplot, label = lab))+
+    ggpubr::background_image(background_img)+
     ggplot2::geom_rect()+
     ggplot2::scale_fill_viridis_c()+
-    ggplot2::geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
+    ggplot2::geom_label(ggplot2::aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
     ggplot2:: labs(fill = metric_display)+
-    ggnewscale::new_scale_fill()+
-    ggplot2::geom_rect(aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
-    ggplot2:: geom_label(aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
-    ggplot2::scale_fill_viridis_c(limits=c(0,1))+
-    ggplot2::labs(fill = "Scaled values (min=0, max=1)")+
+  #  ggnewscale::new_scale_fill()+
+  #  ggplot2::geom_rect(ggplot2::aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
+  #  ggplot2:: geom_label(ggplot2::aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
+  #  ggplot2::scale_fill_viridis_c(limits=c(0,1))+
+   # ggplot2::labs(fill = "Scaled values (min=0, max=1)")+
     ggplot2::theme_bw()+
     ggplot2::xlim(xmin_image,xmax_image)+
     ggplot2::ylim(ymin_image,ymax_image)+

@@ -22,11 +22,12 @@ LazyData: true
 biocViews: 
   SpatialProteomics,
   SpatialOmics
+  BiocStyle  
 Depends:
     SummarizedExperiment,
     SpatialExperiment,
     limma,
-    R (>= 3.5.0)
+    R (>= 4.0.0),
 Imports: 
     dplyr,
     ggplot2,
@@ -40,3 +41,4 @@ Imports:
     spdep,
     ggrepel,
     leapR
+
