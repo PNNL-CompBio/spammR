@@ -13,7 +13,7 @@ convert_to_spe(
   remove_samples = NULL,
   feature_data_colname = NULL,
   feature_meta_colname = NULL,
-  spatialCoords_colnames = c("Xcoord", "Ycoord"),
+  spatialCoords_colnames = c("X pixels", "Y pixels"),
   samples_common_identifier = "sample",
   image_files = NULL,
   image_ids = NULL,

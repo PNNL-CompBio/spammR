@@ -6,20 +6,21 @@
 \usage{
 spatial_heatmap(
   spe,
-  assay_name,
+  assay_name = "proteomics",
   plotBackground_img = TRUE,
   image_sample_ids,
   image_boundaries,
-  spatial_coord_type,
-  spatial_coord_names,
-  feature_type = NA,
+  spatial_coord_type = "",
+  spatial_coord_names = c("Xcoord", "Ycoord"),
+  spot_size = c(1, 1),
+  feature_type = "PrimaryGeneName",
   feature,
   metric_display = "Protein abundance measure",
   label_column = NA,
   sample_label_color = "white",
   sample_label_size = 1.75,
   plot_title = NULL,
-  interactive = TRUE
+  interactive = FALSE
 )
 }
 \arguments{
@@ -73,5 +74,7 @@ Future versions of spatialPlot_feature() to include additional options for spati
 \examples{
 data(pancMeta)
 data(pancDataList)
-
+data(protMeta)
+img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
+res=spatial_heatmap(img0.spe,feature='INS',image_sample_ids='Image0',spatial_coord_names=c('X pixels','Y pixels'),image_boundaries=c(0,0,860,720),interactive=FALSE)
 }

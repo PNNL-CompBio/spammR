@@ -30,12 +30,12 @@
 #'
 
 #Example input parameters (remove this once we have it all in examples)
-# samples_common_identifier1 = "Image0" # Name of a common identifier for samples
+# samples_common_identifier = "Image0" # Name of a common identifier for samples
 # img1 = "/Users/sohi472/Library/CloudStorage/OneDrive-PNNL/Projects/BICCN/data/brain_14ROIs_data_Aug24_2023/tissue_images_forPlotting/Image0_Raw_noMarkings_cropped_forPlotting.png"
 # img2 = "/Users/sohi472/Library/CloudStorage/OneDrive-PNNL/Projects/BICCN/data/brain_14ROIs_data_Aug24_2023/tissue_images_forPlotting/Image0_ROIsMarked_cropped_forPlotting.png"
-# image_files1 = c(img1,img2)
-# image_ids1 = c("Raw_noMarkings","ROIsMarked") # Image names/identifiers for image paths provided in image_files
-# image_samples_common_identifier1 = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
+# image_files = c(img1,img2)
+# image_ids = c("Raw_noMarkings","ROIsMarked") # Image names/identifiers for image paths provided in image_files
+# image_samples_common_identifier = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
 
 convert_to_spe <-function(dat, ##expression data frame - rows are feature,s columns are samples
                           sample_meta, ##table of metadata for samples. rownames are columns of unless sample_colname is set
@@ -45,7 +45,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
                           remove_samples = NULL, #list of samples to remove
                           feature_data_colname = NULL, ##colname of features in `dat`, if not rowname of data matrix
                           feature_meta_colname = NULL, #column with protein identifeirs in `feature_meta` if not rownames
-                          spatialCoords_colnames = c('Xcoord','Ycoord'),
+                          spatialCoords_colnames = c('x_pixels','y_pixels'),
                           samples_common_identifier = 'sample',
                           image_files = NULL,
                           image_ids = NULL,
@@ -65,6 +65,11 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
   }
 
   sample_colnames <- intersect(colnames(dat),rownames(sample_meta))
+  if(length(sample_colnames)==0){
+    print("ERROR: rownames of sample metadata must match column names of data")
+    exit()
+  }
+
   dat_samples_only = dat[,sample_colnames]
 
   # Keep rows in meta data that have a corresponding sample ID in the omics measurements file

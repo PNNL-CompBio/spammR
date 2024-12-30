@@ -2,7 +2,8 @@
 % Please edit documentation in R/calc_spatial_diff_ex.R
 \name{calc_spatial_diff_ex}
 \alias{calc_spatial_diff_ex}
-\title{calc_spatial_diff_ex: does differential expression analysis using annotations in a SpatialExperiment object}
+\title{calc_spatial_diff_ex
+Calculates differential expression analysis using annotations in a SpatialExperiment object}
 \usage{
 calc_spatial_diff_ex(
   spe,
@@ -31,7 +32,8 @@ calc_spatial_diff_ex(
 a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
 }
 \description{
-calc_spatial_diff_ex: does differential expression analysis using annotations in a SpatialExperiment object
+calc_spatial_diff_ex
+Calculates differential expression analysis using annotations in a SpatialExperiment object
 }
 \examples{
 data(pancData)
