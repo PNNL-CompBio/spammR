@@ -24,10 +24,13 @@ To install the package currently you must install directly from `GitHub` along w
 library(devtools)
 devtools::install_github('PNNL-CompBio/leapR')
 devtools::install_github('PNNL-CompBio/spammR')
+
 ```
 
 Once the package is installed you can begin to evaluate the functionality. 
-
+```{r load package}
+library(spammR)
+```
 # Pancreatic spatial proteomic measurements
 
 To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measused from 7 independent regions of a single human pancreas. Each image is segemented into nine 'voxels', with one voxel per image representing a cluster of islet cells. 
@@ -53,27 +56,53 @@ Currently we are loading all data into the same object to evaluate the images to
 First we need to load in the images 
 ## Spatial data with image
 ```{r spatial data}
-imglist=c('Image_0','Image_1','Image_2','Image_3','Image_4')
+imglist=c('Image_0','Image_1','Image_2','Image_3','Image_4','Image_7','Image_10')
 
-allres=lapply(imglist,
+spes=lapply(imglist,
               function(x){
                 convert_to_spe(pancDataList[[x]],pancMeta,protMeta,
-                              feature_meta_colname='pancProts',spatialCoords_colnames=c('x_pixels','y_pixels'),
-                              image_files=system.file('extdata',paste0(x,'.png'),package='spammR'),
+                              feature_meta_colname='pancProts',
+                              spatialCoords_colnames=c('x_pixels','y_pixels'),
+                              image_files=system.file('extdata',
+                                                      paste0(x,'.png'),package='spammR'),
                               image_samples_common_identifier=x,
                               samples_common_identifier = x,
                               image_ids='with_grid')
               })
-names(allres)<- imglist
+names(spes)<- imglist
 ```
+We now have a `SpatialExperiment` object for each of the 7 images in our dataset paired with our expression data.
 
 ## Plot heatmap
 Now that we have this data we can begin to plot the values. Since this is pancreatic data, we focus on the expression of the Insulin protein `INS`. 
 
 ```{r do ploting}
 
+imgs = lapply(imglist,function(x){
+    spatial_heatmap(spes[[x]],
+                    feature='INS',
+                    sample_id=x,
+                    image_id='with_grid',
+                    spatial_coord_names=c('x_pixels','y_pixels'),
+                    spot_size=unlist(colData(spes[[x]])[1,c('spot_width','spot_height')]),
+                    image_boundaries=unlist(colData(spes[[x]])[1,c('x_origin','y_origin','x_max','y_max')]),
+                    label_column='IsletOrNot',
+                    interactive=FALSE)
+  })
+    
+imgs[5]
+```
+
+We can now plot the images with the value of insulin.
+
+## Plot with multiple proteins
+If we are interested in the combined expression of proteins we can also visualize those.
+
+```{r plot pathway}
+
 
 ```
+
 # References {.unnumbered}
 
 1. Gosline et al.
