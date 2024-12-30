@@ -37,11 +37,12 @@ To evaluate the features of this package we are using pancreatic data from [Gosl
 
 # Loading data into SpatialExperiment object
 
-We first include functionality to load the data into a `SpatialExperiment` object. This includes creating a careful metadata file with each protomic spot coordinate in the image.  
+We first include functionality to load the data into a `SpatialExperiment` object. This includes creating a careful metadata file with each proteomic spot coordinate in the image.  The proteomics data is stored as a tabular file.
 
 ```{r load data}
 
 ```
+
 
 # Differential Expression
 
