@@ -18,8 +18,8 @@
 #' @examples
 #' data(pancData)
 #' data(pancMeta)
-#' spe <- convert_to_spe(pancData,pancMeta)
-#'
+#' pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' ##res = distance_based_analysis(pooled.panc.spe)
 
 
 

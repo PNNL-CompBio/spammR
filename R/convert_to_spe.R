@@ -29,14 +29,6 @@
 #' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
 #'
 
-#Example input parameters (remove this once we have it all in examples)
-# samples_common_identifier = "Image0" # Name of a common identifier for samples
-# img1 = "/Users/sohi472/Library/CloudStorage/OneDrive-PNNL/Projects/BICCN/data/brain_14ROIs_data_Aug24_2023/tissue_images_forPlotting/Image0_Raw_noMarkings_cropped_forPlotting.png"
-# img2 = "/Users/sohi472/Library/CloudStorage/OneDrive-PNNL/Projects/BICCN/data/brain_14ROIs_data_Aug24_2023/tissue_images_forPlotting/Image0_ROIsMarked_cropped_forPlotting.png"
-# image_files = c(img1,img2)
-# image_ids = c("Raw_noMarkings","ROIsMarked") # Image names/identifiers for image paths provided in image_files
-# image_samples_common_identifier = c("Image0","Image0") #Name of a common identifier that links specific samples to a experiment/condition represented by a given image.
-
 convert_to_spe <-function(dat, ##expression data frame - rows are feature,s columns are samples
                           sample_meta, ##table of metadata for samples. rownames are columns of unless sample_colname is set
                           feature_meta, #table of metadata, row names match the rownmes of `dat` unless protein_colname is set
@@ -99,7 +91,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
 
   features <-intersect(rownames(feature_meta),rownames(dat))
   if(length(features)<nrow(dat)){
-    print(paste("Only have metadata for",length(features),'features out of',nrow(dat),'data points'))
+    print(paste("Mapping metadata for",length(features),'features out of',nrow(dat),'data points'))
   }
 
   feature_meta<-feature_meta[features,]
