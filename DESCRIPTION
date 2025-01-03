@@ -1,6 +1,6 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
-Version: 0.0.0.9000
+Version: 0.1
 Authors@R: 
     person("Sara", "Gosline", , "sara.gosline@pnnl.gov", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -14,8 +14,7 @@ RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0),
     BiocStyle, 
-    knitr, 
-    rmarkdown
+    knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 LazyData: true

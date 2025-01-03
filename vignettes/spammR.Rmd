@@ -1,102 +1,200 @@
 ---
 title: "spammR: Spatial Analysis of Multiomics Measurements in R"
-author:
-- name: Harkirat Sohi
-  affiliation: Pacific Northwest National Laboratory
-- name: Sara Gosline
-  affiliation: Pacific Northwest National Laboratory
-  email: sara.gosline@pnnl.gov
+author: "Harkirat Sohi, Sara Gosline"
 package: spammR
+date: "`r format(Sys.Date(), '%b %d, %Y')`"
 output:
-  BiocStyle::html_document
-abstract: |
-  A basic walkthrough of how to use and analyzie spatial multiomics measurements in the spammR package
+    BiocStyle::html_document:
+        toc: true
+        number_sections: true
+        toc_depth: 3
+        toc_float:
+            collapsed: true
+description: |
+  A basic walkthrough of how to use and analyze spatial multiomics measurements in the spammR package. 
+  
 vignette: |
   %\VignetteIndexEntry{spammR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  
 ---
 
 # Getting started
 
-To install the package currently you must install directly from `GitHub` along with the leapR dependency as shown below.
-```
-library(devtools)
-devtools::install_github('PNNL-CompBio/leapR')
-devtools::install_github('PNNL-CompBio/spammR')
+To install the package currently you must install directly from `GitHub` along with the leapR dependency as shown below. Before release we hope to move to Bioconductor.
+
+The `leapR` package is designed for flexible pathway enrichment and currently must be installed before spammR. 
+
+```  
+  ##install if not already installed
+  library(devtools)
+  devtools::install_github('PNNL-CompBio/leapR')
+  devtools::install_github('PNNL-CompBio/spammR')
 
 ```
 
-Once the package is installed you can begin to evaluate the functionality. 
-```{r load package}
+Once the package is installed you load the library, including the test data.
+
+```{r load package, message=FALSE,warning=FALSE}
+##load spammR
 library(spammR)
-```
-# Pancreatic spatial proteomic measurements
-
-To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measused from 7 independent regions of a single human pancreas. Each image is segemented into nine 'voxels', with one voxel per image representing a cluster of islet cells. 
-
-# Loading data into SpatialExperiment object
-
-We first include functionality to load the data into a `SpatialExperiment` object. This includes creating a careful metadata file with each proteomic spot coordinate in the image.  The proteomics data is stored as a tabular file.
-
-```{r load data}
 
 ```
 
+# Collecting data to analyze
 
-# Differential Expression
+`spammR` enables the analysis of two disparate sets of data: image-based data and numerical measurements of omics data. We assume each omics measurement is collected in a single sample, and that there are specific spatial coordinates for that sample in the image. We leverage the [SpatialExperiment](https://www.bioconductor.org/packages/release/bioc/html/SpatialExperiment.html) object to store the data for each image/measurement pair. 
 
-# Distance based measurements
+## Data overview and examples
+
+The `spammR` package requires omics data with spatial coordinates for the functions to run successfully. Here we describe the data required and show examples.
+
+### Omics Measurement Data
+
+`SpatialExperiment` can hold multiple omics measurements mapping to the same sample identifier in different 'slots'. This data can be a tabular data frame or matrix with rownames referencing measurements in a particular sample (e.g. gene, species) and column names representing sample identifiers. An example of this can be found by loading `data(pancData)`.
+
+To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measured from 7 independent regions of a single human pancreas. Each image is segmented into nine 'voxels', with one voxel per image representing a cluster of islet cells.
+
+```{r omics data}
+data(pancData)
+utils::head(pancData[,1:8])
+```
+
+Here the rownames represent protein identifiers and the column names represent individual samples. In this table we collapse omics data from 7 distinct experiments into a single data frame to increase statistical power in our pathway analysis. However, we can also separate them out by image, as we do in the `data(pancDataList)`:
+
+```{r data list}
+data(pancDataList)
+print(length(pancDataList))
+head(pancDataList[[2]][,1:8])
+```
+
+These objects are used below in our analysis examples.
+
+### Sample metadata
+The samples metadata table contains mappings between samples and metadata. An example can be found in `data(pancMeta)`. Most importantly we require the image mapping information, which includes:
+    -   _Image coordinates:_ to map the image to a coordinate space we need to know the `x_origin`, and `y_origin` (assumed to be zero) as well as `x_max` and `y_max`, which is the top right of the image. The package plost the *entire* image so specifying these coordinates ensures that all other points are properly mapped.
+    -   _Sample coordinates:_ Each sample has its own `x_coord` and `y_coord`.
+    -   _Spot size:_ `spot_height` and `spot_width`.
+  
+```{r samp meta}
+data(pancMeta)
+head(pancMeta)
+```
+
+This metadata contains information for all 7 images, so we do not need a separate metadata file for each image, the `convert_to_spe` function will simply take the metadata relevant to the data file.
+
+### Image files
+There can be multiple image files associated with a single set of omics measurements. Currently we have tested working with files in `png` format. Each image we have is stained so that we can identify the Islet cells. Each image also has a grid superimposed to show where the sample measurements came from:
+
+```{r img}
+library(cowplot)
+
+cowplot::ggdraw()+cowplot::draw_image('../inst/extdata/Image_1.png')
+```
+
+Now we can use this image and others to visualize omics data.
+
+### Omics metadata
+The last set of metadata relates to the `rows` of the omics measurement data. When using gene-based data, this will be the genes or proteins in the dataset. When using metagenomics, this will refer to the species. One column of this table must uniquely map to the rownames of the omics data. 
+
+```{r omics meta}
+data(protMeta)
+head(protMeta[,c('pancProts','EntryName','PrimaryGeneName')])
+```
+This data helps us find better gene identifiers.
 
 
+## Loading data into spatial experiment object.
+
+Now that we have all the data loaded we can build a `SpatialExperiment` object either using ALL samples or just the samples in a single image. 
+
+```{r spe combined}
+pooled.panc.spe <- convert_to_spe(pancData,  ##pooled data table
+                                  pancMeta,  ##pooled metadata
+                                  protMeta,  ##protein identifiers
+                                  feature_meta_colname='pancProts', #column name
+                                  samples_common_identifier='')
+print(pooled.panc.spe)
+
+```
+
+We can also create a list of `SpatialExperiment` objects, one for each of the 7 images we have.
+
+```{r spe list}
+
+##list of image names
+imglist=c('Image_0','Image_1','Image_2','Image_3','Image_4','Image_7','Image_10')
+
+img.spes=lapply(imglist,
+              function(x){
+                convert_to_spe(pancDataList[[x]],
+                               pancMeta,
+                               protMeta,
+                              feature_meta_colname='pancProts',
+                              spatialCoords_colnames=c('x_pixels','y_pixels'),
+                              image_files=system.file('extdata',
+                                                      paste0(x,'.png'),
+                                                      package='spammR'),
+                              image_samples_common_identifier=x,
+                              samples_common_identifier = x,
+                              image_ids='with_grid')
+              })
+names(img.spes)<- imglist
+
+print(img.spes)
+```
+
+Now we can use these objects for analysis
+
+# Expression and pathway analysis
+
+## Differential expression
+
+
+
+## Distance based measurements
 
 # Plotting with image data
 
 Currently we are loading all data into the same object to evaluate the images together. However, we can also evaluate the images case by case to visualize the expression togehter with the image information.
 
 First we need to load in the images 
-## Spatial data with image
-```{r spatial data}
-imglist=c('Image_0','Image_1','Image_2','Image_3','Image_4','Image_7','Image_10')
 
-spes=lapply(imglist,
-              function(x){
-                convert_to_spe(pancDataList[[x]],pancMeta,protMeta,
-                              feature_meta_colname='pancProts',
-                              spatialCoords_colnames=c('x_pixels','y_pixels'),
-                              image_files=system.file('extdata',
-                                                      paste0(x,'.png'),package='spammR'),
-                              image_samples_common_identifier=x,
-                              samples_common_identifier = x,
-                              image_ids='with_grid')
-              })
-names(spes)<- imglist
+## Spatial data with image
+
+```{r spatial data}
+
+
 ```
+
 We now have a `SpatialExperiment` object for each of the 7 images in our dataset paired with our expression data.
 
 ## Plot heatmap
-Now that we have this data we can begin to plot the values. Since this is pancreatic data, we focus on the expression of the Insulin protein `INS`. 
+
+Now that we have this data we can begin to plot the values. Since this is pancreatic data, we focus on the expression of the Insulin protein `INS`.
 
 ```{r do ploting}
 
 imgs = lapply(imglist,function(x){
-    spatial_heatmap(spes[[x]],
+    spatial_heatmap(img.spes[[x]],
                     feature='INS',
                     sample_id=x,
                     image_id='with_grid',
                     spatial_coord_names=c('x_pixels','y_pixels'),
-                    spot_size=unlist(colData(spes[[x]])[1,c('spot_width','spot_height')]),
-                    image_boundaries=unlist(colData(spes[[x]])[1,c('x_origin','y_origin','x_max','y_max')]),
+                    spot_size=unlist(colData(img.spes[[x]])[1,c('spot_width','spot_height')]),
+                    image_boundaries=unlist(colData(img.spes[[x]])[1,c('x_origin','y_origin','x_max','y_max')]),
                     label_column='IsletOrNot',
                     interactive=FALSE)
   })
     
-imgs[5]
+imgs[[5]]
 ```
 
 We can now plot the images with the value of insulin.
 
 ## Plot with multiple proteins
+
 If we are interested in the combined expression of proteins we can also visualize those.
 
 ```{r plot pathway}
@@ -106,10 +204,10 @@ If we are interested in the combined expression of proteins we can also visualiz
 
 # References {.unnumbered}
 
-1. Gosline et al.
-2. Spatial Experiment
+1.  Gosline et al.
+2.  Spatial Experiment
 
-# Session info
+# Session info  {.unnumbered}
 
 ```{r sessionInfo, echo=FALSE}
 sessionInfo()

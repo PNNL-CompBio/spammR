@@ -19,5 +19,5 @@
 
 #'
 #' List of proteomic measurements in a list sorted from individual regions of the pancreas.
-#'
+#' @source \url{panc paper}
 "pancDataList"

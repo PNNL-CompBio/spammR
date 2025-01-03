@@ -7,6 +7,9 @@
 \format{
 An object of class \code{list} of length 7.
 }
+\source{
+\url{panc paper}
+}
 \usage{
 pancDataList
 }
