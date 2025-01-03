@@ -14,8 +14,7 @@ RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0),
     BiocStyle, 
-    knitr, 
-    rmarkdown
+    knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 LazyData: true
