@@ -74,7 +74,7 @@ spatial_heatmap<-function(spe,
   }
   spatial_meta = SummarizedExperiment::colData(spe)
   if (is.null(plot_title)){
-    title = paste("Spatial signature for ", feature, sep="")
+    title = paste("Spatial signature for", feature, "in",sample_id)
   }else{
     title = plot_title
   }

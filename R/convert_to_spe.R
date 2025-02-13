@@ -98,6 +98,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
   dat_samples_only<-dat_samples_only[features,]
 
   spatialCoords_dat = as.matrix(apply(sample_meta[,spatialCoords_colnames],2,as.numeric))
+  rownames(spatialCoords_dat) <- rownames(sample_meta)
 
   spe.out <-SpatialExperiment::SpatialExperiment(assays=list(as.matrix(dat_samples_only)),
                               colData=sample_meta,

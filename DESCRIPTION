@@ -20,8 +20,9 @@ VignetteBuilder: knitr
 LazyData: true
 biocViews: 
   SpatialProteomics,
-  SpatialOmics
-  BiocStyle  
+  SpatialOmics,
+  BiocStyle,
+  IRanges
 Depends:
     SummarizedExperiment,
     SpatialExperiment,
@@ -39,5 +40,7 @@ Imports:
     scales,
     spdep,
     ggrepel,
+    IRanges,
+    cowplot,
     leapR
 

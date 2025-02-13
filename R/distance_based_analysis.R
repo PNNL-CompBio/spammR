@@ -2,6 +2,7 @@
 #' protein/feature abundance differences between samples.
 
 #' @import SpatialExperiment
+#' @import IRanges
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data
 #' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
@@ -18,27 +19,47 @@
 #' @examples
 #' data(pancData)
 #' data(pancMeta)
+#' data(pancDataList)
 #' pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#' ##res = distance_based_analysis(pooled.panc.spe)
+#' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
+
+#' ##res = distance_based_analysis(pooled.panc.spe,assayName='proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet',corr_type='spearman')
 
 
 
 distance_based_analysis <- function(spe,
                                     assayName,
-                                    sample_dimensions,
+                                    #sample_dimensions,
+                                    spotHeightCol='spot_height',
+                                    spotWidthCol='spot_width',
                                     sampleCategoryCol,
                                     sampleCategoryValue,
                                     featuresNameCol,
                                     corr_type="pearson",
                                     corr_thresh = 0.5,
                                     min_samplePoints_forCorr=6){
+
+
+
   #library(SpatialExperiment)
-  # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates
-  sample_dim_x = sample_dimensions[1]
-  sample_dim_y = sample_dimensions[2]
+  # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates (SG: should be bottom!?!)
+ # sample_dim_x = sample_dimensions[1]
+#  sample_dim_y = sample_dimensions[2]
   spatial_coords = data.frame(spatialCoords(spe))
-  centroid_x = as.numeric(spatial_coords[,1] + sample_dim_x/2)
-  centroid_y = as.numeric(spatial_coords[,2] - sample_dim_y/2)
+
+  ##first we use Iranges to check to see if there are overlapping areas (in x-space)
+  xranges = IRanges(start=spatial_coords[,1],width=colData(spe)[[spotWidthCol]])|>
+      unique()
+  yranges = IRanges(start=spatial_coords[,2],width=colData(spe)[[spotHeightCol]])|>
+    unique()
+  allovers = c(countOverlaps(xranges),countOverlaps(yranges))
+  if(any(allovers)>1){
+    exit()
+  }
+
+
+  centroid_x = as.numeric(spatial_coords[,1] + colData(spe)[[spotWidthCol]]/2)#sample_dim_x/2)
+  centroid_y = as.numeric(spatial_coords[,2] + colData(spe)[[spotHeightCol]]/2)#- sample_dim_y/2)
   centroid_coords = data.frame(cbind(centroid_x,centroid_y))
   rownames(centroid_coords) = rownames(spatial_coords)
   # Compute distance between samples
