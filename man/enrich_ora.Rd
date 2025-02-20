@@ -2,11 +2,7 @@
 % Please edit documentation in R/enrich_ora.R
 \name{enrich_ora}
 \alias{enrich_ora}
-\title{enrich_ora
-enrich_ora does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
-This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
-specified in this function.
-For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly}
+\title{Calculate functional or pathway enrichment}
 \usage{
 enrich_ora(
   spe,
@@ -47,8 +43,7 @@ filtering statistically significant results. Default is adjusted p-value for mul
 a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 }
 \description{
-enrich_ora
-enrich_ora does over-representation analysis (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
+\code{enrich_ora()} calculates over-representation statistics (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
 This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
 specified in this function.
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly

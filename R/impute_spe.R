@@ -1,4 +1,5 @@
-#' impute_spe: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
+#' Impute missing values based on spatial coordinates
+#' @description `impute_spe()` carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
 #' @import matrixStats
 #' @import impute
 #' @import spdep

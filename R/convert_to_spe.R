@@ -1,5 +1,5 @@
-#' convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
-
+#' Create a `SpatialExperiment` object from data
+#' @description `convert_to_spe()` Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
 #' @export
 #' @import SummarizedExperiment
 #' @import SpatialExperiment

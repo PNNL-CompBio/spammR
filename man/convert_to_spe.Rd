@@ -2,7 +2,7 @@
 % Please edit documentation in R/convert_to_spe.R
 \name{convert_to_spe}
 \alias{convert_to_spe}
-\title{convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.}
+\title{Create a \code{SpatialExperiment} object from data}
 \usage{
 convert_to_spe(
   dat,
@@ -51,7 +51,7 @@ convert_to_spe(
 spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Ready to be used as input in spammR functions that require SPE object as input.
 }
 \description{
-convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
+\code{convert_to_spe()} Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
 }
 \examples{
 data(pancData)

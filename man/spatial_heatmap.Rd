@@ -2,12 +2,12 @@
 % Please edit documentation in R/spatial_heatmap.R
 \name{spatial_heatmap}
 \alias{spatial_heatmap}
-\title{spatial_heatmap: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane}
+\title{Plot data in heatmap together with image}
 \usage{
 spatial_heatmap(
   spe,
   feature,
-  feature_type = "PrimaryGeneName",
+  feature_type = NA,
   assay_name = "proteomics",
   plotBackground_img = TRUE,
   sample_id,
@@ -62,7 +62,7 @@ spatial_heatmap(
 spatial_plot: Spatial heatmap of the chosen feature
 }
 \description{
-spatial_heatmap: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
+\code{spatial_heatmap()} Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
 }
 \details{
 Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)

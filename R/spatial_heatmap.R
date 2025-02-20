@@ -1,4 +1,5 @@
-#' spatial_heatmap: Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
+#' Plot data in heatmap together with image
+#' @description `spatial_heatmap()` Creates a spatial heatmap for a given feature in a SpatialExperiment object (spe) and provides the option to label each sample in the x-y plane
 #' @details Assumes that every sample (column) in assay(spe) has a corresponding x,y coordinate given in spatialCoords(spe)
 #' @details Assumes that colData(spe) and spatialCoords(spe) are provided in the same order of samples (rows).
 #' @details Assumes that the spe object contains background image data, stored in imgData(spe) if plotBackground_img is specified to be TRUE below.
@@ -39,7 +40,7 @@
 #' res = spatial_heatmap(img0.spe, feature='INS', sample_id='Image0', image_id='with_grid', spatial_coord_names=c('x_pixels','y_pixels'), spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),label_column='IsletOrNot', interactive=FALSE)
 spatial_heatmap<-function(spe,
                           feature, ##feature to plot!
-                          feature_type='PrimaryGeneName', #element of rowdata to use
+                          feature_type=NA, #element of rowdata to use
                           assay_name = 'proteomics',
                           plotBackground_img=TRUE,
                           sample_id,
@@ -54,27 +55,41 @@ spatial_heatmap<-function(spe,
                           sample_label_size=1.75,
                           plot_title=NULL,
                           interactive=FALSE){
-
+  ##first get the spatial coordinates from the metadata
   xcoord_name = spatial_coord_names[1]
   ycoord_name = spatial_coord_names[2]
-  spatial = colData(spe)[,c(xcoord_name,ycoord_name)]###this isnt getting rownames: as.data.frame(spatialCoords(spe))
+  spatial = SummarizedExperiment::colData(spe)[,c(xcoord_name,ycoord_name)]###this isnt getting rownames: as.data.frame(spatialCoords(spe))
 
   spatial[,xcoord_name] = as.numeric(spatial[,xcoord_name])
   spatial[,ycoord_name] = as.numeric(spatial[,ycoord_name])
   x = spatial[,xcoord_name]
   y = spatial[,ycoord_name]
-  rownames(spatial)<-rownames(colData(spe))
+  rownames(spatial)<-rownames(SummarizedExperiment::colData(spe))
+
+  ##now we can get the feature data
   f = SummarizedExperiment::assays(spe,withDimnames=FALSE)[[ assay_name ]]
   feature_values_toplot = c()
+
   if (is.na(feature_type)){ # default is whatever is used for rownames of f
-    feature_values_toplot = as.numeric(f[feature,rownames(spatial)])
-  }else{
-    rowNum_toplot = which(SummarizedExperiment::rowData(spe)[,feature_type]==feature)
-    feature_values_toplot = as.numeric(f[rowNum_toplot,rownames(spatial)])
+    rowNum_toplot  = which(rownames(f)%in%feature)
+    }else{
+      rowNum_toplot = which(SummarizedExperiment::rowData(spe)[,feature_type]%in%feature)
+    }
+
+  if(length(feature)==1){ ##we are just plotting a single row
+    feature_values_toplot =f[rowNum_toplot,]
+    }else{ ##we are plotting more than one value and need to average
+        feature_values_toplot = colSums(f[rowNum_toplot,],na.rm=T)
   }
+
+
   spatial_meta = SummarizedExperiment::colData(spe)
   if (is.null(plot_title)){
-    title = paste("Spatial signature for", feature, "in",sample_id)
+    if(length(feature)==1)
+      title = paste("Spatial signature for", feature, "in",sample_id)
+    else
+      title = paste("Spatial signature for",length(feature), "features in",sample_id)
+
   }else{
     title = plot_title
   }

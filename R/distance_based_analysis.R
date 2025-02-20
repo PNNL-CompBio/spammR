@@ -1,6 +1,6 @@
-#' distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
+#' Identify multiomic features correlated with an distance to an image feature
+#' @description distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
 #' protein/feature abundance differences between samples.
-
 #' @import SpatialExperiment
 #' @import IRanges
 #' @export

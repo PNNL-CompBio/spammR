@@ -2,8 +2,7 @@
 % Please edit documentation in R/distance_based_analysis.R
 \name{distance_based_analysis}
 \alias{distance_based_analysis}
-\title{distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
-protein/feature abundance differences between samples.}
+\title{Identify multiomic features correlated with an distance to an image feature}
 \usage{
 distance_based_analysis(
   spe,
