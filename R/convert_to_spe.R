@@ -91,7 +91,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
 
   features <-intersect(rownames(feature_meta),rownames(dat))
   if(length(features)<nrow(dat)){
-    print(paste("Mapping metadata for",length(features),'features out of',nrow(dat),'data points'))
+    message(paste("Mapping metadata for",length(features),'features out of',nrow(dat),'data points'))
   }
 
   feature_meta<-feature_meta[features,]

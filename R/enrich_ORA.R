@@ -1,7 +1,7 @@
 #' Calculate functional or pathway enrichment
 #' @description `enrich_ora()` calculates over-representation statistics (ORA) using an interest list of genes from differential expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
-#' This function uses results from spatialDiffEx.R and assumes input of a specific format. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
-#' specified in this function.
+#' This function uses results from `calc_spatial_diff_ex`. Interest list of genes for ORA is obtained from spatialDiffEx results based on the criteria
+#' specified in this function.It is a wrapper for the `leapR` package which is required
 #' For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 #' @export
 #' @import leapR

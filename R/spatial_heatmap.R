@@ -79,16 +79,16 @@ spatial_heatmap<-function(spe,
   if(length(feature)==1){ ##we are just plotting a single row
     feature_values_toplot =f[rowNum_toplot,]
     }else{ ##we are plotting more than one value and need to average
-        feature_values_toplot = colSums(f[rowNum_toplot,],na.rm=T)
+        feature_values_toplot = colMeans(f[rowNum_toplot,],na.rm=T)
   }
 
 
   spatial_meta = SummarizedExperiment::colData(spe)
   if (is.null(plot_title)){
     if(length(feature)==1)
-      title = paste("Spatial signature for", feature, "in",sample_id)
+      title = paste("Expression of", feature, "in",sample_id)
     else
-      title = paste("Spatial signature for",length(feature), "features in",sample_id)
+      title = paste("Expression of",length(feature), "features in",sample_id)
 
   }else{
     title = plot_title
