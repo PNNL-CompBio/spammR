@@ -2,7 +2,7 @@
 % Please edit documentation in R/impute_spe.R
 \name{impute_spe}
 \alias{impute_spe}
-\title{impute_spe: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).}
+\title{Impute missing values based on spatial coordinates}
 \usage{
 impute_spe(
   spe,
@@ -38,7 +38,7 @@ impute_spe(
 an SPE with an 'imputed' data frame
 }
 \description{
-impute_spe: carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
+\code{impute_spe()} carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
 }
 \details{
 Methods options and descriptions

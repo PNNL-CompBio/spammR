@@ -1,5 +1,5 @@
-#' calc_spatial_diff_ex
-#' Calculates differential expression analysis using annotations in a SpatialExperiment object
+#' Identify differentially abundant features across image
+#' @description `calc_spatial_diff_ex()` Calculates differential expression analysis using annotations in a SpatialExperiment object
 #' @import limma
 #' @import SpatialExperiment
 #' @export
@@ -7,9 +7,8 @@
 #' @param assay_name Name of the dataset stored in the spe object, that is to be used for the differential expression analysis. Example: znormalized_log2
 #' @param log_transformed Is the data given in spe log2 transformed TRUE or FALSE
 #' @param category_col Name of the column that specifies category of each sample. Example: "IsletOrNot"
-#' #Categories from category_col will be compared in the differential expression analysis
+#' #Categories from `category_col` will be compared in the differential expression analysis
 #' @param compare_vals A vector containing names of categories from category_col to be compared. Only required if there are more than two values in `category_col`
-#' @param feature_colname Name of column in rowData(spe), that is to be used for identifying features. Defaults to `proteins`
 #' @returns a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
 #  and assays(diffEx.spe) which contains the dataset on which differential expresssion analysis was carried out
 #' @examples
@@ -17,14 +16,13 @@
 #' data(pancMeta)
 #' data(protMeta)
 #' pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
+#' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot')
 #'
 calc_spatial_diff_ex<-function(spe,
                                assay_name='proteomics',
                                log_transformed=FALSE,
                                category_col,
-                               compare_vals,
-                               feature_colname){
+                               compare_vals){
   #collect samples by factor
   factors<-unique(SummarizedExperiment::colData(spe)[[category_col]])
   if(length(factors)<1){
@@ -47,7 +45,7 @@ calc_spatial_diff_ex<-function(spe,
   design <- stats::model.matrix(~fac)
   #print(design)
   dat = SummarizedExperiment::assays(spe)[[ assay_name ]]
-  rownames(dat) = SummarizedExperiment::rowData(spe)[rownames(dat),feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
+#  rownames(dat) = SummarizedExperiment::rowData(spe)[rownames(dat),feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
   if(!log_transformed){
     dat = log2(dat)
   }
@@ -61,14 +59,13 @@ calc_spatial_diff_ex<-function(spe,
   # Differential expression results will be stored in rowData(diffex.spe)
   res <- limma::topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
   colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
+  #res = data.frame(cbind(rownames(res),res))
 
-  res = data.frame(cbind(rownames(res),res))
-
-  colnames(res) = c(feature_colname,colnames_res)
+  colnames(res) = colnames_res #c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object
-  diffEx <- data.frame(dplyr::full_join(data.frame(SummarizedExperiment::rowData(spe)),res))
+  diffEx <- cbind(SummarizedExperiment::rowData(spe),res)#|>
+    #dplyr::left_join(res)
   SummarizedExperiment::rowData(diffex.spe) <- diffEx
-  #return(list("diffEx.df" = diffEx, "diffEx.spe"= diffex.spe))
-  #i dont think we need to return the data frame separately
+
   return(diffex.spe)
 }

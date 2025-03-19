@@ -1,4 +1,5 @@
-#' Generate a volcano plot to visualize results from differential expression analysis stored in a data frame.
+#' Create a volcano plot from differential expression data
+#' @description `volcano_plot()` generates a volcano plot to visualize results from differential expression analysis stored in a data frame.
 #' Use this function directly if differential expression results are in a separate data frame and not an spe object
 #' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
 #' -log10(p-value) vs. log2(fold change)

@@ -1,5 +1,5 @@
-#' convert_to_spe: Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
-
+#' Create a `SpatialExperiment` object from data
+#' @description `convert_to_spe()` Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
 #' @export
 #' @import SummarizedExperiment
 #' @import SpatialExperiment
@@ -91,7 +91,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
 
   features <-intersect(rownames(feature_meta),rownames(dat))
   if(length(features)<nrow(dat)){
-    print(paste("Mapping metadata for",length(features),'features out of',nrow(dat),'data points'))
+    message(paste("Mapping metadata for",length(features),'features out of',nrow(dat),'data points'))
   }
 
   feature_meta<-feature_meta[features,]

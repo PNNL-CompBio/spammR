@@ -2,16 +2,14 @@
 % Please edit documentation in R/calc_spatial_diff_ex.R
 \name{calc_spatial_diff_ex}
 \alias{calc_spatial_diff_ex}
-\title{calc_spatial_diff_ex
-Calculates differential expression analysis using annotations in a SpatialExperiment object}
+\title{Identify differentially abundant features across image}
 \usage{
 calc_spatial_diff_ex(
   spe,
   assay_name = "proteomics",
   log_transformed = FALSE,
   category_col,
-  compare_vals,
-  feature_colname
+  compare_vals
 )
 }
 \arguments{
@@ -22,24 +20,21 @@ calc_spatial_diff_ex(
 \item{log_transformed}{Is the data given in spe log2 transformed TRUE or FALSE}
 
 \item{category_col}{Name of the column that specifies category of each sample. Example: "IsletOrNot"
-#Categories from category_col will be compared in the differential expression analysis}
+#Categories from \code{category_col} will be compared in the differential expression analysis}
 
 \item{compare_vals}{A vector containing names of categories from category_col to be compared. Only required if there are more than two values in \code{category_col}}
-
-\item{feature_colname}{Name of column in rowData(spe), that is to be used for identifying features. Defaults to \code{proteins}}
 }
 \value{
 a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
 }
 \description{
-calc_spatial_diff_ex
-Calculates differential expression analysis using annotations in a SpatialExperiment object
+\code{calc_spatial_diff_ex()} Calculates differential expression analysis using annotations in a SpatialExperiment object
 }
 \examples{
 data(pancData)
 data(pancMeta)
 data(protMeta)
 pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
+diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot')
 
 }

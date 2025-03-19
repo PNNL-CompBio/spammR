@@ -2,8 +2,7 @@
 % Please edit documentation in R/distance_based_analysis.R
 \name{distance_based_analysis}
 \alias{distance_based_analysis}
-\title{distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
-protein/feature abundance differences between samples.}
+\title{Identify multiomic features correlated with an distance to an image feature}
 \usage{
 distance_based_analysis(
   spe,
@@ -13,9 +12,10 @@ distance_based_analysis(
   sampleCategoryCol,
   sampleCategoryValue,
   featuresNameCol,
-  corr_type = "pearson",
+  corr_type = "spearman",
   corr_thresh = 0.5,
-  min_samplePoints_forCorr = 6
+  min_samples = 5,
+  allowOverlaps = TRUE
 )
 }
 \arguments{
@@ -33,9 +33,9 @@ distance_based_analysis(
 
 \item{corr_thresh}{Minimum correlation value to be used for identifying proteins that have a correlation between protein abundance differences and distance between samples. Values greater than or equal to this theshold will be used.}
 
-\item{min_samplePoints_forCorr}{Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
-
 \item{sample_dimensions}{A vector containing the x and y dimensions of samples. Example: c(1,1) Sample Dimension units should match the units of spatial coordinates specified in spatialCoords(spe)}
+
+\item{min_samplePoints_forCorr}{Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
 }
 \value{
 dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.
@@ -52,5 +52,5 @@ data(pancMeta)
 data(pancDataList)
 pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
-##res = distance_based_analysis(pooled.panc.spe,assayName='proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet',corr_type='spearman')
+img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet')
 }

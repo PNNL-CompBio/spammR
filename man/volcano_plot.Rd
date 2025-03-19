@@ -2,10 +2,7 @@
 % Please edit documentation in R/volcano_plot.R
 \name{volcano_plot}
 \alias{volcano_plot}
-\title{Generate a volcano plot to visualize results from differential expression analysis stored in a data frame.
-Use this function directly if differential expression results are in a separate data frame and not an spe object
-Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
--log10(p-value) vs. log2(fold change)}
+\title{Create a volcano plot from differential expression data}
 \usage{
 volcano_plot(
   diffex.spe,
@@ -42,7 +39,7 @@ diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_
 volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
 }
 \description{
-Generate a volcano plot to visualize results from differential expression analysis stored in a data frame.
+\code{volcano_plot()} generates a volcano plot to visualize results from differential expression analysis stored in a data frame.
 Use this function directly if differential expression results are in a separate data frame and not an spe object
 Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
 -log10(p-value) vs. log2(fold change)
