@@ -148,7 +148,7 @@ hup<-spatial_heatmap(spe.plot,feature=rownames(ups),
 
 library(leapR)
 ora.res <- enrich_ora(islet_res,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
-print(ora.res[grep("INSULIN",rownames(ora.res)),])
+print(ora.res[grep("INSULIN",ora.res$msigdb),c('ingroup_n','pvalue','BH_pvalue')])
 
 ## ----pathway plotting,warning=FALSE-------------------------------------------
 
@@ -248,10 +248,32 @@ enriched.paths<-do.call(rbind,lapply(names(rank.imgs),function(x){
 
 }))
 
+enriched.paths|>
+  subset(BH_pvalue<0.05)|>
+  dplyr::group_by(msigdb)|>
+  dplyr::summarize(numImgs=dplyr::n())|>
+  dplyr::arrange(desc(numImgs))
 
 
 ## ----gradient plotting--------------------------------------------------------
 
+rprots<-subset(enriched.paths,msigdb=='KEGG_RIBOSOME')|>
+  dplyr::select(comp,ingroupnames)
+
+rprots<-unlist(strsplit(rprots[1,2],split=', '))
+
+spatial_heatmap(img.spes[[5]], feature = rprots,
+                        feature_type='PrimaryGeneName',
+                        sample_id=names(img.spes)[5], 
+                        image_id='with_grid',
+                        spatial_coord_names=c('x_pixels','y_pixels'), 
+                        spot_size=unlist(colData(img.spes[[5]])[1,c('spot_width',
+                                                          'spot_height')]), 
+                        image_boundaries=unlist(colData(img.spes[[5]])[1,c('x_origin',
+                                                                 'y_origin',
+                                                                 'x_max',
+                                                                 'y_max')]),
+                        label_column='IsletOrNot', interactive=FALSE)
 
 
 ## ----sessionInfo, echo=FALSE--------------------------------------------------

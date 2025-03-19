@@ -265,7 +265,7 @@ Now we can calculate the enriched pathways in the islets.
 
 library(leapR)
 ora.res <- enrich_ora(islet_res,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
-print(ora.res[grep("INSULIN",rownames(ora.res)),])
+print(ora.res[grep("INSULIN",ora.res$msigdb),c('ingroup_n','pvalue','BH_pvalue')])
 ```
 
 
