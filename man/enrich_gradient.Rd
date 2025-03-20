@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrich_gradient.R
 \name{enrich_gradient}
 \alias{enrich_gradient}
-\title{Calculate functional or pathway enrichment}
+\title{Calculate functional or pathway enrichment from a gradient}
 \usage{
 enrich_gradient(spe, geneset, feature_column, ranking_column)
 }
