@@ -72,7 +72,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
   ##second clean up the protein metadata and make sure we have proper rowData for the spatial object
   feature_supp <- NULL
   if(length(other_dat)>0){ ##first check to see if there is other data in `dat`
-    feature_supp = unique(dat[,other_dat])>
+    feature_supp = unique(dat[,other_dat])|>
       dplyr::mutate(proteins=rownames(dat))
   }
 
