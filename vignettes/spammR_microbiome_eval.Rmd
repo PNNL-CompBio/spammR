@@ -53,114 +53,13 @@ library(dplyr)
 
 The data that we will be working with is a KO enrichment from the 1000 soils project. The 1000 soils project has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
 
-
-## Performing the pathway enrichment
-
-### Retrieving Pathway information from KEGG:
-
-First we need to define which pathways we want to look at. Individual pathways identifiers can be found by fuzzy searching using the KEGG REST API. Let's say we want to look for the TCA cycle but aren't sure what the pathway is referred to in KEGG. We can fuzzy search 'cycle' and retrieve all related pathways using the following logic.
-
-```{r}
-searchterm = "cycle"
-url <- paste("https://rest.kegg.jp/find/pathway/", searchterm, sep = "")
-url |> 
-  request() |>
-  req_perform() |>
-  resp_body_string() |>
-  cat()
-```
-Let's say we want to get some more information on Glycolysis / Gluconeogenesis. This can be done by getting the pathway directly from KEGG via the following command.
-```{r}
-pathway <- "map00020"
-url <- paste("https://rest.kegg.jp/get/", pathway, sep = '')
-reply <- request(url) |> req_perform()
-pathway_info <- reply |> 
-  resp_body_string() |>
-  cat()
-
-pathway_info
-```
-
-As a next step we will be defining a function that can download and return a dataframe that contains pathway to KO mappings for a given KEGG pathway.
-
-```{r}
-ret_pathway_to_ko_list <- function(url) {
-  reply <- request(url) |> req_perform()
-  pathway_ko_list <- reply |> 
-    resp_body_string() |> 
-    read.table(text = _, col.names = c('pathway', 'ko')) |> 
-    separate(data = _, col = 'pathway', into = c(NA, 'pathway'), sep = ':') |> 
-    separate(data = _, col = 'ko', into = c(NA, 'ko'), sep = ':')
-  return(pathway_ko_list)
-}
-```
-
-Next we will create a named list with the pathways we want to investigate, for example the citrate cycle as well as pyruvate metabolism.
-```{r}
-pathways = c('map00020' = 'Citrate cycle (TCA cycle)', 'map00620' = 'Pyruvate metabolism')
-```
-
-Next we will retrieve a list of KOs that are associated with the pathways. This step will be crucial for the "pathway enrichment" that we will conduct based on the KO enrichment per sample that is provided by the 1000 soils project. 
-```{r}
-cols <- c('pathway', 'ko')
-pathways_ko_lists = as.data.frame(matrix(numeric(), nrow = 0, ncol = length(cols)))
-
-for (name in names(pathways)) {
-  pathways_ko_lists <- paste("https://rest.kegg.jp/link/ko/", name, sep = '') %>% 
-    ret_pathway_to_ko_list() %>% 
-    rbind(pathways_ko_lists, .)
-  Sys.sleep(0.5) # This is just so that in case the REST calls get processed to quickly we wait to not exceed the 3 per second limit of KEGG
-}
-```
-
-Note one can also extract all pathway to KO information with the query below and perform further filtering afterwards.
-```{r eval = FALSE}
-url = "https://rest.kegg.jp/link/pathway/ko"
-request(url) |>
-  req_perform() |>
-  resp_body_string() |>
-  cat()
-```
-
-
-### Importing the KO enrichment information for 1000 soil samples
-
-In the case of this example we will be importing KEGG Orthology data from the 1000 soils project.
-The data is location mapped (we will be importing this data later) and contains KO abundances for individual locations. Further more for most sampling locations two samples are available ("TOP" & "BTM") which are extracted from the top and the bottom of the extracted soil core.
-
 ```{r}
 
-prep_ko_data <- function(x, pathways, pathway_ko_list, suffix){
-  ret <- FALSE
-  
-  for (pathway in pathways) {
-    p <- names(which(pathways == pathway))
-    t <- x[, grepl(suffix, colnames(x))] %>% 
-      rename_with(~ sub(paste(suffix,"$", sep = ''), "", .x), everything()) %>%
-      subset(., subset = row.names(.) %in% pathway_ko_list[pathway_ko_list$pathway == p,]$ko) %>% 
-      apply(., 2, sum) %>%
-      as.data.frame() %>%
-      t()
-    row.names(t) <- p
-    if (typeof(ret) == 'logical') {
-      cols <- names(t)
-      ret <- as.data.frame(matrix(numeric(), nrow = 0, ncol = length(cols)))
-    }
-    ret <- rbind(ret, t)
-  }
-  return(ret)
-}
+data("oneKSoilsData")
+data("oneKSoilsCoords")
 
 ```
 
-```{r}
-data_ko <- read.csv(file = "../data/1000_soil_contig_aug2022_all.csv", row.names = 1)
-
-data_pathway_top <- prep_ko_data(data_ko, pathways, pathways_ko_lists, '_TOP')
-data_pathway_btm <- prep_ko_data(data_ko, pathways, pathways_ko_lists, '_BTM')
-
-data_pathway <- data_pathway_btm - data_pathway_top
-```
 ### Omics Metadata
 
 The KO metadata table will contain a mapping from KO identifier - row names in the Omics Measurement table - to a more descriptive annotation.
@@ -169,8 +68,16 @@ For testing purposes this currently is only the row names & incremented integer 
 
 ```{r}
 
-data_pathway_meta <- as.data.frame(pathways) %>% cbind(pathway = rownames(.), .)
-colnames(data_pathway_meta) <- c('pathway', 'annotation')
+oneKSoilsOmicsMeta <- data.frame(KO = character(nrow(oneKSoilsData)))
+
+oneKSoilsOmicsMeta["KO"] <- rownames(oneKSoilsData)
+oneKSoilsOmicsMeta["annotation"] <- seq(1, by = 1, length.out=nrow(oneKSoilsOmicsMeta))
+oneKSoilsOmicsMeta["annotation"] <- lapply(oneKSoilsOmicsMeta["annotation"], as.character)
+head(oneKSoilsOmicsMeta)
+
+
+# data_pathway_meta <- as.data.frame(pathways) %>% cbind(pathway = rownames(.), .)
+# colnames(data_pathway_meta) <- c('pathway', 'annotation')
 
 # data_tmp <- read.csv(file = "../data/1000_soil_contig_aug2022_all.csv")
 # data_ko_meta <- data_tmp["KO"]
@@ -187,12 +94,13 @@ Next we need to import the lat/long information of the locations where the 1000 
 Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
 
 ```{r}
-soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
-  .[complete.cases(.),]
-soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
-soil_metagenomes_coords <- unique(soil_metagenomes_coords)
+data("oneKSoilsCoords")
+# soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
+#   .[complete.cases(.),]
+# soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
+# soil_metagenomes_coords <- unique(soil_metagenomes_coords)
   
-head(soil_metagenomes_coords)
+head(oneKSoilsCoords)
 ```
 
 
@@ -205,14 +113,15 @@ retrieved from the [US Census Bureau](https://www.census.gov/cgi-bin/geo/shapefi
 - Layer type = "States (and equivalent)"
 
 ```{r import-usshape, warning=FALSE, message=FALSE}
-s <- read_sf("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE)
+# s <- read_sf("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE)
+s <- st_read("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE) 
 s
 ```
 
 Sub-setting the shape map to only US continental
 
 ```{r subsetting-us-map, warning=FALSE, message=FALSE}
-us_continental = c(
+us_continental <- c(
   'WV', 'FL', 'IL', 'MN', 'MD', 'RI', 'ID', 'NH', 'NC', 'VT',
   'CT', 'DE', 'NM', 'CA', 'NJ', 'WI', 'OR', 'NE', 'PA', 'WA',
   'LA', 'GA', 'AL', 'UT', 'OH', 'TX', 'CO', 'SC', 'OK', 'TN', 
@@ -220,7 +129,9 @@ us_continental = c(
   'MT', 'KS', 'IN', 'SD', 'MA', 'VA', 'DC', 'IA', 'AZ'
   )
 
-s_us_cont = s[s$STUSPS %in% us_continental,]
+s_us_cont <- s %>%
+  .[.$STUSPS %in% us_continental,] %>% 
+  vect()
 s_us_cont
 ```
 creating a "rasterization template" with `terra`. This will be needed to create an "actual" `terra::SpatRaster` object which we will use to generate a rasterized image while retaining the location information and possibility to project the map into a different map projection.
@@ -235,7 +146,8 @@ Creating the rasterized "landmass" of the continental US
 ```{r}
 
 # us_raster <- rasterize(s_us_cont, template, background=0)
-us_raster <- rasterize(s_us_cont, template)
+#us_raster <- rasterize(as.lines(s_us_cont), template, field='STATEFP', touches=TRUE)
+us_raster <- rasterize(s_us_cont, template, field='STATEFP')
 ```
 
 
@@ -244,7 +156,7 @@ us_raster <- rasterize(s_us_cont, template)
 Next we generate a SF object from the coordinate data. This SF object can then be rasterized (see below).
 
 ```{r}
-coords <- st_as_sf(soil_metagenomes_coords, coords=c('longitude', 'latitude'), remove=TRUE)
+coords <- st_as_sf(oneKSoilsCoords, coords=c('longitude', 'latitude'), remove=TRUE)
 st_crs(coords) <- st_crs(s_us_cont)
 coords
 ```
@@ -270,16 +182,16 @@ Finally to retrieve the "pixel" coordinates instead of the x/y (lat/long) coordi
 This process does come with slight differences in lat/long. Most likely due to the rasterization process?
 
 ```{r}
-cells <- extract(coords_rast, coords, xy=TRUE, cells=TRUE)
+cells <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
 cells
 ```
 
 ```{r}
-cells_tmp <- extract(coords_rast, coords, xy=TRUE, cells=TRUE)
+cells_tmp <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
 xy_rast <- lapply(cells['cell'], function(x) rowColFromCell(coords_rast, x))
 cells <- cells_tmp %>% 
-  cbind(., soil_metagenomes_coords, xy_rast) %>%
-  rename(., replace = c("cell.1" = "y_pixels", "cell.2" = "x_pixels")) %>%
+  cbind(., oneKSoilsCoords, xy_rast) %>%
+  plyr::rename(., replace = c("cell.1" = "y_pixels", "cell.2" = "x_pixels")) %>%
   subset(., select = -c(x, y, ID, last))
 cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
 ```
@@ -299,9 +211,10 @@ writeRaster(us_raster, '../data/us_map.png', NAflag=0, overwrite=TRUE)
 
 
 ```{r}
-coords_test <- st_as_sf(soil_metagenomes_coords, coords=c('longitude', 'latitude'), remove=TRUE)
+coords_test <- st_as_sf(oneKSoilsCoords, coords=c('longitude', 'latitude'), remove=TRUE)
 st_crs(coords_test) <- st_crs(s_us_cont)
 plot(us_raster, col='grey')
+# lines(as.polygons(us_raster), col='black')
 plot(coords_test, col='red', add=TRUE)
 ```
 ## Generating the `SpatialExperiment` object
@@ -332,8 +245,27 @@ data_meta[,'x_origin'] <- 0
 data_meta[,'y_origin'] <- 0
 data_meta[, 'spot_height'] <- 500
 data_meta[, 'spot_width'] <- 500
+data_meta[, 'above_40_deg'] <- if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
+
 head(data_meta)
+
+
 ```
+### CLEANING UP OF DATA
+
+```{r}
+
+data_meta <- subset(data_meta, Sample_ID %in% colnames(oneKSoilsData))
+oneKSoilsData <- subset(oneKSoilsData, select=data_meta$Sample_ID)
+
+```
+
+```{r}
+data_meta <- data_meta[grepl("TOP", data_meta$Sample_ID),]
+oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
+```
+
+
 ### Actual generation of the `SpatialExperiment` object
 
 ```{r}
@@ -363,38 +295,74 @@ head(data_meta)
 #   assay_name = 'KO'
 #   )
 
+# microbiome.spe <- convert_to_spe(
+#   data_pathway,  ##pooled data table
+#   data_meta,  ##pooled metadata
+#   data_pathway_meta,  ##protein identifiers
+#   feature_meta_colname='pathway', #column name
+#   spatialCoords_colnames=c('x_pixels','y_pixels'),
+#   image_files = c("../data/us_map.png"),
+#   image_samples_common_identifier='test',
+#   samples_common_identifier='test',
+#   image_ids = c('0'),
+#   assay_name = 'pathway'
+#   )
+
 microbiome.spe <- convert_to_spe(
-  data_pathway,  ##pooled data table
+  oneKSoilsData,  ##pooled data table
   data_meta,  ##pooled metadata
-  data_pathway_meta,  ##protein identifiers
-  feature_meta_colname='pathway', #column name
+  oneKSoilsOmicsMeta,  ##protein identifiers
+  feature_meta_colname='KO', #column name
   spatialCoords_colnames=c('x_pixels','y_pixels'),
   image_files = c("../data/us_map.png"),
   image_samples_common_identifier='test',
   samples_common_identifier='test',
   image_ids = c('0'),
-  assay_name = 'pathway'
+  assay_name = 'KO'
   )
 ```
 
 
 
 ```{r}
-    spatial_heatmap(
-      microbiome.spe,
-      assay_name='pathway',
-      feature='Citrate cycle (TCA cycle)',
-      feature_type='annotation',
-      sample_id='test',
-      image_id='0',
-      spatial_coord_names=c('x_pixels','y_pixels'),
-      metric_display = "Pathway abundance",
-      spot_size=unlist(colData(microbiome.spe)[1,c('spot_width','spot_height')]),
-      image_boundaries=unlist(colData(microbiome.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
-      label_column='Sample_ID',
-      interactive=FALSE,
-      sample_label_color = 'grey',
-      sample_label_size = 3,
-      )
+
+diff_ex <- calc_spatial_diff_ex(
+    microbiome.spe,
+    assay_name='KO',
+    log_transformed=FALSE,
+    category_col='above_40_deg',
+    feature_colname = 'KO'
+    )
+
+sig_ko<-subset(rowData(diff_ex),X0_vs_1.adj.P.Val.limma<0.01)
+ups<-subset(sig_ko, X0_vs_1.logFC.limma>0)
+downs<-subset(sig_ko, X0_vs_1.logFC.limma<0)
+
+print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
+            nrow(ups),'upregulated KOs and',nrow(downs),'downregulated'))
+
+
+```
+
+
+
+
+```{r}
+spatial_heatmap(
+  microbiome.spe,
+  assay_name='pathway',
+  feature=1,
+  feature_type='annotation',
+  sample_id='test',
+  image_id='0',
+  spatial_coord_names=c('x_pixels','y_pixels'),
+  metric_display = "Pathway abundance",
+  spot_size=unlist(colData(microbiome.spe)[1,c('spot_width','spot_height')]),
+  image_boundaries=unlist(colData(microbiome.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
+  label_column='Sample_ID',
+  interactive=FALSE,
+  sample_label_color = 'grey',
+  sample_label_size = 3,
+  )
 ```
 
