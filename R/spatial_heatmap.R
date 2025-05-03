@@ -8,7 +8,7 @@
 #' @import ggnewscale
 #' @import SpatialExperiment
 #' @import dplyr
-#' @import plotly
+#' @import plotly ggplotly
 #' @import scales
 #' @import ggpubr
 #' @import png

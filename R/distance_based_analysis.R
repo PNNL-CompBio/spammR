@@ -2,7 +2,9 @@
 #' @description distance_based_analysis: Identifies proteins/features that show a strong correlation between distance from a specified ROI's samples and
 #' protein/feature abundance differences between samples.
 #' @import SpatialExperiment
-#' @import IRanges
+#' @import IRanges IRanges
+#' @import Iranges countOverlaps
+#' @import stats cor.test
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data
 #' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
@@ -52,7 +54,7 @@ distance_based_analysis <- function(spe,
         unique()
     yranges = IRanges::IRanges(start=spatial_coords[,2],width=colData(spe)[[spotHeightCol]])|>
       unique()
-    allovers = c(countOverlaps(xranges),countOverlaps(yranges))
+    allovers = c(IRanges::countOverlaps(xranges),IRanges::countOverlaps(yranges))
     if(any(allovers)>1){
       message(print(paste(length(allovers),"overlapping regions found, consider setting allowOverlaps to TRUE")))
       exit()
@@ -82,7 +84,7 @@ distance_based_analysis <- function(spe,
   cor_dist <- cor(t(assay(spe)),samp_dists,method=corr_type,use='pairwise.complete.obs')
   cor_test <- apply(assay(spe),1,function(x){
     pval=1.0
-    try(pval<-cor.test(x,samp_dists,method=corr_type,exact=FALSE)$p.val,silent=TRUE)
+    try(pval<-stats::cor.test(x,samp_dists,method=corr_type,exact=FALSE)$p.val,silent=TRUE)
     return(pval)})
 
   mdata<-data.frame(cv=cor_dist,cp=cor_test)

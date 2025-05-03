@@ -5,13 +5,13 @@
 #' -log10(p-value) vs. log2(fold change)
 #' @import ggplot2
 #' @import ggrepel
-#' @param diffEx_df A dataframe containing results from differential expression
+#' @param diffex.spe A `SpatialExperiment` object containing differentail expression results in rowData
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
 #' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
 #' @param pval_corrected Boolean indicating whether pval_colname represents the corrected p-value or not
 #' @param title title for the plot
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
-#' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
+#' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
 #' data(pancData)
 #' data(pancMeta)
