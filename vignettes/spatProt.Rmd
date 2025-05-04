@@ -211,7 +211,7 @@ Now we can plot those differentially expressed proteins across images.
 If we are interested in the combined expression of proteins we can also visualize those.
 
 ```{r plot pathway, message=FALSE, warning=FALSE, error=FALSE}
-spe.plot = img.spes[[1]]
+spe.plot = img.spes[[3]]
 ##we need the image boundaries based on the x/y coordinates. The image will 
 ##be stretched between the origin and max in both directions
 bounds = unlist(SummarizedExperiment::colData(spe.plot)[1,c('x_origin',

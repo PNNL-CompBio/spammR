@@ -40,8 +40,6 @@ distance_based_analysis(
 \item{min_samples}{of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
 
 \item{allowOverlaps}{allow overlaps of regions}
-
-\item{sample_dimensions}{A vector containing the x and y dimensions of samples. Example: c(1,1) Sample Dimension units should match the units of spatial coordinates specified in spatialCoords(spe)}
 }
 \value{
 dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.

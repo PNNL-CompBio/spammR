@@ -10,7 +10,6 @@
 #' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
 #' @param spotHeightCol Column containing height of spot
 #' @param spotWidthCol Column containing width of spot
-#' @param sample_dimensions A vector containing the x and y dimensions of samples. Example: c(1,1) Sample Dimension units should match the units of spatial coordinates specified in spatialCoords(spe)
 #' @param sampleCategoryCol Column name in metadata (colData(spe)) that should be used for selecting samples of certain type, to define the "origin" region for distance based analysis
 #' @param sampleCategoryValue Sample category to be used for defining the "origin" region for distance based analysis
 #' @param featuresNameCol Name of column containing features (example: proteins) in rowData(spe). It is assumed that the data provided in assay(spe) is in the same order as the order in which the features are listed under the featuresNameCol

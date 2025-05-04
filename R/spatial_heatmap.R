@@ -16,8 +16,8 @@
 #' @param spe SpatialExperiment (SPE) object
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
 #' @param plotBackground_img Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)
-#'.@param image_id The name of the background image image_id. Together with the `sample_id` this provides a unique imge to plot.
 #' @param sample_id The names of the background image's sample_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
+#'.@param image_id The name of the background image image_id. Together with the `sample_id` this provides a unique imge to plot.
 #' @param image_boundaries Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).
 #' @param spatial_coord_type Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner". Default is blank, which assumes coordinates are bottom right.
 #' @param spatial_coord_names Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord","Ycoord") or c("X","Y").
