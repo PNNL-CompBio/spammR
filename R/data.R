@@ -21,3 +21,13 @@
 #' List of proteomic measurements in a list sorted from individual regions of the pancreas.
 #' @source \url{panc paper}
 "pancDataList"
+
+
+#'
+#' Table of human uniprot ids
+"humanUniprotIds"
+
+
+#'
+#' Table of mouse uniprot ids
+"mouseUniprotIds"

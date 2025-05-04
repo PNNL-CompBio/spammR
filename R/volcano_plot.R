@@ -31,9 +31,9 @@ volcano_plot <- function(diffex.spe,
   #library('ggplot2')
   diffEx_df = SummarizedExperiment::rowData(diffex.spe)
   if(missing(pval_colname))
-    pval_colname=colnames(diffEx_df)[grep('adj.P.Val',colnames(diffEx_df),fixed=T)[1]]
+    pval_colname=colnames(diffEx_df)[grep('adj.P.Val',colnames(diffEx_df),fixed=TRUE)[1]]
   if(missing(logFC_colname))
-    logFC_colname=colnames(diffEx_df)[grep('logFC',colnames(diffEx_df),fixed=T)[1]]
+    logFC_colname=colnames(diffEx_df)[grep('logFC',colnames(diffEx_df),fixed=TRUE)[1]]
 
   pval_type_lbl = ""
   if(pval_corrected){

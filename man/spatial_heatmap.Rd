@@ -33,10 +33,10 @@ spatial_heatmap(
 
 \item{assay_name}{Name of assay in the spe object that contains data to be plotted}
 
-\item{plotBackground_img}{Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)}
-
-\item{sample_id}{The names of the background image's sample_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
+\item{plotBackground_img}{Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)
 .@param image_id The name of the background image image_id. Together with the \code{sample_id} this provides a unique imge to plot.}
+
+\item{sample_id}{The names of the background image's sample_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)}
 
 \item{image_boundaries}{Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).}
 

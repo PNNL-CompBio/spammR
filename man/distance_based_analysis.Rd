@@ -23,6 +23,10 @@ distance_based_analysis(
 
 \item{assayName}{Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"}
 
+\item{spotHeightCol}{Column containing height of spot}
+
+\item{spotWidthCol}{Column containing width of spot}
+
 \item{sampleCategoryCol}{Column name in metadata (colData(spe)) that should be used for selecting samples of certain type, to define the "origin" region for distance based analysis}
 
 \item{sampleCategoryValue}{Sample category to be used for defining the "origin" region for distance based analysis}
@@ -33,9 +37,11 @@ distance_based_analysis(
 
 \item{corr_thresh}{Minimum correlation value to be used for identifying proteins that have a correlation between protein abundance differences and distance between samples. Values greater than or equal to this theshold will be used.}
 
-\item{sample_dimensions}{A vector containing the x and y dimensions of samples. Example: c(1,1) Sample Dimension units should match the units of spatial coordinates specified in spatialCoords(spe)}
+\item{min_samples}{of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
 
-\item{min_samplePoints_forCorr}{Requirement of a minimum number of sample points for calculating correlation. For proteins with less than this number of sample points, correlation value is reported as NA.}
+\item{allowOverlaps}{allow overlaps of regions}
+
+\item{sample_dimensions}{A vector containing the x and y dimensions of samples. Example: c(1,1) Sample Dimension units should match the units of spatial coordinates specified in spatialCoords(spe)}
 }
 \value{
 dist_based_results List containing a.) pairwise_calculations_betweenSamples which is a list; each entry corresponds to a feature and contains a dataframe consisting of a distance (between samples) vector and a corresponding protein abundance difference vector.

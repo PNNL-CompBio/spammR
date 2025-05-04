@@ -1,6 +1,6 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
-Version: 1.0
+Version: 0.0.1
 Authors@R: 
     person("Sara", "Gosline", , "sara.gosline@pnnl.gov", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6534-4774"))
@@ -17,7 +17,6 @@ Suggests:
     knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-LazyData: true
 biocViews: 
   SpatialProteomics,
   SpatialOmics,
