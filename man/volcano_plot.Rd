@@ -31,10 +31,11 @@ volcano_plot(
 }
 \value{
 ggplot Volcano plot
-data(pancData)
+data(pancDataList)
 data(pancMeta)
 data(protMeta)
-panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+pooledData<-dplyr::bind_cols(pancDataList)
+panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
 volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
 }

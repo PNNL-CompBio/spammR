@@ -30,7 +30,7 @@ For ORA using an external or already defined interest list of genes and gene set
 img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
 img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet')
 #library(leapR)
-#data('msigdb')
-#rank.res <- enrich_gradient(img0.spe, geneset=msigdb,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
+#data('krbpaths')
+#rank.res <- enrich_gradient(img0.spe, geneset=krbpaths,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
 
 }

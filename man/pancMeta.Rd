@@ -3,7 +3,7 @@
 \docType{data}
 \name{pancMeta}
 \alias{pancMeta}
-\title{Sample metadata for the \code{pancData} file.}
+\title{Here is the data to be included in the spammR package}
 \format{
 An object of class \code{data.frame} with 63 rows and 15 columns.
 }

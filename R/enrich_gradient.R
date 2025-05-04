@@ -17,8 +17,8 @@
 #' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
 #' img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet')
 #' #library(leapR)
-#' #data('msigdb')
-#' #rank.res <- enrich_gradient(img0.spe, geneset=msigdb,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
+#' #data('krbpaths')
+#' #rank.res <- enrich_gradient(img0.spe, geneset=krbpaths,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
 #'
 
 enrich_gradient <-function(spe,
@@ -27,12 +27,12 @@ enrich_gradient <-function(spe,
                       ranking_column){
 
 
-  rvals = SummarizedExperiment::rowData(spe)|>
+  rvals <- SummarizedExperiment::rowData(spe)|>
     as.data.frame()|>
     dplyr::rename(feature=feature_column,rank=ranking_column)|>
     dplyr::select(feature,rank)
 
-  es= leapR::leapR(rvals, geneset=geneset,
+  es <- leapR::leapR(rvals, geneset=geneset,
             enrichment_method='enrichment_in_order',
             id_column='feature',primary_columns='rank')|>
     subset(!is.na(pvalue))|>

@@ -22,11 +22,11 @@
 #' b.) corr_pval_all and c.) corr_pval_thresholded which are data frames containing the correlation value, p-value and number of sample points used for the correlation calculation for each feature. corr_pval_thresholded only contains results with correlation > corr_thresh.
 #' dist_based_results is also saved as .RData object under results_dir.
 #' @examples
-#' data(pancData)
 #' data(pancMeta)
 #' data(protMeta)
 #' data(pancDataList)
-#' pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' pooledData<-dplyr::bind_cols(pancDataList)
+#' pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 #' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
 
 #' img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet')

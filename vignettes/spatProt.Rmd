@@ -52,16 +52,16 @@ The `spammR` package requires omics data with spatial coordinates for the functi
 
 ### Omics Measurement Data
 
-`SpatialExperiment` can hold multiple omics measurements mapping to the same sample identifier in different 'slots'. This data can be a tabular data frame or matrix with rownames referencing measurements in a particular sample (e.g. gene, species) and column names representing sample identifiers. An example of this can be found by loading `data(pancData)`.
+`SpatialExperiment` can hold multiple omics measurements mapping to the same sample identifier in different 'slots'. This data can be a tabular data frame or matrix with rownames referencing measurements in a particular sample (e.g. gene, species) and column names representing sample identifiers. An example of this can be found by loading `data(pancDataList)` which contains a list of data frames.
 
 To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measured from 7 independent regions of a single human pancreas. Each image is segmented into nine 'voxels', with one voxel per image representing a cluster of islet cells.
 
 ```{r omics data}
-data(pancData)
-utils::head(pancData[,1:8])
+data(pancDataList)
+utils::head(pancDataList$Image_0[,1:8])
 ```
 
-Here the rownames represent protein identifiers and the column names represent individual samples. In this table we collapse omics data from 7 distinct experiments into a single data frame to increase statistical power in our pathway analysis. However, we can also separate them out by image, as we do in the `data(pancDataList)`:
+Here the rownames represent protein identifiers and the column names represent individual samples. Each element of the list contains the measurements from a different sample:
 
 ```{r data list}
 data(pancDataList)
@@ -69,7 +69,7 @@ print(length(pancDataList))
 head(pancDataList[[2]][,1:8])
 ```
 
-These objects are used below in our analysis examples.
+This list is used below in our analysis examples.
 
 ### Sample metadata
 The samples metadata table contains mappings between samples and metadata. An example can be found in `data(pancMeta)`. Most importantly we require the image mapping information, which includes:
@@ -107,10 +107,12 @@ This data helps us find better gene identifiers.
 
 ## Loading data into spatial experiment object.
 
-Now that we have all the data loaded we can build a `SpatialExperiment` object either using ALL samples or just the samples in a single image. 
+Now that we have all the data loaded we can build a `SpatialExperiment` object either using ALL samples or just the samples in a single image. We can pool all the data for more statistical power.
 
 ```{r spe combined}
-pooled.panc.spe <- convert_to_spe(pancData,  ##pooled data table
+
+pooledData<-dplyr::bind_cols(pancDataList)
+pooled.panc.spe <- convert_to_spe(pooledData,  ##pooled data table
                                   pancMeta,  ##pooled metadata
                                   protMeta,  ##protein identifiers
                                   feature_meta_colname='pancProts', #column name
@@ -222,7 +224,7 @@ sizes = unlist(SummarizedExperiment::colData(spe.plot)[1,c('spot_width',
                                                           'spot_height')])
 
 hup<-spatial_heatmap(spe.plot,feature=rownames(ups),
-                      sample_id='Image_0', 
+                      sample_id='Image_2', 
                       image_id='with_grid',
                       spatial_coord_names=c('x_pixels','y_pixels'), 
                       spot_size=sizes, 
@@ -264,8 +266,9 @@ Now we can calculate the enriched pathways in the islets.
 ```{r ora analysis}
 
 library(leapR)
-ora.res <- enrich_ora(islet_res,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
-print(ora.res[grep("INSULIN",ora.res$msigdb),c('ingroup_n','pvalue','BH_pvalue')])
+data('krbpaths')
+ora.res <- enrich_ora(islet_res,geneset=krbpaths,geneset_name='krbpaths', feature_column='PrimaryGeneName')
+print(ora.res[grep("INSULIN",ora.res$krbpaths),c('ingroup_n','pvalue','BH_pvalue')])
 ```
 
 
@@ -383,21 +386,21 @@ Rank-based pathway enrichment is a way to evaluate trends pathways that are over
 ```{r rank based enrichment,warning=FALSE,error=FALSE}
 
 library(leapR)
-data("msigdb")
+data("krbpaths")
 enriched.paths<-do.call(rbind,lapply(names(rank.imgs),function(x){
   spe=rank.imgs[[x]]
   enrich_gradient(spe,
-                      geneset=msigdb,
+                      geneset=krbpaths,
                       feature_column='PrimaryGeneName', #primary gene name to be mapped to enrichment data
                       ranking_column='IsletDistancespearmanCor')|>
-    tibble::rownames_to_column('msigdb')|>
+    tibble::rownames_to_column('krbpaths')|>
     dplyr::mutate(comp=x)
 
 }))
 
 enriched.paths|>
   subset(BH_pvalue<0.05)|>
-  dplyr::group_by(msigdb)|>
+  dplyr::group_by(krbpaths)|>
   dplyr::summarize(numImgs=dplyr::n())|>
   dplyr::arrange(desc(numImgs))
 
@@ -408,7 +411,7 @@ We can see that numerous pathways are coming up as enriched across images, inclu
 
 ```{r gradient plotting}
 
-rprots<-subset(enriched.paths,msigdb=='KEGG_RIBOSOME')|>
+rprots<-subset(enriched.paths,krbpaths=='KEGG_RIBOSOME')|>
   dplyr::select(comp,ingroupnames)
 
 rprots<-unlist(strsplit(rprots[1,2],split=', '))
