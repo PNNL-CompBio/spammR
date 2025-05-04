@@ -55,6 +55,7 @@ protein/feature abundance differences between samples.
 \examples{
 data(pancData)
 data(pancMeta)
+data(protMeta)
 data(pancDataList)
 pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
