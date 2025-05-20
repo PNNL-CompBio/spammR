@@ -56,8 +56,6 @@ The data that we will be working with is a KO enrichment from the 1000 soils pro
 ```{r}
 
 data("oneKSoilsData")
-data("oneKSoilsCoords")
-
 ```
 
 ### Omics Metadata
@@ -94,13 +92,13 @@ Next we need to import the lat/long information of the locations where the 1000 
 Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
 
 ```{r}
-data("oneKSoilsCoords")
+data("oneKSoilsMeta")
 # soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
 #   .[complete.cases(.),]
 # soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
 # soil_metagenomes_coords <- unique(soil_metagenomes_coords)
   
-head(oneKSoilsCoords)
+head(oneKSoilsMeta)
 ```
 
 
@@ -112,10 +110,16 @@ retrieved from the [US Census Bureau](https://www.census.gov/cgi-bin/geo/shapefi
 - Year = 2024
 - Layer type = "States (and equivalent)"
 
-```{r import-usshape, warning=FALSE, message=FALSE}
-# s <- read_sf("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE)
-s <- st_read("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE) 
-s
+The code chunk below will not be exectued but is displayed as example of how to load a downloaded shapefile.
+
+```{r import-usshape, warning=FALSE, message=FALSE, eval=FALSE}
+us_map <- st_read("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE) 
+us_map
+```
+Instead will load the file from the supplied `rda` file.
+
+```{r import-usmap-from-data-file}
+data("usMap")
 ```
 
 Sub-setting the shape map to only US continental
@@ -129,7 +133,7 @@ us_continental <- c(
   'MT', 'KS', 'IN', 'SD', 'MA', 'VA', 'DC', 'IA', 'AZ'
   )
 
-s_us_cont <- s %>%
+s_us_cont <- us_map %>%
   .[.$STUSPS %in% us_continental,] %>% 
   vect()
 s_us_cont
@@ -156,7 +160,8 @@ us_raster <- rasterize(s_us_cont, template, field='STATEFP')
 Next we generate a SF object from the coordinate data. This SF object can then be rasterized (see below).
 
 ```{r}
-coords <- st_as_sf(oneKSoilsCoords, coords=c('longitude', 'latitude'), remove=TRUE)
+oneKSoilsMeta <- oneKSoilsMeta[!is.na(oneKSoilsMeta$latitude) & !is.na(oneKSoilsMeta$longitude),]
+coords <- st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
 st_crs(coords) <- st_crs(s_us_cont)
 coords
 ```
@@ -190,7 +195,7 @@ cells
 cells_tmp <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
 xy_rast <- lapply(cells['cell'], function(x) rowColFromCell(coords_rast, x))
 cells <- cells_tmp %>% 
-  cbind(., oneKSoilsCoords, xy_rast) %>%
+  cbind(., oneKSoilsMeta, xy_rast) %>%
   plyr::rename(., replace = c("cell.1" = "y_pixels", "cell.2" = "x_pixels")) %>%
   subset(., select = -c(x, y, ID, last))
 cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
@@ -211,7 +216,7 @@ writeRaster(us_raster, '../data/us_map.png', NAflag=0, overwrite=TRUE)
 
 
 ```{r}
-coords_test <- st_as_sf(oneKSoilsCoords, coords=c('longitude', 'latitude'), remove=TRUE)
+coords_test <- st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
 st_crs(coords_test) <- st_crs(s_us_cont)
 plot(us_raster, col='grey')
 # lines(as.polygons(us_raster), col='black')
@@ -245,7 +250,9 @@ data_meta[,'x_origin'] <- 0
 data_meta[,'y_origin'] <- 0
 data_meta[, 'spot_height'] <- 500
 data_meta[, 'spot_width'] <- 500
-data_meta[, 'above_40_deg'] <- if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
+data_meta[, 'above_40_deg_lat'] <- if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
+data_meta[, 'psychrophile'] <- if_else(data_meta[, 'Soil.Temperature.C'] <= 15, true=1, false=0)
+data_meta[, 'Core_Layer_bin'] <- if_else(data_meta[, 'Core_Layer'] == 'TOP', true='TOP', false='BTM')
 
 head(data_meta)
 
@@ -253,26 +260,38 @@ head(data_meta)
 ```
 ### CLEANING UP OF DATA
 
-```{r}
+```{r eval=FALSE}
 
 data_meta <- subset(data_meta, Sample_ID %in% colnames(oneKSoilsData))
 oneKSoilsData <- subset(oneKSoilsData, select=data_meta$Sample_ID)
 
 ```
 
-```{r}
-data_meta <- data_meta[grepl("TOP", data_meta$Sample_ID),]
+```{r eval=FALSE}
+data_meta <- data_meta[data_meta$Core_Layer == 'TOP',]
 oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
 ```
 
+```{r}
+data_meta_testing <- subset(data_meta, Sample_ID %in% c('ANZA_TOP', 'ANZA_BTM', 'CFS1_TOP', 'CFS1_BTM'))
+oneKSoilsData_testing <- subset(oneKSoilsData, select=data_meta_testing$Sample_ID)
+
+
+```
+
+```{r}
+oneKSoilsData_testing['K00001','ANZA_TOP'] = 1000000
+oneKSoilsData_testing['K00001','CFS1_TOP'] = 1000000
+```
 
 ### Actual generation of the `SpatialExperiment` object
 
 ```{r}
+
 # microbiome.spe <- convert_to_spe(
-#   d_test_ko,  ##pooled data table
-#   d_test,  ##pooled metadata
-#   d_test_ko_meta,  ##protein identifiers
+#   oneKSoilsData,  ##pooled data table
+#   data_meta,  ##pooled metadata
+#   oneKSoilsOmicsMeta,  ##protein identifiers
 #   feature_meta_colname='KO', #column name
 #   spatialCoords_colnames=c('x_pixels','y_pixels'),
 #   image_files = c("../data/us_map.png"),
@@ -280,37 +299,11 @@ oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
 #   samples_common_identifier='test',
 #   image_ids = c('0'),
 #   assay_name = 'KO'
-#   )
-
-# microbiome.spe <- convert_to_spe(
-#   data_ko,  ##pooled data table
-#   data_meta,  ##pooled metadata
-#   data_ko_meta,  ##protein identifiers
-#   feature_meta_colname='KO', #column name
-#   spatialCoords_colnames=c('x_pixels','y_pixels'),
-#   image_files = c("../data/us_map.png"),
-#   image_samples_common_identifier='test',
-#   samples_common_identifier='test',
-#   image_ids = c('0'),
-#   assay_name = 'KO'
-#   )
-
-# microbiome.spe <- convert_to_spe(
-#   data_pathway,  ##pooled data table
-#   data_meta,  ##pooled metadata
-#   data_pathway_meta,  ##protein identifiers
-#   feature_meta_colname='pathway', #column name
-#   spatialCoords_colnames=c('x_pixels','y_pixels'),
-#   image_files = c("../data/us_map.png"),
-#   image_samples_common_identifier='test',
-#   samples_common_identifier='test',
-#   image_ids = c('0'),
-#   assay_name = 'pathway'
 #   )
 
 microbiome.spe <- convert_to_spe(
-  oneKSoilsData,  ##pooled data table
-  data_meta,  ##pooled metadata
+  oneKSoilsData_testing,  ##pooled data table
+  data_meta_testing,  ##pooled metadata
   oneKSoilsOmicsMeta,  ##protein identifiers
   feature_meta_colname='KO', #column name
   spatialCoords_colnames=c('x_pixels','y_pixels'),
@@ -320,6 +313,8 @@ microbiome.spe <- convert_to_spe(
   image_ids = c('0'),
   assay_name = 'KO'
   )
+
+
 ```
 
 
@@ -330,13 +325,13 @@ diff_ex <- calc_spatial_diff_ex(
     microbiome.spe,
     assay_name='KO',
     log_transformed=FALSE,
-    category_col='above_40_deg',
-    feature_colname = 'KO'
+    category_col='Core_Layer_bin',
+    # feature_colname = 'KO'
     )
 
-sig_ko<-subset(rowData(diff_ex),X0_vs_1.adj.P.Val.limma<0.01)
-ups<-subset(sig_ko, X0_vs_1.logFC.limma>0)
-downs<-subset(sig_ko, X0_vs_1.logFC.limma<0)
+sig_ko<-subset(rowData(diff_ex),TOP_vs_BTM.adj.P.Val.limma<0.01)
+ups<-subset(sig_ko, TOP_vs_BTM.logFC.limma>0)
+downs<-subset(sig_ko, TOP_vs_BTM.logFC.limma<0)
 
 print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
             nrow(ups),'upregulated KOs and',nrow(downs),'downregulated'))
@@ -344,7 +339,15 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 
 ```
 
+```{r}
+data('keggPathwayToKo')
+```
 
+```{r}
+
+ora.res <- enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO')
+
+```
 
 
 ```{r}
