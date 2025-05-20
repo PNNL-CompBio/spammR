@@ -37,7 +37,7 @@
 #' data(pancDataList)
 #' data(protMeta)
 #' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_ids='with_grid')
-#' res = spatial_heatmap(img0.spe, feature='INS', sample_id='Image0', image_id='with_grid', spatial_coord_names=c('x_pixels','y_pixels'), spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),label_column='IsletOrNot', interactive=FALSE)
+#' res = spatial_heatmap(img0.spe, feature='INS', sample_id='Image0', image_id='with_grid', feature_type='PrimaryGeneName',spatial_coord_names=c('x_pixels','y_pixels'), spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),label_column='IsletOrNot', interactive=FALSE)
 spatial_heatmap<-function(spe,
                           feature, ##feature to plot!
                           feature_type=NA, #element of rowdata to use
@@ -77,9 +77,9 @@ spatial_heatmap<-function(spe,
     }
 
   if(length(feature)==1){ ##we are just plotting a single row
-    feature_values_toplot =f[rowNum_toplot,]
-    }else{ ##we are plotting more than one value and need to average
-        feature_values_toplot = colMeans(f[rowNum_toplot,],na.rm=TRUE)
+      feature_values_toplot  = f[rowNum_toplot,]
+  }else{ ##we are plotting more than one value and need to average
+      feature_values_toplot = colMeans(f[rowNum_toplot,],na.rm=TRUE)
   }
 
 

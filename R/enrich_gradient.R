@@ -11,14 +11,14 @@
 #' @returns a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 #' @examples
 #'
-#' #data(pancDataList)
-#' #data(pancMeta)
-#' #data(protMeta)
+#' data(pancDataList)
+#' data(pancMeta)
+#' data(protMeta)
 #' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
 #' img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet')
-#' #library(leapR)
-#' #data('krbpaths')
-#' #rank.res <- enrich_gradient(img0.spe, geneset=krbpaths,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
+#' library(leapR)
+#' data('krbpaths')
+#' rank.res <- enrich_gradient(img0.spe, geneset=krbpaths,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
 #'
 
 enrich_gradient <-function(spe,

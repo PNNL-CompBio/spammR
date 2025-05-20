@@ -13,6 +13,7 @@
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
 #' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
+#' @export
 #' data(pancDataList)
 #' data(pancMeta)
 #' data(protMeta)
