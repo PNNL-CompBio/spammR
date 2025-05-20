@@ -2,5 +2,4 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^doc$
-^Meta$
 ^data_vignettes/*$
