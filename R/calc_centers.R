@@ -1,10 +1,11 @@
-
 #' Calculate centers of spots/samples for distance based analysis
 #' @description calc_centers calculates the centers of spots for numerical analysis
 #' @import SpatialExperiment
 #' @export
 #' @param spe SpatialExperiment object containing omics data
-calcCenters<-function(spe){
+#' @examples
+#' if(FALSE) calc_centers()
+calc_centers<-function(spe){
 
   ##get relevant column data - x,y coords and spot height/width
   spatial_coords <- spatialCoords(spe)

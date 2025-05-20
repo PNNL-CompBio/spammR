@@ -31,10 +31,11 @@ a list with diffEx.df, a data frame containing the differential expression resul
 \code{calc_spatial_diff_ex()} Calculates differential expression analysis using annotations in a SpatialExperiment object
 }
 \examples{
-data(pancData)
+data(pancDataList)
 data(pancMeta)
 data(protMeta)
-pooled.panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+pooledData<-dplyr::bind_cols(pancDataList)
+pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot')
 
 }

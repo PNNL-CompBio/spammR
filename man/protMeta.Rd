@@ -5,7 +5,7 @@
 \alias{protMeta}
 \title{Protein metadata for general uniprot data, including the pancProts column for the panc data}
 \format{
-An object of class \code{data.frame} with 207304 rows and 6 columns.
+An object of class \code{data.frame} with 6662 rows and 6 columns.
 }
 \source{
 Uniprot

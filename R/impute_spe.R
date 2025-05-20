@@ -5,6 +5,7 @@
 #' @import spdep
 #' @export
 #' @param spe SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.
+#' @param assay_name name of assay with data to be imputed
 #' @param method Method of imputation to be used. See details.
 #' @param spatial_unit_colname Column name in metadata that specifies spatial unit information. Example: ROI_abbreviation.
 #' @param knn_k K value to be used for k-nearest neighbor imputation

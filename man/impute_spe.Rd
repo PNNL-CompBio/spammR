@@ -20,6 +20,8 @@ impute_spe(
 \arguments{
 \item{spe}{SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.}
 
+\item{assay_name}{name of assay with data to be imputed}
+
 \item{method}{Method of imputation to be used. See details.}
 
 \item{spatial_unit_colname}{Column name in metadata that specifies spatial unit information. Example: ROI_abbreviation.}
