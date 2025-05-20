@@ -2,8 +2,7 @@
 % Please edit documentation in R/calc_diff_pairwiseSamples.R
 \name{calc_diff_pairwiseSamples}
 \alias{calc_diff_pairwiseSamples}
-\title{Helper function for computing pairwise differences between sample values
-This function is called in distance_based_analysis()}
+\title{Helper function for computing pairwise differences between sample values}
 \usage{
 calc_diff_pairwiseSamples(feature_values)
 }
@@ -12,6 +11,5 @@ calc_diff_pairwiseSamples(feature_values)
 samples. names(feature_values) should contain names of samples}
 }
 \description{
-Helper function for computing pairwise differences between sample values
 This function is called in distance_based_analysis()
 }

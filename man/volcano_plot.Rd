@@ -15,6 +15,8 @@ volcano_plot(
 )
 }
 \arguments{
+\item{diffex.spe}{A \code{SpatialExperiment} object containing differentail expression results in rowData}
+
 \item{logFC_colname}{column name in differenital expression results that represents log10 fold change}
 
 \item{pval_colname}{column name in differential epxression results that represents the p-value to be plotted}
@@ -25,16 +27,15 @@ volcano_plot(
 
 \item{thresh}{Threshold for p-value to be used to annotate significant results on the plot}
 
-\item{diffEx_df}{A dataframe containing results from differential expression}
-
-\item{sigLabel_col}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
+\item{sigLabel_colname}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
 }
 \value{
 ggplot Volcano plot
-data(pancData)
+data(pancDataList)
 data(pancMeta)
 data(protMeta)
-panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+pooledData<-dplyr::bind_cols(pancDataList)
+panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
 volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
 }

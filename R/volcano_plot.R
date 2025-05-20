@@ -5,18 +5,20 @@
 #' -log10(p-value) vs. log2(fold change)
 #' @import ggplot2
 #' @import ggrepel
-#' @param diffEx_df A dataframe containing results from differential expression
+#' @param diffex.spe A `SpatialExperiment` object containing differentail expression results in rowData
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
 #' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
 #' @param pval_corrected Boolean indicating whether pval_colname represents the corrected p-value or not
 #' @param title title for the plot
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
-#' @param sigLabel_col Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
+#' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
-#' data(pancData)
+#' @export
+#' data(pancDataList)
 #' data(pancMeta)
 #' data(protMeta)
-#' panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' pooledData<-dplyr::bind_cols(pancDataList)
+#' panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 #' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
 #' volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
 #'
@@ -31,9 +33,9 @@ volcano_plot <- function(diffex.spe,
   #library('ggplot2')
   diffEx_df = SummarizedExperiment::rowData(diffex.spe)
   if(missing(pval_colname))
-    pval_colname=colnames(diffEx_df)[grep('adj.P.Val',colnames(diffEx_df),fixed=T)[1]]
+    pval_colname=colnames(diffEx_df)[grep('adj.P.Val',colnames(diffEx_df),fixed=TRUE)[1]]
   if(missing(logFC_colname))
-    logFC_colname=colnames(diffEx_df)[grep('logFC',colnames(diffEx_df),fixed=T)[1]]
+    logFC_colname=colnames(diffEx_df)[grep('logFC',colnames(diffEx_df),fixed=TRUE)[1]]
 
   pval_type_lbl = ""
   if(pval_corrected){

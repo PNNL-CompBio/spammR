@@ -20,14 +20,15 @@
 #' @returns a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 #' @examples
 #'
-#' #data(pancData)
-#' #data(pancMet)
-#' #data(protMeta)
-#' #panc.spe <- convert_to_spe(pancData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#' #diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',feature_colname='pancProts')
-#' #library(leapR)
-#' #data('msigdb')
-#' #ora.res <- enrich_ora(diffex.spe,geneset=msigdb,geneset_name='msigdb', feature_column='PrimaryGeneName')
+#' data(pancDataList)
+#' data(pancMeta)
+#' data(protMeta)
+#' pooledPanc <- dplyr::bind_cols(pancDataList)
+#' panc.spe <- convert_to_spe(pooledPanc,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot')
+#' library(leapR)
+#' data('krbpaths')
+#' ora.res <- enrich_ora(diffex.spe,geneset=krbpaths,geneset_name='krbpaths', feature_column='PrimaryGeneName')
 #'
 
 enrich_ora <-function(spe,
@@ -47,7 +48,7 @@ enrich_ora <-function(spe,
   # If gene names are not present in spatialDiffEx results, a helper function (which I will add later), can be run to obtain gene names from the UniProt db files
   # and have a "PG.genes" column added to spatialDiffEx results excel file.
 
-  sp_diffEx = SummarizedExperiment::rowData(spe) #data.frame(read_excel(spatialDiffEx_results))
+  sp_diffEx <- SummarizedExperiment::rowData(spe) #data.frame(read_excel(spatialDiffEx_results))
   if (pval_type_forThresh=="adjusted_pval"){
     pval_col_text = "adj.P.Val"
   }else if (pval_type_forThresh=="pval"){

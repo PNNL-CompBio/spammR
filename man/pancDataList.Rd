@@ -3,7 +3,10 @@
 \docType{data}
 \name{pancDataList}
 \alias{pancDataList}
-\title{List of proteomic measurements in a list sorted from individual regions of the pancreas.}
+\title{Pancreatic proteomics measurements from Gosline et al. proteomics study.
+Row names indicate individual proteins, columns indicate sample identifiers described in
+\code{pancMeta}. Individual values show un-transformed abundance values for each protein.
+List of proteomic measurements in a list sorted from individual regions of the pancreas.}
 \format{
 An object of class \code{list} of length 7.
 }
@@ -14,6 +17,9 @@ An object of class \code{list} of length 7.
 pancDataList
 }
 \description{
+Pancreatic proteomics measurements from Gosline et al. proteomics study.
+Row names indicate individual proteins, columns indicate sample identifiers described in
+\code{pancMeta}. Individual values show un-transformed abundance values for each protein.
 List of proteomic measurements in a list sorted from individual regions of the pancreas.
 }
 \keyword{datasets}
