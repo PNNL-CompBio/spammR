@@ -14,7 +14,7 @@ description: |
   A basic walkthrough of how to use the spammR package to perform a spatial omics analysis for microbiome data. 
   
 vignette: |
-  %\VignetteIndexEntry{spammR}
+  %\VignetteIndexEntry{spammRMicrobiomeEval}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   
@@ -54,8 +54,8 @@ library(dplyr)
 The data that we will be working with is a KO enrichment from the 1000 soils project. The 1000 soils project has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
 
 ```{r}
-
-data("oneKSoilsData")
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsData.rda?raw=true"))
+# data("oneKSoilsData")
 ```
 
 ### Omics Metadata
@@ -92,7 +92,8 @@ Next we need to import the lat/long information of the locations where the 1000 
 Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
 
 ```{r}
-data("oneKSoilsMeta")
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsMeta.rda?raw=true"))
+# data("oneKSoilsMeta")
 # soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
 #   .[complete.cases(.),]
 # soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
@@ -119,7 +120,7 @@ us_map
 Instead will load the file from the supplied `rda` file.
 
 ```{r import-usmap-from-data-file}
-data("usMap")
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/usMap.rda?raw=true"))
 ```
 
 Sub-setting the shape map to only US continental
@@ -340,7 +341,8 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-data('keggPathwayToKo')
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/keggPathwayToKo.rda?raw=true"))
+# data('keggPathwayToKo')
 ```
 
 ```{r}
@@ -351,21 +353,21 @@ ora.res <- enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pat
 
 
 ```{r}
-spatial_heatmap(
-  microbiome.spe,
-  assay_name='pathway',
-  feature=1,
-  feature_type='annotation',
-  sample_id='test',
-  image_id='0',
-  spatial_coord_names=c('x_pixels','y_pixels'),
-  metric_display = "Pathway abundance",
-  spot_size=unlist(colData(microbiome.spe)[1,c('spot_width','spot_height')]),
-  image_boundaries=unlist(colData(microbiome.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
-  label_column='Sample_ID',
-  interactive=FALSE,
-  sample_label_color = 'grey',
-  sample_label_size = 3,
-  )
+# spatial_heatmap(
+#   microbiome.spe,
+#   assay_name='pathway',
+#   feature=1,
+#   feature_type='annotation',
+#   sample_id='test',
+#   image_id='0',
+#   spatial_coord_names=c('x_pixels','y_pixels'),
+#   metric_display = "Pathway abundance",
+#   spot_size=unlist(colData(microbiome.spe)[1,c('spot_width','spot_height')]),
+#   image_boundaries=unlist(colData(microbiome.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
+#   label_column='Sample_ID',
+#   interactive=FALSE,
+#   sample_label_color = 'grey',
+#   sample_label_size = 3,
+# )
 ```
 
