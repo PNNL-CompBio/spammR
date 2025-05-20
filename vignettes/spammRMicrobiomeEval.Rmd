@@ -1,0 +1,373 @@
+---
+title: "spammR microbiome evaluation"
+author: "Yannick Mahlich"
+package: spammR
+date: "`r format(Sys.Date(), '%b %d, %Y')`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        number_sections: true
+        toc_depth: 3
+        toc_float:
+            collapsed: true
+description: |
+  A basic walkthrough of how to use the spammR package to perform a spatial omics analysis for microbiome data. 
+  
+vignette: |
+  %\VignetteIndexEntry{spammRMicrobiomeEval}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  
+---
+
+## Dependencies
+
+This R-notebook relies on the following dependencies
+
+### R packages
+
+- [spammR](https://github.com/PNNL-CompBio/spammR)
+- ggplot2
+- [sf](https://r-spatial.github.io/sf/index.html) relies on other non R-libraries (see [Installing](https://r-spatial.github.io/sf/index.html#installing) for more details on how to install sf including the dependencies)
+
+### non-R Libraries
+
+- [GEOS](https://libgeos.org/usage/install/)
+- [PROJ](https://proj.org/en/stable/install.html)
+- [GDAL](https://gdal.org/en/stable/download.html)
+
+### Setting up the evironment
+
+```{r loading-packages, warning=FALSE, message=FALSE}
+library(sf) 
+library(terra)
+library(ggplot2)
+library(spammR)
+library(plyr)
+library(httr2)
+library(tidyr)
+library(dplyr)
+```
+
+## The Goal
+
+The data that we will be working with is a KO enrichment from the 1000 soils project. The 1000 soils project has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
+
+```{r}
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsData.rda?raw=true"))
+# data("oneKSoilsData")
+```
+
+### Omics Metadata
+
+The KO metadata table will contain a mapping from KO identifier - row names in the Omics Measurement table - to a more descriptive annotation.
+
+For testing purposes this currently is only the row names & incremented integer values.
+
+```{r}
+
+oneKSoilsOmicsMeta <- data.frame(KO = character(nrow(oneKSoilsData)))
+
+oneKSoilsOmicsMeta["KO"] <- rownames(oneKSoilsData)
+oneKSoilsOmicsMeta["annotation"] <- seq(1, by = 1, length.out=nrow(oneKSoilsOmicsMeta))
+oneKSoilsOmicsMeta["annotation"] <- lapply(oneKSoilsOmicsMeta["annotation"], as.character)
+head(oneKSoilsOmicsMeta)
+
+
+# data_pathway_meta <- as.data.frame(pathways) %>% cbind(pathway = rownames(.), .)
+# colnames(data_pathway_meta) <- c('pathway', 'annotation')
+
+# data_tmp <- read.csv(file = "../data/1000_soil_contig_aug2022_all.csv")
+# data_ko_meta <- data_tmp["KO"]
+# data_ko_meta["annotation"] <- seq(1, by = 1, length.out=nrow(data_ko_meta))
+# data_ko_meta["annotation"] <- lapply(data_ko_meta["annotation"], as.character)
+# head(data_ko_meta)
+```
+
+
+## Importing the long/lat data from the 1000 soils project
+
+Next we need to import the lat/long information of the locations where the 1000 soil project samples where extracted. The file was retrieved from the [1000 Soils Project Shiny App](https://shinyproxy.emsl.pnnl.gov/app/1000soils). The metadata was retrieved by using the Query>Information tab. On the left side (the "Information Menu") we select `SAMPLE_ID`, `latitude` & `longitude` and download the resulting mapping.
+
+Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
+
+```{r}
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsMeta.rda?raw=true"))
+# data("oneKSoilsMeta")
+# soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
+#   .[complete.cases(.),]
+# soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
+# soil_metagenomes_coords <- unique(soil_metagenomes_coords)
+  
+head(oneKSoilsMeta)
+```
+
+
+## File import
+
+Importing a shape file containing the US states. The shape file was
+retrieved from the [US Census Bureau](https://www.census.gov/cgi-bin/geo/shapefiles/index.php) with the following parameters:
+
+- Year = 2024
+- Layer type = "States (and equivalent)"
+
+The code chunk below will not be exectued but is displayed as example of how to load a downloaded shapefile.
+
+```{r import-usshape, warning=FALSE, message=FALSE, eval=FALSE}
+us_map <- st_read("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE) 
+us_map
+```
+Instead will load the file from the supplied `rda` file.
+
+```{r import-usmap-from-data-file}
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/usMap.rda?raw=true"))
+```
+
+Sub-setting the shape map to only US continental
+
+```{r subsetting-us-map, warning=FALSE, message=FALSE}
+us_continental <- c(
+  'WV', 'FL', 'IL', 'MN', 'MD', 'RI', 'ID', 'NH', 'NC', 'VT',
+  'CT', 'DE', 'NM', 'CA', 'NJ', 'WI', 'OR', 'NE', 'PA', 'WA',
+  'LA', 'GA', 'AL', 'UT', 'OH', 'TX', 'CO', 'SC', 'OK', 'TN', 
+  'WY', 'ND', 'KY', 'ME', 'NY', 'NV', 'MI', 'AR', 'MS', 'MO',
+  'MT', 'KS', 'IN', 'SD', 'MA', 'VA', 'DC', 'IA', 'AZ'
+  )
+
+s_us_cont <- us_map %>%
+  .[.$STUSPS %in% us_continental,] %>% 
+  vect()
+s_us_cont
+```
+creating a "rasterization template" with `terra`. This will be needed to create an "actual" `terra::SpatRaster` object which we will use to generate a rasterized image while retaining the location information and possibility to project the map into a different map projection.
+
+```{r raster-template, warning=FALSE, message=FALSE}
+template <- rast(
+  s_us_cont,
+  res=0.01
+  )
+```
+Creating the rasterized "landmass" of the continental US
+```{r}
+
+# us_raster <- rasterize(s_us_cont, template, background=0)
+#us_raster <- rasterize(as.lines(s_us_cont), template, field='STATEFP', touches=TRUE)
+us_raster <- rasterize(s_us_cont, template, field='STATEFP')
+```
+
+
+## creating a SF object from the coordinate data
+
+Next we generate a SF object from the coordinate data. This SF object can then be rasterized (see below).
+
+```{r}
+oneKSoilsMeta <- oneKSoilsMeta[!is.na(oneKSoilsMeta$latitude) & !is.na(oneKSoilsMeta$longitude),]
+coords <- st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
+st_crs(coords) <- st_crs(s_us_cont)
+coords
+```
+
+## transform the coordinates of the metagenome into a SpatRast object
+
+The rasterization makes use of the same rasterization template that was used to rasterize the map of the continetal USA.
+
+```{r}
+coords_rast <- rasterize(coords, template)
+coords_rast
+```
+
+## get the "Pixel" x/y (NOT lat/long x/y) of metagenome samples
+
+Finally to retrieve the "pixel" coordinates instead of the x/y (lat/long) coordinates that are recorded in the `terra::SpatRaster` objects the following procedure is employed:
+
+- use `extract()` to get the cells which the coordinates are projected into in the raster image
+- use `lapply()` get the raster coordinates ('pixel' x/y) for each row with `terra::rowColFromCell()`
+- use `cbind()` to combine the cells, 'pixel' x/y and original sample coordinate `data.frame`
+- use `plyr::rename()` to clean up `data.frame`
+
+This process does come with slight differences in lat/long. Most likely due to the rasterization process?
+
+```{r}
+cells <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
+cells
+```
+
+```{r}
+cells_tmp <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
+xy_rast <- lapply(cells['cell'], function(x) rowColFromCell(coords_rast, x))
+cells <- cells_tmp %>% 
+  cbind(., oneKSoilsMeta, xy_rast) %>%
+  plyr::rename(., replace = c("cell.1" = "y_pixels", "cell.2" = "x_pixels")) %>%
+  subset(., select = -c(x, y, ID, last))
+cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
+```
+
+Those need to be finally written out / transferred into the `spammR` package for further use.
+
+
+## Exporting the rasterized map
+
+The rasterized map can be exported with the command below.
+```{r write-raster-map, eval=FALSE}
+writeRaster(us_raster, '../data/us_map.png', NAflag=0, overwrite=TRUE)
+```
+
+
+## Examplary plotting 
+
+
+```{r}
+coords_test <- st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
+st_crs(coords_test) <- st_crs(s_us_cont)
+plot(us_raster, col='grey')
+# lines(as.polygons(us_raster), col='black')
+plot(coords_test, col='red', add=TRUE)
+```
+## Generating the `SpatialExperiment` object
+
+To generate the `SpatialExperiment` object that is needed by spammR we first need to compile the data that goes into that. The data is comprised of:
+
+- Omics Measurements
+- Omics Metadata
+- Sample Metadata
+- Image files (generated by the above code)
+
+
+### Sample Metadata
+
+Here we build the sample metadata table given the perviously generated coordinate raster during the rasterization of the map.
+
+```{r}
+data_meta <- cells
+rownames(data_meta) <- data_meta$Sample_ID
+# data_meta[,1] <- NULL
+data_meta[,'cell'] <- NULL
+data_meta[,'longitude.1'] <- NULL
+data_meta[,'latitude.1'] <- NULL
+data_meta[,'Image'] <- 0
+data_meta[,'x_max'] <- ncol(coords_rast)
+data_meta[,'y_max'] <- nrow(coords_rast)
+data_meta[,'x_origin'] <- 0
+data_meta[,'y_origin'] <- 0
+data_meta[, 'spot_height'] <- 500
+data_meta[, 'spot_width'] <- 500
+data_meta[, 'above_40_deg_lat'] <- if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
+data_meta[, 'psychrophile'] <- if_else(data_meta[, 'Soil.Temperature.C'] <= 15, true=1, false=0)
+data_meta[, 'Core_Layer_bin'] <- if_else(data_meta[, 'Core_Layer'] == 'TOP', true='TOP', false='BTM')
+
+head(data_meta)
+
+
+```
+### CLEANING UP OF DATA
+
+```{r eval=FALSE}
+
+data_meta <- subset(data_meta, Sample_ID %in% colnames(oneKSoilsData))
+oneKSoilsData <- subset(oneKSoilsData, select=data_meta$Sample_ID)
+
+```
+
+```{r eval=FALSE}
+data_meta <- data_meta[data_meta$Core_Layer == 'TOP',]
+oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
+```
+
+```{r}
+data_meta_testing <- subset(data_meta, Sample_ID %in% c('ANZA_TOP', 'ANZA_BTM', 'CFS1_TOP', 'CFS1_BTM'))
+oneKSoilsData_testing <- subset(oneKSoilsData, select=data_meta_testing$Sample_ID)
+
+
+```
+
+```{r}
+oneKSoilsData_testing['K00001','ANZA_TOP'] = 1000000
+oneKSoilsData_testing['K00001','CFS1_TOP'] = 1000000
+```
+
+### Actual generation of the `SpatialExperiment` object
+
+```{r}
+
+# microbiome.spe <- convert_to_spe(
+#   oneKSoilsData,  ##pooled data table
+#   data_meta,  ##pooled metadata
+#   oneKSoilsOmicsMeta,  ##protein identifiers
+#   feature_meta_colname='KO', #column name
+#   spatialCoords_colnames=c('x_pixels','y_pixels'),
+#   image_files = c("../data/us_map.png"),
+#   image_samples_common_identifier='test',
+#   samples_common_identifier='test',
+#   image_ids = c('0'),
+#   assay_name = 'KO'
+#   )
+
+microbiome.spe <- convert_to_spe(
+  oneKSoilsData_testing,  ##pooled data table
+  data_meta_testing,  ##pooled metadata
+  oneKSoilsOmicsMeta,  ##protein identifiers
+  feature_meta_colname='KO', #column name
+  spatialCoords_colnames=c('x_pixels','y_pixels'),
+  image_files = c("../data/us_map.png"),
+  image_samples_common_identifier='test',
+  samples_common_identifier='test',
+  image_ids = c('0'),
+  assay_name = 'KO'
+  )
+
+
+```
+
+
+
+```{r}
+
+diff_ex <- calc_spatial_diff_ex(
+    microbiome.spe,
+    assay_name='KO',
+    log_transformed=FALSE,
+    category_col='Core_Layer_bin',
+    # feature_colname = 'KO'
+    )
+
+sig_ko<-subset(rowData(diff_ex),TOP_vs_BTM.adj.P.Val.limma<0.01)
+ups<-subset(sig_ko, TOP_vs_BTM.logFC.limma>0)
+downs<-subset(sig_ko, TOP_vs_BTM.logFC.limma<0)
+
+print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
+            nrow(ups),'upregulated KOs and',nrow(downs),'downregulated'))
+
+
+```
+
+```{r}
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/keggPathwayToKo.rda?raw=true"))
+# data('keggPathwayToKo')
+```
+
+```{r}
+
+ora.res <- enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO')
+
+```
+
+
+```{r}
+# spatial_heatmap(
+#   microbiome.spe,
+#   assay_name='pathway',
+#   feature=1,
+#   feature_type='annotation',
+#   sample_id='test',
+#   image_id='0',
+#   spatial_coord_names=c('x_pixels','y_pixels'),
+#   metric_display = "Pathway abundance",
+#   spot_size=unlist(colData(microbiome.spe)[1,c('spot_width','spot_height')]),
+#   image_boundaries=unlist(colData(microbiome.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
+#   label_column='Sample_ID',
+#   interactive=FALSE,
+#   sample_label_color = 'grey',
+#   sample_label_size = 3,
+# )
+```
+
