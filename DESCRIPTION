@@ -6,6 +6,8 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
     person("Harkirat", "Sohi", , "harkirat.sohi@pnnl.gov", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Yannick", "Mahlich", , "yannick.mahlich@pnnl.gov", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Spammer provides a suite of tools and a data structure to analyze diverse multiomics measurements in a spatial context.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -22,4 +24,4 @@ Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, impute,
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
 Author: Harkirat Sohi [aut, cre] (YOUR-ORCID-ID)
-Maintainer: Harkirat Sohi <harkirat.sohi@pnnl.gov>
+Maintainer: Yannick Mahlich <yannich.mahlich@pnnl.gov>

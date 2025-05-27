@@ -39,14 +39,17 @@ This R-notebook relies on the following dependencies
 ### Setting up the evironment
 
 ```{r loading-packages, warning=FALSE, message=FALSE}
+if(!require(terra)){
+  install.packages('terra')
+}
+if(!require(sf)){
+  install.packages('sf')
+}
 library(sf) 
-library(terra)
-library(ggplot2)
 library(spammR)
 library(plyr)
 library(httr2)
-library(tidyr)
-library(dplyr)
+
 ```
 
 ## The Goal
@@ -54,8 +57,8 @@ library(dplyr)
 The data that we will be working with is a KO enrichment from the 1000 soils project. The 1000 soils project has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
 
 ```{r}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsData.rda?raw=true"))
-# data("oneKSoilsData")
+#load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsData.rda?raw=true"))
+data("oneKSoilsData")
 ```
 
 ### Omics Metadata
@@ -92,8 +95,8 @@ Next we need to import the lat/long information of the locations where the 1000 
 Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
 
 ```{r}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsMeta.rda?raw=true"))
-# data("oneKSoilsMeta")
+#load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsMeta.rda?raw=true"))
+data("oneKSoilsMeta")
 # soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
 #   .[complete.cases(.),]
 # soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
@@ -142,7 +145,7 @@ s_us_cont
 creating a "rasterization template" with `terra`. This will be needed to create an "actual" `terra::SpatRaster` object which we will use to generate a rasterized image while retaining the location information and possibility to project the map into a different map projection.
 
 ```{r raster-template, warning=FALSE, message=FALSE}
-template <- rast(
+template <- terra::rast(
   s_us_cont,
   res=0.01
   )
@@ -152,7 +155,8 @@ Creating the rasterized "landmass" of the continental US
 
 # us_raster <- rasterize(s_us_cont, template, background=0)
 #us_raster <- rasterize(as.lines(s_us_cont), template, field='STATEFP', touches=TRUE)
-us_raster <- rasterize(s_us_cont, template, field='STATEFP')
+
+us_raster <- terra::rasterize(s_us_cont, template, field='STATEFP')
 ```
 
 
@@ -162,17 +166,17 @@ Next we generate a SF object from the coordinate data. This SF object can then b
 
 ```{r}
 oneKSoilsMeta <- oneKSoilsMeta[!is.na(oneKSoilsMeta$latitude) & !is.na(oneKSoilsMeta$longitude),]
-coords <- st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
-st_crs(coords) <- st_crs(s_us_cont)
+coords <- sf::st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
+sf::st_crs(coords) <- sf::st_crs(s_us_cont)
 coords
 ```
 
 ## transform the coordinates of the metagenome into a SpatRast object
 
-The rasterization makes use of the same rasterization template that was used to rasterize the map of the continetal USA.
+The rasterization makes use of the same rasterization template that was used to rasterize the map of the continental USA.
 
 ```{r}
-coords_rast <- rasterize(coords, template)
+coords_rast <- terra::rasterize(coords, template)
 coords_rast
 ```
 
@@ -200,6 +204,10 @@ cells <- cells_tmp %>%
   plyr::rename(., replace = c("cell.1" = "y_pixels", "cell.2" = "x_pixels")) %>%
   subset(., select = -c(x, y, ID, last))
 cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
+
+writeRaster(us_raster, 'us_map.png', NAflag=0, overwrite=TRUE)
+
+
 ```
 
 Those need to be finally written out / transferred into the `spammR` package for further use.
@@ -209,7 +217,6 @@ Those need to be finally written out / transferred into the `spammR` package for
 
 The rasterized map can be exported with the command below.
 ```{r write-raster-map, eval=FALSE}
-writeRaster(us_raster, '../data/us_map.png', NAflag=0, overwrite=TRUE)
 ```
 
 
@@ -217,11 +224,11 @@ writeRaster(us_raster, '../data/us_map.png', NAflag=0, overwrite=TRUE)
 
 
 ```{r}
-coords_test <- st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
-st_crs(coords_test) <- st_crs(s_us_cont)
+coords_test <- sf::st_as_sf(oneKSoilsMeta, coords=c('longitude', 'latitude'), remove=TRUE)
+sf::st_crs(coords_test) <- sf::st_crs(s_us_cont)
 plot(us_raster, col='grey')
 # lines(as.polygons(us_raster), col='black')
-plot(coords_test, col='red', add=TRUE)
+plot(coords_test, col='darkred', add=TRUE)
 ```
 ## Generating the `SpatialExperiment` object
 
@@ -251,9 +258,9 @@ data_meta[,'x_origin'] <- 0
 data_meta[,'y_origin'] <- 0
 data_meta[, 'spot_height'] <- 500
 data_meta[, 'spot_width'] <- 500
-data_meta[, 'above_40_deg_lat'] <- if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
-data_meta[, 'psychrophile'] <- if_else(data_meta[, 'Soil.Temperature.C'] <= 15, true=1, false=0)
-data_meta[, 'Core_Layer_bin'] <- if_else(data_meta[, 'Core_Layer'] == 'TOP', true='TOP', false='BTM')
+data_meta[, 'above_40_deg_lat'] <- dplyr::if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
+data_meta[, 'psychrophile'] <- dplyr::if_else(data_meta[, 'Soil.Temperature.C'] <= 15, true=1, false=0)
+data_meta[, 'Core_Layer_bin'] <- dplyr::if_else(data_meta[, 'Core_Layer'] == 'TOP', true='TOP', false='BTM')
 
 head(data_meta)
 
@@ -295,7 +302,7 @@ oneKSoilsData_testing['K00001','CFS1_TOP'] = 1000000
 #   oneKSoilsOmicsMeta,  ##protein identifiers
 #   feature_meta_colname='KO', #column name
 #   spatialCoords_colnames=c('x_pixels','y_pixels'),
-#   image_files = c("../data/us_map.png"),
+#   image_files = c("us_map.png"),
 #   image_samples_common_identifier='test',
 #   samples_common_identifier='test',
 #   image_ids = c('0'),
@@ -308,7 +315,7 @@ microbiome.spe <- convert_to_spe(
   oneKSoilsOmicsMeta,  ##protein identifiers
   feature_meta_colname='KO', #column name
   spatialCoords_colnames=c('x_pixels','y_pixels'),
-  image_files = c("../data/us_map.png"),
+  image_files = c("us_map.png"),
   image_samples_common_identifier='test',
   samples_common_identifier='test',
   image_ids = c('0'),
