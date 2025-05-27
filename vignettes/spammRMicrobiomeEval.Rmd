@@ -57,7 +57,6 @@ library(httr2)
 The data that we will be working with is a KO enrichment from the 1000 soils project. The 1000 soils project has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
 
 ```{r}
-#load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsData.rda?raw=true"))
 data("oneKSoilsData")
 ```
 
@@ -95,7 +94,6 @@ Next we need to import the lat/long information of the locations where the 1000 
 Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
 
 ```{r}
-#load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/oneKSoilsMeta.rda?raw=true"))
 data("oneKSoilsMeta")
 # soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
 #   .[complete.cases(.),]
@@ -123,7 +121,7 @@ us_map
 Instead will load the file from the supplied `rda` file.
 
 ```{r import-usmap-from-data-file}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/usMap.rda?raw=true"))
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/usMap.rda?raw=true"))
 ```
 
 Sub-setting the shape map to only US continental
@@ -348,7 +346,7 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/keggPathwayToKo.rda?raw=true"))
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/keggPathwayToKo.rda?raw=true"))
 # data('keggPathwayToKo')
 ```
 
