@@ -3,11 +3,11 @@ Title: SPatial Analysis of Multiomics Measurements in R
 Version: 0.99.0
 Authors@R: 
     person("Sara", "Gosline", , "sara.gosline@pnnl.gov", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0002-6534-4774"))
     person("Harkirat", "Sohi", , "harkirat.sohi@pnnl.gov", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
     person("Yannick", "Mahlich", , "yannick.mahlich@pnnl.gov", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0002-0717-2927"))
 Description: Spammer provides a suite of tools and a data structure to analyze diverse multiomics measurements in a spatial context.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -23,5 +23,5 @@ Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, impute,
         matrixStats, scales, spdep, ggrepel, IRanges, cowplot, leapR
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
-Author: Harkirat Sohi [aut, cre] (YOUR-ORCID-ID)
+Author: Harkirat Sohi
 Maintainer: Yannick Mahlich <yannich.mahlich@pnnl.gov>

@@ -20,23 +20,22 @@ vignette: |
   
 ---
 
+This vignette walks you through an example of using spammR for metagenomic data across a geographic area.
+
 ## Dependencies
 
-This R-notebook relies on the following dependencies
+We require a few packages for the mapping requirements that are beyond the basic spammR tools.
 
-### R packages
-
+The following R packages are required: 
 - [spammR](https://github.com/PNNL-CompBio/spammR)
-- ggplot2
 - [sf](https://r-spatial.github.io/sf/index.html) relies on other non R-libraries (see [Installing](https://r-spatial.github.io/sf/index.html#installing) for more details on how to install sf including the dependencies)
 
-### non-R Libraries
 
+The following non-R packages are required:
 - [GEOS](https://libgeos.org/usage/install/)
 - [PROJ](https://proj.org/en/stable/install.html)
 - [GDAL](https://gdal.org/en/stable/download.html)
 
-### Setting up the evironment
 
 ```{r loading-packages, warning=FALSE, message=FALSE}
 if(!require(terra)){
@@ -45,29 +44,33 @@ if(!require(terra)){
 if(!require(sf)){
   install.packages('sf')
 }
-library(sf) 
+
+#if(!require("httr2")){
+#  install.packages("httr2")
+#}
+
+
 library(spammR)
-library(plyr)
-library(httr2)
 
 ```
 
-## The Goal
+## Loading metagenomic data
 
-The data that we will be working with is a KO enrichment from the 1000 soils project. The 1000 soils project has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
+The data that we will be working with is a [KEGG ortholog](https://www.genome.jp/kegg/ko.html) enrichment from the 1000 soils project. The [1000 soils project](https://www.emsl.pnnl.gov/project/60141) has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
 
-```{r}
+We have downloaded the 1000 soil data and stored it as two separate files that can be loaded directly in the package. 
+
+The first file is the actual KO measurements. 
+
+```{r oneksoils}
 data("oneKSoilsData")
+
+
 ```
 
-### Omics Metadata
+We can then create a metadata file that The KO metadata table will contain a mapping from KO identifier - row names in the Omics Measurement table - to a more descriptive annotation.For testing purposes this currently is only the row names & incremented integer values.
 
-The KO metadata table will contain a mapping from KO identifier - row names in the Omics Measurement table - to a more descriptive annotation.
-
-For testing purposes this currently is only the row names & incremented integer values.
-
-```{r}
-
+```{r oneksoils meta}
 oneKSoilsOmicsMeta <- data.frame(KO = character(nrow(oneKSoilsData)))
 
 oneKSoilsOmicsMeta["KO"] <- rownames(oneKSoilsData)
@@ -75,53 +78,38 @@ oneKSoilsOmicsMeta["annotation"] <- seq(1, by = 1, length.out=nrow(oneKSoilsOmic
 oneKSoilsOmicsMeta["annotation"] <- lapply(oneKSoilsOmicsMeta["annotation"], as.character)
 head(oneKSoilsOmicsMeta)
 
-
-# data_pathway_meta <- as.data.frame(pathways) %>% cbind(pathway = rownames(.), .)
-# colnames(data_pathway_meta) <- c('pathway', 'annotation')
-
-# data_tmp <- read.csv(file = "../data/1000_soil_contig_aug2022_all.csv")
-# data_ko_meta <- data_tmp["KO"]
-# data_ko_meta["annotation"] <- seq(1, by = 1, length.out=nrow(data_ko_meta))
-# data_ko_meta["annotation"] <- lapply(data_ko_meta["annotation"], as.character)
-# head(data_ko_meta)
 ```
 
-
-## Importing the long/lat data from the 1000 soils project
 
 Next we need to import the lat/long information of the locations where the 1000 soil project samples where extracted. The file was retrieved from the [1000 Soils Project Shiny App](https://shinyproxy.emsl.pnnl.gov/app/1000soils). The metadata was retrieved by using the Query>Information tab. On the left side (the "Information Menu") we select `SAMPLE_ID`, `latitude` & `longitude` and download the resulting mapping.
 
 Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
 
-```{r}
+```{r coordiantes}
 data("oneKSoilsMeta")
-# soil_metagenomes_coords <- read.csv(file='../data/1000_soil_contig_coords.csv', sep=',') %>%
-#   .[complete.cases(.),]
-# soil_metagenomes_coords$Sample_ID <- gsub("_[TOPBTM]+$", "", soil_metagenomes_coords$Sample_ID)
-# soil_metagenomes_coords <- unique(soil_metagenomes_coords)
-  
 head(oneKSoilsMeta)
 ```
 
+## Loading and formatting map information.
 
-## File import
-
-Importing a shape file containing the US states. The shape file was
-retrieved from the [US Census Bureau](https://www.census.gov/cgi-bin/geo/shapefiles/index.php) with the following parameters:
+Maps can be downloaded from public repositories as a 'shape' file that can then be processed
+for coordinates and visualization. Here we show how to retrieve a shape file d from the [US Census Bureau](https://www.census.gov/cgi-bin/geo/shapefiles/index.php) with the following parameters:
 
 - Year = 2024
 - Layer type = "States (and equivalent)"
 
-The code chunk below will not be exectued but is displayed as example of how to load a downloaded shapefile.
+Or downloaded in a zip file from the [census FTP site](https://www2.census.gov/geo/tiger/TIGER2024/STATE/).
+
+The code chunk below will not be executed but is displayed as example of how to load a downloaded shape file using the sf package.
 
 ```{r import-usshape, warning=FALSE, message=FALSE, eval=FALSE}
-us_map <- st_read("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE) 
+us_map <- sf::st_read("../data/tl_2024_us_state/tl_2024_us_state.shp", quiet = TRUE) 
 us_map
 ```
-Instead will load the file from the supplied `rda` file.
+Instead will load the file from the supplied `rda` file:
 
 ```{r import-usmap-from-data-file}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/usMap.rda?raw=true"))
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/usMap.rda?raw=true"))
 ```
 
 Sub-setting the shape map to only US continental
@@ -140,6 +128,7 @@ s_us_cont <- us_map %>%
   vect()
 s_us_cont
 ```
+
 creating a "rasterization template" with `terra`. This will be needed to create an "actual" `terra::SpatRaster` object which we will use to generate a rasterized image while retaining the location information and possibility to project the map into a different map projection.
 
 ```{r raster-template, warning=FALSE, message=FALSE}
@@ -148,6 +137,7 @@ template <- terra::rast(
   res=0.01
   )
 ```
+
 Creating the rasterized "landmass" of the continental US
 ```{r}
 
@@ -158,7 +148,7 @@ us_raster <- terra::rasterize(s_us_cont, template, field='STATEFP')
 ```
 
 
-## creating a SF object from the coordinate data
+### creating a SF object from the coordinate data
 
 Next we generate a SF object from the coordinate data. This SF object can then be rasterized (see below).
 
@@ -169,7 +159,7 @@ sf::st_crs(coords) <- sf::st_crs(s_us_cont)
 coords
 ```
 
-## transform the coordinates of the metagenome into a SpatRast object
+### transform the coordinates of the metagenome into a SpatRast object
 
 The rasterization makes use of the same rasterization template that was used to rasterize the map of the continental USA.
 
@@ -178,7 +168,7 @@ coords_rast <- terra::rasterize(coords, template)
 coords_rast
 ```
 
-## get the "Pixel" x/y (NOT lat/long x/y) of metagenome samples
+### get the "Pixel" x/y (NOT lat/long x/y) of metagenome samples
 
 Finally to retrieve the "pixel" coordinates instead of the x/y (lat/long) coordinates that are recorded in the `terra::SpatRaster` objects the following procedure is employed:
 
@@ -199,11 +189,10 @@ cells_tmp <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
 xy_rast <- lapply(cells['cell'], function(x) rowColFromCell(coords_rast, x))
 cells <- cells_tmp %>% 
   cbind(., oneKSoilsMeta, xy_rast) %>%
-  plyr::rename(., replace = c("cell.1" = "y_pixels", "cell.2" = "x_pixels")) %>%
+  dplyr::rename(., y_pixels= 'cell.1', x_pixels='cell.2') %>%
   subset(., select = -c(x, y, ID, last))
 cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
 
-writeRaster(us_raster, 'us_map.png', NAflag=0, overwrite=TRUE)
 
 
 ```
@@ -211,14 +200,17 @@ writeRaster(us_raster, 'us_map.png', NAflag=0, overwrite=TRUE)
 Those need to be finally written out / transferred into the `spammR` package for further use.
 
 
-## Exporting the rasterized map
+### Exporting the rasterized map
 
 The rasterized map can be exported with the command below.
-```{r write-raster-map, eval=FALSE}
+
+```{r write-raster-map, eval=TRUE}
+terra::writeRaster(us_raster, 'us_map.png', NAflag=0, overwrite=TRUE)
+
 ```
 
 
-## Examplary plotting 
+### Examplary plotting 
 
 
 ```{r}
@@ -228,6 +220,7 @@ plot(us_raster, col='grey')
 # lines(as.polygons(us_raster), col='black')
 plot(coords_test, col='darkred', add=TRUE)
 ```
+
 ## Generating the `SpatialExperiment` object
 
 To generate the `SpatialExperiment` object that is needed by spammR we first need to compile the data that goes into that. The data is comprised of:
@@ -307,7 +300,7 @@ oneKSoilsData_testing['K00001','CFS1_TOP'] = 1000000
 #   assay_name = 'KO'
 #   )
 
-microbiome.spe <- convert_to_spe(
+microbiome.spe <- spammR::convert_to_spe(
   oneKSoilsData_testing,  ##pooled data table
   data_meta_testing,  ##pooled metadata
   oneKSoilsOmicsMeta,  ##protein identifiers
@@ -323,11 +316,11 @@ microbiome.spe <- convert_to_spe(
 
 ```
 
-
+## Metagenomic differential expression 
 
 ```{r}
 
-diff_ex <- calc_spatial_diff_ex(
+diff_ex <- spammR::calc_spatial_diff_ex(
     microbiome.spe,
     assay_name='KO',
     log_transformed=FALSE,
@@ -346,16 +339,20 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/keggPathwayToKo.rda?raw=true"))
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/keggPathwayToKo.rda?raw=true"))
 # data('keggPathwayToKo')
 ```
 
+## Differential expression enrichment 
+
 ```{r}
 
-ora.res <- enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO')
+ora.res <- spammR::enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO')
 
 ```
 
+
+## Metagenomic heatmap plotting
 
 ```{r}
 # spatial_heatmap(
