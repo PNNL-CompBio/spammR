@@ -22,7 +22,7 @@ vignette: |
 
 This vignette walks you through an example of using spammR for metagenomic data across a geographic area.
 
-## Dependencies
+# R and other dependencies
 
 We require a few packages for the mapping requirements that are beyond the basic spammR tools.
 
@@ -31,7 +31,7 @@ The following R packages are required:
 - [sf](https://r-spatial.github.io/sf/index.html) relies on other non R-libraries (see [Installing](https://r-spatial.github.io/sf/index.html#installing) for more details on how to install sf including the dependencies)
 
 
-The following non-R packages are required:
+The following non-R packages may be required:
 - [GEOS](https://libgeos.org/usage/install/)
 - [PROJ](https://proj.org/en/stable/install.html)
 - [GDAL](https://gdal.org/en/stable/download.html)
@@ -51,12 +51,12 @@ if(!require(sf)){
 
 
 library(spammR)
-
+library(ggplot2)
 ```
 
-## Loading metagenomic data
+# Metagenomic data formatting requirements
 
-The data that we will be working with is a [KEGG ortholog](https://www.genome.jp/kegg/ko.html) enrichment from the 1000 soils project. The [1000 soils project](https://www.emsl.pnnl.gov/project/60141) has the nice feature that each location has two sampling at different depths. We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
+The data that we will be working with is a [KEGG ortholog](https://www.genome.jp/kegg/ko.html) enrichment from the 1000 soils project. The [1000 soils project](https://www.emsl.pnnl.gov/project/60141) has the nice feature that each location has two sampling at different depths ('top' and 'bottom'). We will use this circumstance in combination with the KO enrichment to generate a pathway enrichment for each sample location and depth and then visualize the differential between the two depths.
 
 We have downloaded the 1000 soil data and stored it as two separate files that can be loaded directly in the package. 
 
@@ -83,14 +83,17 @@ head(oneKSoilsOmicsMeta)
 
 Next we need to import the lat/long information of the locations where the 1000 soil project samples where extracted. The file was retrieved from the [1000 Soils Project Shiny App](https://shinyproxy.emsl.pnnl.gov/app/1000soils). The metadata was retrieved by using the Query>Information tab. On the left side (the "Information Menu") we select `SAMPLE_ID`, `latitude` & `longitude` and download the resulting mapping.
 
-Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values).
+Not all `Sample_ID` entries have complete lat/long data. To generate a `sf` object (see below) which will be needed as input to create a `terra:SpatRaster` object the input table can only contain complete cases (i.e. no `NaN` values). The sample metadata conmtains infomratiomn about the type of Biome, the layer of the soil sample ('top' or 'bottom'), and the pH, for example, as well as the coordinates. 
 
 ```{r coordiantes}
 data("oneKSoilsMeta")
 head(oneKSoilsMeta)
+
+ggplot2::ggplot(oneKSoilsMeta,aes(x=Core_Layer,y=pH,fill=biome_name))+geom_boxplot()
+
 ```
 
-## Loading and formatting map information.
+# Geographic map formatting requirements
 
 Maps can be downloaded from public repositories as a 'shape' file that can then be processed
 for coordinates and visualization. Here we show how to retrieve a shape file d from the [US Census Bureau](https://www.census.gov/cgi-bin/geo/shapefiles/index.php) with the following parameters:
@@ -112,8 +115,7 @@ Instead will load the file from the supplied `rda` file:
 load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/usMap.rda?raw=true"))
 ```
 
-Sub-setting the shape map to only US continental
-
+This map contains the entire US, so for visualization purposes we focus only on the continental US. 
 ```{r subsetting-us-map, warning=FALSE, message=FALSE}
 us_continental <- c(
   'WV', 'FL', 'IL', 'MN', 'MD', 'RI', 'ID', 'NH', 'NC', 'VT',
@@ -129,8 +131,9 @@ s_us_cont <- us_map %>%
 s_us_cont
 ```
 
-creating a "rasterization template" with `terra`. This will be needed to create an "actual" `terra::SpatRaster` object which we will use to generate a rasterized image while retaining the location information and possibility to project the map into a different map projection.
+Now that we have the coordinate information we need to convert it to pixels using the `terra` package, which requires creating a rasterization template using the" `terra::SpatRaster`. From this object we can generate a rasterized image while retaining the location information and ability to project the map into a different map projection.
 
+The `terra` package can read in the shape file as follows: 
 ```{r raster-template, warning=FALSE, message=FALSE}
 template <- terra::rast(
   s_us_cont,
@@ -138,7 +141,7 @@ template <- terra::rast(
   )
 ```
 
-Creating the rasterized "landmass" of the continental US
+And then create a rasterized landmass of the continental US:
 ```{r}
 
 # us_raster <- rasterize(s_us_cont, template, background=0)
@@ -148,9 +151,9 @@ us_raster <- terra::rasterize(s_us_cont, template, field='STATEFP')
 ```
 
 
-### creating a SF object from the coordinate data
+## Mapping soil locations to map
 
-Next we generate a SF object from the coordinate data. This SF object can then be rasterized (see below).
+Next we generate an `sf` object from the soils coordinate data so that we can then map it to the same rasterized image as the US map object:
 
 ```{r}
 oneKSoilsMeta <- oneKSoilsMeta[!is.na(oneKSoilsMeta$latitude) & !is.na(oneKSoilsMeta$longitude),]
@@ -159,9 +162,7 @@ sf::st_crs(coords) <- sf::st_crs(s_us_cont)
 coords
 ```
 
-### transform the coordinates of the metagenome into a SpatRast object
-
-The rasterization makes use of the same rasterization template that was used to rasterize the map of the continental USA.
+Using the same rasterization template as we used above, we can make the soils coordinates fit on pixes on the US map. 
 
 ```{r}
 coords_rast <- terra::rasterize(coords, template)
@@ -175,7 +176,7 @@ Finally to retrieve the "pixel" coordinates instead of the x/y (lat/long) coordi
 - use `extract()` to get the cells which the coordinates are projected into in the raster image
 - use `lapply()` get the raster coordinates ('pixel' x/y) for each row with `terra::rowColFromCell()`
 - use `cbind()` to combine the cells, 'pixel' x/y and original sample coordinate `data.frame`
-- use `plyr::rename()` to clean up `data.frame`
+- use `dplyr::rename()` to clean up `data.frame`
 
 This process does come with slight differences in lat/long. Most likely due to the rasterization process?
 
@@ -221,19 +222,20 @@ plot(us_raster, col='grey')
 plot(coords_test, col='darkred', add=TRUE)
 ```
 
-## Generating the `SpatialExperiment` object
+# Using `spammR` on metagenomic geographic data
 
-To generate the `SpatialExperiment` object that is needed by spammR we first need to compile the data that goes into that. The data is comprised of:
+Now that the data are properly formatted we can put them into a `SpatialExperiment` object that is needed by spammR. 
+The data is comprised of:
 
-- Omics Measurements
-- Omics Metadata
-- Sample Metadata
-- Image files (generated by the above code)
+- Omics Measurements: species abundances across regions
+- Omics Metadata: metadata from these species
+- Sample Metadata: information about the sample location
+- Image files (generated by the above code): file representing image sample
 
 
-### Sample Metadata
+## Sample Metadata
 
-Here we build the sample metadata table given the perviously generated coordinate raster during the rasterization of the map.
+Here we build the sample metadata table given the previously generated coordinate raster during the rasterization of the map. The SpatialExperiment object requires information about the x and y coordinates and information about each spot in the image for which we have omics data. 
 
 ```{r}
 data_meta <- cells
@@ -257,7 +259,8 @@ head(data_meta)
 
 
 ```
-### CLEANING UP OF DATA
+## CLEANING UP OF DATA
+@Yannick can we remove these? i'm not sure why they are here if not being evaluted
 
 ```{r eval=FALSE}
 
@@ -271,6 +274,8 @@ data_meta <- data_meta[data_meta$Core_Layer == 'TOP',]
 oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
 ```
 
+Why only use a subset of the data?
+
 ```{r}
 data_meta_testing <- subset(data_meta, Sample_ID %in% c('ANZA_TOP', 'ANZA_BTM', 'CFS1_TOP', 'CFS1_BTM'))
 oneKSoilsData_testing <- subset(oneKSoilsData, select=data_meta_testing$Sample_ID)
@@ -283,7 +288,9 @@ oneKSoilsData_testing['K00001','ANZA_TOP'] = 1000000
 oneKSoilsData_testing['K00001','CFS1_TOP'] = 1000000
 ```
 
-### Actual generation of the `SpatialExperiment` object
+## Create `SpatialExperiment` object
+
+Now that our metadata is formatted correctly we can create the spatialExperiment object. 
 
 ```{r}
 
@@ -316,7 +323,7 @@ microbiome.spe <- spammR::convert_to_spe(
 
 ```
 
-## Metagenomic differential expression 
+## Metagenomic differential expression and enrichment
 
 ```{r}
 
@@ -343,7 +350,6 @@ load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/kegg
 # data('keggPathwayToKo')
 ```
 
-## Differential expression enrichment 
 
 ```{r}
 
