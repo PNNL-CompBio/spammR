@@ -39,7 +39,7 @@ Once the package is installed you load the library, including the test data.
 ```{r load package, message=FALSE,warning=FALSE}
 ##load spammR
 library(spammR)
-
+library(tibble)
 ```
 
 # Collecting data to analyze
