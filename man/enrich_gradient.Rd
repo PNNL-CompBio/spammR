@@ -16,14 +16,13 @@ enrich_gradient(spe, geneset, feature_column, ranking_column)
 \item{ranking_column}{Column of rowData that maps to ranks}
 }
 \value{
-a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
+A dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 }
 \description{
 \code{enrich_gradient()} calculates over-representation statistics (ORA) using a ranking of genes from \code{distance_based_analysis()}
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 }
 \examples{
-
 data(pancDataList)
 data(pancMeta)
 data(protMeta)
@@ -32,5 +31,5 @@ img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='Islet
 library(leapR)
 data('krbpaths')
 rank.res <- enrich_gradient(img0.spe, geneset=krbpaths,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
-
+head(rank.res)
 }

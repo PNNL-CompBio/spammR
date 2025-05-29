@@ -14,13 +14,21 @@
 #' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
 #' @export
+#' 
+#' @examples
 #' data(pancDataList)
 #' data(pancMeta)
 #' data(protMeta)
 #' pooledData<-dplyr::bind_cols(pancDataList)
-#' panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
-#' volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
+#' pooled.panc.spe <- convert_to_spe(pooledData,
+#'                 pancMeta,
+#'                 protMeta,
+#'                 feature_meta_colname = 'pancProts',
+#'                 samples_common_identifier='')
+#' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
+#'                 category_col='IsletOrNot')
+#' volcano_plot(diffex.spe,sigLabel_colname = 'PrimaryGeneName',title='Islet vs nonIslet')
+#' 
 #'
 volcano_plot <- function(diffex.spe,
                          logFC_colname,
@@ -29,8 +37,7 @@ volcano_plot <- function(diffex.spe,
                          title,
                          thresh=0.05,
                          sigLabel_colname){
-  #require('ggrepel')
-  #library('ggplot2')
+
   diffEx_df = SummarizedExperiment::rowData(diffex.spe)
   if(missing(pval_colname))
     pval_colname=colnames(diffEx_df)[grep('adj.P.Val',colnames(diffEx_df),fixed=TRUE)[1]]
@@ -60,7 +67,7 @@ volcano_plot <- function(diffex.spe,
   #p_title = paste("Differential abundance analysis for ", group1_name," vs. ",group2_name,"\nP-values from t-test for each protein; Fold Change = (Mean for ",group1_name,")/(Mean for ",group2_name,")",sep="")
   p_title = title
   if (length(sig_indices > 0)){
-    p_title = paste(p_title,"\nAnnotated points show ",sigLabel_colname," names",sep="")
+    p_title <- paste(p_title,"\nAnnotated points show ",sigLabel_colname," names",sep="")
   }
   text_xcoord = ( min(xdat,na.rm = TRUE) + max(xdat,na.rm=TRUE) ) / 2 #midpoint of x-axis
   p2 <- ggplot2::ggplot(diffEx_df, ggplot2::aes(get(logFC_colname), -log10(get(pval_colname)), label = pt_lbls)) +

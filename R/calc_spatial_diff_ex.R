@@ -9,23 +9,29 @@
 #' @param category_col Name of the column that specifies category of each sample. Example: "IsletOrNot"
 #' #Categories from `category_col` will be compared in the differential expression analysis
 #' @param compare_vals A vector containing names of categories from category_col to be compared. Only required if there are more than two values in `category_col`
-#' @returns a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
+#' @returns A Spatial Experiment object containing differential expression results, stored in rowData(diffEx.spe)
 #  and assays(diffEx.spe) which contains the dataset on which differential expresssion analysis was carried out
+#'
 #' @examples
 #' data(pancDataList)
 #' data(pancMeta)
 #' data(protMeta)
 #' pooledData<-dplyr::bind_cols(pancDataList)
-#' pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-#' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot')
-#'
-calc_spatial_diff_ex<-function(spe,
+#' pooled.panc.spe <- convert_to_spe(pooledData,
+#'                 pancMeta,
+#'                 protMeta,
+#'                 feature_meta_colname = 'pancProts',
+#'                 samples_common_identifier='')
+#' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
+#'                 category_col='IsletOrNot')
+#' 
+calc_spatial_diff_ex <- function(spe,
                                assay_name='proteomics',
                                log_transformed=FALSE,
                                category_col,
                                compare_vals){
   #collect samples by factor
-  factors<-unique(SummarizedExperiment::colData(spe)[[category_col]])
+  factors <- unique(SummarizedExperiment::colData(spe)[[category_col]])
   if(length(factors)<1){
     ##throw error we need at least two categories
   }else if(length(factors)>2){

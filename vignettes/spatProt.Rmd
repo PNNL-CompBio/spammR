@@ -90,7 +90,7 @@ There can be multiple image files associated with a single set of omics measurem
 ```{r img}
 library(cowplot)
 
-cowplot::ggdraw()+cowplot::draw_image('../inst/extdata/Image_1.png')
+cowplot::ggdraw()+cowplot::draw_image(system.file('extdata','Image_1.png',package='spammR'))
 ```
 
 Now we can use this image and others to visualize omics data.

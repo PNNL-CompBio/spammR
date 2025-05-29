@@ -3,8 +3,18 @@
 #' @import SpatialExperiment
 #' @export
 #' @param spe SpatialExperiment object containing omics data
+#' @return Data frame of new coordinates
+#' 
 #' @examples
-#' if(FALSE) calc_centers()
+#' data(pancMeta)
+#' data(protMeta)
+#' data(pancDataList)
+#' img0.spe<-distance_based_analysis(img0.spe,
+#'             'proteomics',
+#'             sampleCategoryCol = 'IsletOrNot',
+#'             sampleCategoryValue = 'Islet')
+#' calc_centers(img0.spe)
+#' 
 calc_centers<-function(spe){
 
   ##get relevant column data - x,y coords and spot height/width
@@ -13,5 +23,5 @@ calc_centers<-function(spe){
 
   new_coords<-data.frame(spatial_coords[,1]+spatial_sizes[,1]/2,spatial_coords[,2]+spatial_sizes[,2]/2)
   colnames(new_coords)<-c('x_center','y_center')
-
+  return(new_coords)
 }

@@ -17,7 +17,7 @@
 #' @param assay_name Name of assay in the spe object that contains data to be plotted
 #' @param plotBackground_img Boolean (TRUE or FALSE) to indicate whether a background image should be plotted. Default is FALSE. If TRUE, the parameters image_boundaries and image_sample_id must be specified, and the image data must be present in the spe object, under imgData(spe)
 #' @param sample_id The names of the background image's sample_id fields in the spe object; this provides a unique identifier for the background image to be used for plotting (if there are multiple images under imgData(spe)) and only plots samples associated with the specified image sample_id. Example: c("Image0","Raw_noMarkings"). Image data stored under the spe object can be viewed by imgData(spe)
-#'.@param image_id The name of the background image image_id. Together with the `sample_id` this provides a unique imge to plot.
+#' @param image_id The name of the background image image_id. Together with the `sample_id` this provides a unique imge to plot.
 #' @param image_boundaries Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).
 #' @param spatial_coord_type Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner". Default is blank, which assumes coordinates are bottom right.
 #' @param spatial_coord_names Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord","Ycoord") or c("X","Y").
@@ -31,13 +31,15 @@
 #' @param sample_label_size Font size for sample labels. Default is 1.75.
 #' @param plot_title Title to be given to the spatial heatmap. Default is "Spatial signature for XYZ" where XYZ is the name of the specified feature
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot should have interactive mouse hovering. If not specified, this defaults to TRUE. Note: grid squares can only be labeled when interactive = FALSE due to current ggplotly limitations.
-#' @returns spatial_plot: Spatial heatmap of the chosen feature
+#' @returns A spatial heatmap of the chosen feature
+#'
 #' @examples
 #' data(pancMeta)
 #' data(pancDataList)
 #' data(protMeta)
-#' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_ids='with_grid')
+#' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_id='with_grid')
 #' res = spatial_heatmap(img0.spe, feature='INS', sample_id='Image0', image_id='with_grid', feature_type='PrimaryGeneName',spatial_coord_names=c('x_pixels','y_pixels'), spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),label_column='IsletOrNot', interactive=FALSE)
+#' 
 spatial_heatmap<-function(spe,
                           feature, ##feature to plot!
                           feature_type=NA, #element of rowdata to use

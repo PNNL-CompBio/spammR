@@ -31,6 +31,14 @@ volcano_plot(
 }
 \value{
 ggplot Volcano plot
+}
+\description{
+\code{volcano_plot()} generates a volcano plot to visualize results from differential expression analysis stored in a data frame.
+Use this function directly if differential expression results are in a separate data frame and not an spe object
+Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
+-log10(p-value) vs. log2(fold change)
+}
+\examples{
 data(pancDataList)
 data(pancMeta)
 data(protMeta)
@@ -38,10 +46,6 @@ pooledData<-dplyr::bind_cols(pancDataList)
 panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot',  feature_colname='pancProts')
 volcano_plot(diffex.spe,sigLabel_colname='PrimaryGeneName',title='Islet vs nonIslet')
-}
-\description{
-\code{volcano_plot()} generates a volcano plot to visualize results from differential expression analysis stored in a data frame.
-Use this function directly if differential expression results are in a separate data frame and not an spe object
-Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
--log10(p-value) vs. log2(fold change)
+
+
 }
