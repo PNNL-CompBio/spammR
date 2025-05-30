@@ -3,7 +3,7 @@
 \docType{data}
 \name{oneKSoilsCoords}
 \alias{oneKSoilsCoords}
-\title{Soil sample coordinates}
+\title{Soil sample coordinates for the sample information}
 \format{
 An object of class \code{data.frame} with 127 rows and 3 columns.
 }
@@ -11,6 +11,6 @@ An object of class \code{data.frame} with 127 rows and 3 columns.
 oneKSoilsCoords
 }
 \description{
-Soil sample coordinates
+Soil sample coordinates for the sample information
 }
 \keyword{datasets}
