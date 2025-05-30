@@ -1,9 +1,10 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
 Version: 0.99.0
-    person("Sara", "Gosline", email="sara.gosline@pnnl.gov", role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774"))
+Authors@R:
     person("Harkirat", "Sohi", email="harkirat.sohi@pnnl.gov", role = c("ctb"))
-    person("Yannick", "Mahlich", email="yannick.mahlich@pnnl.gov", role = c("aut","cre"), comment = c(ORCID = "0000-0002-0717-2927"))
+    person("Yannick", "Mahlich", email="yannick.mahlich@pnnl.gov", role = c("aut"), comment = c(ORCID = "0000-0002-0717-2927"))
+    person("Sara", "Gosline", email="sara.gosline@pnnl.gov", role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774"))
 Description: SpammR provides a suite of tools and a data structure to analyze diverse multiomics measurements in a spatial context.
 License: MIT + file LICENSE
 Encoding: UTF-8

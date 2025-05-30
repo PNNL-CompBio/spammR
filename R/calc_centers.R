@@ -9,19 +9,22 @@
 #' data(pancMeta)
 #' data(protMeta)
 #' data(pancDataList)
-#' img0.spe<-distance_based_analysis(img0.spe,
-#'             'proteomics',
-#'             sampleCategoryCol = 'IsletOrNot',
-#'             sampleCategoryValue = 'Islet')
+#' img0.spe <- convert_to_spe(pancDataList$Image_0,
+#'             pancMeta,
+#'             protMeta,
+#'             feature_meta_colname = 'pancProts',
+#'             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
+#'             image_samples_common_identifier = 'Image0',
+#'             samples_common_identifier = 'Image0',image_ids='Image0')
 #' calc_centers(img0.spe)
 #' 
-calc_centers<-function(spe){
+calc_centers <- function(spe){
 
   ##get relevant column data - x,y coords and spot height/width
   spatial_coords <- spatialCoords(spe)
-  spatial_sizes <-colData(spe)[,c('spot_width','spot_height')]
+  spatial_sizes <- colData(spe)[,c('spot_width','spot_height')]
 
-  new_coords<-data.frame(spatial_coords[,1]+spatial_sizes[,1]/2,spatial_coords[,2]+spatial_sizes[,2]/2)
-  colnames(new_coords)<-c('x_center','y_center')
+  new_coords <- data.frame(spatial_coords[,1] + spatial_sizes[,1]/2,spatial_coords[,2] + spatial_sizes[,2]/2)
+  colnames(new_coords) <- c('x_center','y_center')
   return(new_coords)
 }

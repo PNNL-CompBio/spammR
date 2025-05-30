@@ -1,3 +1,16 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("distance analysis works", {
+    data(pancMeta)
+    data(protMeta)
+    data(pancDataList)
+    img0.spe<-convert_to_spe(pancDataList$Image_0,
+                            pancMeta,protMeta,
+                            feature_meta_colname = 'pancProts',
+                            image_files = system.file("extdata",'Image_0.png',
+                                                    package = 'spammR'),
+                            image_samples_common_identifier = 'Image0',
+                            samples_common_identifier  =  'Image0',
+                            image_ids = 'Image0')
+    img0.spe<-distance_based_analysis(img0.spe,'proteomics',
+                                      sampleCategoryCol = 'IsletOrNot',
+                                      sampleCategoryValue = 'Islet')
 })

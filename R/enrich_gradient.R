@@ -33,21 +33,22 @@
 #'                 ranking_column = 'IsletDistancespearmanCor')
 #' head(rank.res)
 
-enrich_gradient <-function(spe,
+enrich_gradient <- function(spe,
                       geneset,
                       feature_column, #primary gene name to be mapped to enrichment data
                       ranking_column){
 
-
-  rvals <- SummarizedExperiment::rowData(spe)|>
-    as.data.frame()|>
-    dplyr::rename(feature=feature_column,rank=ranking_column)|>
+    ##first we get the ranking of the values
+  rvals <- SummarizedExperiment::rowData(spe) |>
+    as.data.frame() |>
+    dplyr::rename(feature = feature_column,rank = ranking_column) |>
     dplyr::select(feature,rank)
 
-  es <- leapR::leapR(rvals, geneset=geneset,
-            enrichment_method='enrichment_in_order',
-            id_column='feature',primary_columns='rank')|>
-    subset(!is.na(pvalue))|>
+  #here we use the leapR package for the rank enrichment
+  es <- leapR::leapR(rvals, geneset = geneset,
+            enrichment_method = 'enrichment_in_order',
+            id_column = 'feature', primary_columns = 'rank') |>
+    subset(!is.na(pvalue)) |>
     dplyr::arrange(pvalue)
 
   return(es)

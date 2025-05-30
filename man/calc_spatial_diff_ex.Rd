@@ -35,7 +35,12 @@ data(pancDataList)
 data(pancMeta)
 data(protMeta)
 pooledData<-dplyr::bind_cols(pancDataList)
-pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot')
+pooled.panc.spe <- convert_to_spe(pooledData,
+                pancMeta,
+                protMeta,
+                feature_meta_colname = 'pancProts',
+                samples_common_identifier='')
+diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
+                category_col='IsletOrNot')
 
 }

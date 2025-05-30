@@ -102,14 +102,14 @@ impute_df<-function(dat,
     # By default, impute.knn uses the mean of all proteins in a sample for this case, which is not that meaningful.
     # Instead, we replace the missing values (for the case when missingness in a row is greater than rowmax) with global_mean or na for that row
     fix_prots = which( (rowSums(is.na(dat))/dim(dat)[2]) > allowed_missingness_perProtein )
-    print(fix_prots)
+    #print(fix_prots)
     for (f in fix_prots){
       na_indices = which(is.na(dat[f,]))
       #knn_imputed_proteins_global$dat[f,na_indices] = mean(dat[f,],na.rm=TRUE)
       knn_imputed_proteins_global$dat[f,na_indices] = NA #Keep those missing values as NA since there is not enough dat to impute reliably.
     }
     if (!is.null(fix_prots)){
-      print("impute.knn function uses mean imputation for rows with more than the specified missingness. spammR's imputation function reverts these missing values back to NA.")
+      message("impute.knn function uses mean imputation for rows with more than the specified missingness. spammR's imputation function reverts these missing values back to NA.")
     }
     data_imputed = knn_imputed_proteins_global$dat
   }else if (method == "knn_samples_global_proteinData"){

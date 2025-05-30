@@ -54,14 +54,24 @@ spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Re
 \code{convert_to_spe()} Puts omics data (omics measurements, metadata and image(s) corresponding to samples' tissue) into a SpatialExperiment (SPE) object. Most spammR functions require the input data to be an SPE object.
 }
 \examples{
-\dontrun{
+
 data(pancMeta)
 data(protMeta)
 data(pancDataList)
 #We can put all samples into the same object (for statistical power)
 pooledData<-dplyr::bind_cols(pancDataList)
-pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+pooled.panc.spe <- convert_to_spe(pooledData,
+                pancMeta,
+                protMeta,
+                feature_meta_colname = 'pancProts',
+                samples_common_identifier='')
 #or we can add the inmage to a single data capture
-img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
-}
+img0.spe<-convert_to_spe(pancDataList$Image_0,
+    pancMeta,
+    protMeta,
+    feature_meta_colname = 'pancProts',
+    image_files=system.file("extdata",'Image_0.png',package='spammR'),
+    image_samples_common_identifier = 'Image0',
+    samples_common_identifier = 'Image0',
+    image_ids = 'Image0')
 }
