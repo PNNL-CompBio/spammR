@@ -37,7 +37,7 @@ impute_spe(
 \item{allowed_missingness_perSample}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
 }
 \value{
-an SPE with an 'imputed' data frame
+An SPE with an 'imputed' data frame
 }
 \description{
 \code{impute_spe()} carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).

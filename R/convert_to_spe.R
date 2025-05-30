@@ -17,17 +17,29 @@
 #' @param image_ids  A list containing image names/identifiers for image paths provided in image_files
 #' @param image_samples_common_identifier A list containing names of samples_common_identifier(s) corresponding to images provided in image_files. This identifier links specific samples to a experiment/condition represented by a given image.
 #' @returns spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Ready to be used as input in spammR functions that require SPE object as input.
-
 #' @examples
+#'
 #' data(pancMeta)
 #' data(protMeta)
 #' data(pancDataList)
 #' #We can put all samples into the same object (for statistical power)
 #' pooledData<-dplyr::bind_cols(pancDataList)
-#' pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' pooled.panc.spe <- convert_to_spe(pooledData,
+#'                 pancMeta,
+#'                 protMeta,
+#'                 feature_meta_colname = 'pancProts',
+#'                 samples_common_identifier='')
 #' #or we can add the inmage to a single data capture
-#' img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
-#'
+#' img0.spe<-convert_to_spe(pancDataList$Image_0,
+#'     pancMeta,
+#'     protMeta,
+#'     feature_meta_colname = 'pancProts',
+#'     image_files=system.file("extdata",'Image_0.png',package='spammR'),
+#'     image_samples_common_identifier = 'Image0',
+#'     samples_common_identifier = 'Image0',
+#'     image_ids = 'Image0')
+
+
 
 convert_to_spe <-function(dat, ##expression data frame - rows are feature,s columns are samples
                           sample_meta, ##table of metadata for samples. rownames are columns of unless sample_colname is set

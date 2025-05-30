@@ -9,9 +9,23 @@ calc_centers(spe)
 \arguments{
 \item{spe}{SpatialExperiment object containing omics data}
 }
+\value{
+Data frame of new coordinates
+}
 \description{
 calc_centers calculates the centers of spots for numerical analysis
 }
 \examples{
-if(FALSE) calc_centers()
+data(pancMeta)
+data(protMeta)
+data(pancDataList)
+img0.spe <- convert_to_spe(pancDataList$Image_0,
+            pancMeta,
+            protMeta,
+            feature_meta_colname = 'pancProts',
+            image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
+            image_samples_common_identifier = 'Image0',
+            samples_common_identifier = 'Image0',image_ids='Image0')
+calc_centers(img0.spe)
+
 }

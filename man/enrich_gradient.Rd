@@ -16,21 +16,32 @@ enrich_gradient(spe, geneset, feature_column, ranking_column)
 \item{ranking_column}{Column of rowData that maps to ranks}
 }
 \value{
-a dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
+A dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 }
 \description{
 \code{enrich_gradient()} calculates over-representation statistics (ORA) using a ranking of genes from \code{distance_based_analysis()}
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 }
 \examples{
-
 data(pancDataList)
 data(pancMeta)
 data(protMeta)
-img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',samples_common_identifier = 'Image0',image_ids='Image0')
-img0.spe<-distance_based_analysis(img0.spe,'proteomics',sampleCategoryCol='IsletOrNot',sampleCategoryValue='Islet')
+img0.spe <- convert_to_spe(pancDataList$Image_0,
+            pancMeta,
+            protMeta,
+            feature_meta_colname = 'pancProts',
+            image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
+            image_samples_common_identifier = 'Image0',
+            samples_common_identifier = 'Image0',image_ids='Image0')
+img0.spe<-distance_based_analysis(img0.spe,
+            'proteomics',
+            sampleCategoryCol = 'IsletOrNot',
+            sampleCategoryValue = 'Islet')
 library(leapR)
 data('krbpaths')
-rank.res <- enrich_gradient(img0.spe, geneset=krbpaths,feature_column='PrimaryGeneName',ranking_column='IsletDistancespearmanCor')
-
+rank.res <- enrich_gradient(img0.spe, 
+                geneset = krbpaths,
+                feature_column = 'PrimaryGeneName',
+                ranking_column = 'IsletDistancespearmanCor')
+head(rank.res)
 }

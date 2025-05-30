@@ -25,7 +25,7 @@ calc_spatial_diff_ex(
 \item{compare_vals}{A vector containing names of categories from category_col to be compared. Only required if there are more than two values in \code{category_col}}
 }
 \value{
-a list with diffEx.df, a data frame containing the differential expression results and diffEx.spe: Spatial Experiment object containing diffEx, stored in rowData(diffEx.spe)
+A Spatial Experiment object containing differential expression results, stored in rowData(diffEx.spe)
 }
 \description{
 \code{calc_spatial_diff_ex()} Calculates differential expression analysis using annotations in a SpatialExperiment object
@@ -35,7 +35,12 @@ data(pancDataList)
 data(pancMeta)
 data(protMeta)
 pooledData<-dplyr::bind_cols(pancDataList)
-pooled.panc.spe <- convert_to_spe(pooledData,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
-diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,category_col='IsletOrNot')
+pooled.panc.spe <- convert_to_spe(pooledData,
+                pancMeta,
+                protMeta,
+                feature_meta_colname = 'pancProts',
+                samples_common_identifier='')
+diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
+                category_col='IsletOrNot')
 
 }

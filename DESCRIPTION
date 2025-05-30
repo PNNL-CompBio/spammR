@@ -1,14 +1,11 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
 Version: 0.99.0
-Authors@R: 
-    person("Sara", "Gosline", , "sara.gosline@pnnl.gov", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-6534-4774"))
-    person("Harkirat", "Sohi", , "harkirat.sohi@pnnl.gov", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-    person("Yannick", "Mahlich", , "yannick.mahlich@pnnl.gov", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-0717-2927"))
-Description: Spammer provides a suite of tools and a data structure to analyze diverse multiomics measurements in a spatial context.
+Authors@R:
+    person("Harkirat", "Sohi", email="harkirat.sohi@pnnl.gov", role = c("ctb"))
+    person("Yannick", "Mahlich", email="yannick.mahlich@pnnl.gov", role = c("aut"), comment = c(ORCID = "0000-0002-0717-2927"))
+    person("Sara", "Gosline", email="sara.gosline@pnnl.gov", role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774"))
+Description: SpammR provides a suite of tools and a data structure to analyze diverse multiomics measurements in a spatial context.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -16,12 +13,10 @@ RoxygenNote: 7.3.2
 Suggests: testthat (>= 3.0.0), BiocStyle, knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-LazyData: true
-biocViews: SpatialProteomics, SpatialOmics, BiocStyle, IRanges
-Depends: SummarizedExperiment, SpatialExperiment, limma, R (>= 4.0.0),
+biocViews: Spatial, Pathways, Proteomics, DifferentialExpression, Metabolomics, SystemsBiology
+Depends: SummarizedExperiment, SpatialExperiment, limma, R (>= 4.4.0),
 Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, impute,
-        matrixStats, scales, spdep, ggrepel, IRanges, cowplot, leapR
+        matrixStats, scales, spdep, ggrepel, IRanges, cowplot, terra, sf, leapR
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
-Author: Harkirat Sohi
-Maintainer: Yannick Mahlich <yannich.mahlich@pnnl.gov>
+

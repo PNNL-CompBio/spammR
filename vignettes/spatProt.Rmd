@@ -39,7 +39,7 @@ Once the package is installed you load the library, including the test data.
 ```{r load package, message=FALSE,warning=FALSE}
 ##load spammR
 library(spammR)
-
+library(tibble)
 ```
 
 # Collecting data to analyze
@@ -90,7 +90,8 @@ There can be multiple image files associated with a single set of omics measurem
 ```{r img}
 library(cowplot)
 
-cowplot::ggdraw()+cowplot::draw_image('../inst/extdata/Image_1.png')
+cowplot::ggdraw() + cowplot::draw_image(system.file('extdata','Image_1.png',package='spammR'))
+
 ```
 
 Now we can use this image and others to visualize omics data.
@@ -111,12 +112,12 @@ Now that we have all the data loaded we can build a `SpatialExperiment` object e
 
 ```{r spe combined}
 
-pooledData<-dplyr::bind_cols(pancDataList)
+pooledData <- dplyr::bind_cols(pancDataList)
 pooled.panc.spe <- convert_to_spe(pooledData,  ##pooled data table
                                   pancMeta,  ##pooled metadata
                                   protMeta,  ##protein identifiers
-                                  feature_meta_colname='pancProts', #column name
-                                  samples_common_identifier='')
+                                  feature_meta_colname = 'pancProts', #column name
+                                  samples_common_identifier = '')
 print(pooled.panc.spe)
 
 ```
@@ -126,25 +127,24 @@ We can also create a list of `SpatialExperiment` objects, one for each of the 7 
 ```{r spe list, echo=FALSE, warning=FALSE, message=FALSE}
 
 ##list of image names
-imglist=c('Image_0','Image_1','Image_2','Image_3','Image_4','Image_7','Image_10')
+imglist = c('Image_0','Image_1','Image_2','Image_3','Image_4','Image_7','Image_10')
 
-img.spes=lapply(imglist,
+img.spes = lapply(imglist,
               function(x){
                 convert_to_spe(pancDataList[[x]],
                                pancMeta,
                                protMeta,
-                              feature_meta_colname='pancProts',
-                              spatialCoords_colnames=c('x_pixels','y_pixels'),
-                              image_files=system.file('extdata',
+                              feature_meta_colname = 'pancProts',
+                              spatialCoords_colnames = c('x_pixels','y_pixels'),
+                              image_files = system.file('extdata',
                                                       paste0(x,'.png'),
-                                                      package='spammR'),
-                              image_samples_common_identifier=x,
+                                                      package = 'spammR'),
+                              image_samples_common_identifier = x,
                               samples_common_identifier = x,
-                              image_ids='with_grid')
+                              image_ids = 'with_grid')
               })
-names(img.spes)<- imglist
+names(img.spes) <- imglist
 
-#print(img.spes)
 ```
 
 Now we can use these individual image objects or the combined 'pooled' object for analysis. 
@@ -158,19 +158,22 @@ Here we loop over all of the images in `imglist` to plot the expression of the i
 allimgs = lapply(imglist,function(x){
   spe = img.spes[[x]]
   res = spatial_heatmap(spe, feature = 'INS',
-                        feature_type='PrimaryGeneName',
-                        sample_id=x, 
-                        image_id='with_grid',
-                        spatial_coord_names=c('x_pixels','y_pixels'), 
-                        spot_size=unlist(colData(spe)[1,c('spot_width',
+                        feature_type = 'PrimaryGeneName',
+                        sample_id = x, 
+                        image_id = 'with_grid',
+                        spatial_coord_names = c('x_pixels','y_pixels'), 
+                        spot_size = unlist(colData(spe)[1,c('spot_width',
                                                           'spot_height')]), 
-                        image_boundaries=unlist(colData(spe)[1,c('x_origin',
+                        image_boundaries = unlist(colData(spe)[1,c('x_origin',
                                                                  'y_origin',
                                                                  'x_max',
                                                                  'y_max')]),
-                        label_column='IsletOrNot', interactive=FALSE)
-  return(res)}
+                        label_column = 'IsletOrNot', 
+                        interactive = FALSE)
+  return(res)
+  }
 )
+
 cowplot::plot_grid(allimgs[[2]],allimgs[[3]],nrow=2)
 
 ```
@@ -189,13 +192,15 @@ First we want to identify specific proteins that are up-regulated in the islet c
 
 
 islet_res <- calc_spatial_diff_ex(pooled.panc.spe,
-                               assay_name='proteomics',
-                               log_transformed=FALSE,
-                               category_col='IsletOrNot')
+                               assay_name = 'proteomics',
+                               log_transformed = FALSE,
+                               category_col = 'IsletOrNot')
 
-sig_prots<-subset(rowData(islet_res),NonIslet_vs_Islet.adj.P.Val.limma<0.01)
-ups<-subset(sig_prots, NonIslet_vs_Islet.logFC.limma>0)
-downs<-subset(sig_prots, NonIslet_vs_Islet.logFC.limma<0)
+#we filter the significant proteins first
+sig_prots <- subset(rowData(islet_res),NonIslet_vs_Islet.adj.P.Val.limma < 0.01)
+#then separate into up-regulated and down-regulated based on fold chnage
+ups <- subset(sig_prots, NonIslet_vs_Islet.logFC.limma > 0)
+downs <- subset(sig_prots, NonIslet_vs_Islet.logFC.limma < 0)
 
 print(paste('We found',nrow(sig_prots),'significantly differentally expressed proteins including',
             nrow(ups),'upregulated proteins and',nrow(downs),'downregulated'))
@@ -223,14 +228,14 @@ bounds = unlist(SummarizedExperiment::colData(spe.plot)[1,c('x_origin',
 sizes = unlist(SummarizedExperiment::colData(spe.plot)[1,c('spot_width',
                                                           'spot_height')])
 
-hup<-spatial_heatmap(spe.plot,feature=rownames(ups),
-                      sample_id='Image_2', 
-                      image_id='with_grid',
-                      spatial_coord_names=c('x_pixels','y_pixels'), 
-                      spot_size=sizes, 
-                      image_boundaries=bounds,
-                      label_column='IsletOrNot', 
-                      interactive=FALSE)
+hup <- spatial_heatmap(spe.plot,feature = rownames(ups),
+                      sample_id = 'Image_2', 
+                      image_id = 'with_grid',
+                      spatial_coord_names = c('x_pixels','y_pixels'), 
+                      spot_size = sizes, 
+                      image_boundaries = bounds,
+                      label_column = 'IsletOrNot', 
+                      interactive = FALSE)
 
 hup
 ##what if we want to plot in image 3?

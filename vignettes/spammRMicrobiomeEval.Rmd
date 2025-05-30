@@ -38,20 +38,12 @@ The following non-R packages may be required:
 
 
 ```{r loading-packages, warning=FALSE, message=FALSE}
-if(!require(terra)){
-  install.packages('terra')
-}
-if(!require(sf)){
-  install.packages('sf')
-}
-
-#if(!require("httr2")){
-#  install.packages("httr2")
-#}
-
-
 library(spammR)
 library(ggplot2)
+##these two libraries are only used for geographic data
+library(sf)
+library(terra)
+
 ```
 
 # Metagenomic data formatting requirements
@@ -112,7 +104,8 @@ us_map
 Instead will load the file from the supplied `rda` file:
 
 ```{r import-usmap-from-data-file}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/usMap.rda?raw=true"))
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/usMap.rda?raw=true"))
+
 ```
 
 This map contains the entire US, so for visualization purposes we focus only on the continental US. 
@@ -346,7 +339,8 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/data_vignettes/keggPathwayToKo.rda?raw=true"))
+load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/keggPathwayToKo.rda?raw=true"))
+
 # data('keggPathwayToKo')
 ```
 
@@ -377,5 +371,10 @@ ora.res <- spammR::enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = '
 #   sample_label_color = 'grey',
 #   sample_label_size = 3,
 # )
+```
+
+## Session Information
+```{r session}
+sessionInfo()
 ```
 
