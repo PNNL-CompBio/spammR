@@ -7,8 +7,11 @@
 calc_diff_pairwiseSamples(feature_values)
 }
 \arguments{
-\item{feature_values}{A 1 x n vector containing values for a feature for n
-samples. names(feature_values) should contain names of samples}
+\item{feature_values}{A 1 x n vector containing values for a feature for n}
+}
+\value{
+Data frame of differences
+samples. names(feature_values) should contain names of samples
 }
 \description{
 This function is called in distance_based_analysis()
