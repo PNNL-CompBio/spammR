@@ -10,10 +10,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Suggests: 
-    testthat (>= 3.0.0),
-    BiocStyle, 
-    knitr
+Suggests: testthat (>= 3.0.0), BiocStyle, knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 biocViews: Spatial, Pathways, Proteomics, DifferentialExpression, Metabolomics, SystemsBiology
@@ -22,3 +19,4 @@ Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, impute,
         matrixStats, scales, spdep, ggrepel, IRanges, cowplot, terra, sf, leapR
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
+

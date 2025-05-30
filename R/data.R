@@ -19,15 +19,17 @@
 #' @source \url{panc paper}
 "pancDataList"
 
-#'
+
 #' Soil samples from the 1000 soils project
 #' Row names indiciate KEGG Orthologs, Column names indicate locations
 #' @source \url{}
 'oneKSoilsData'
 
+
 #'
 #' Soil samples metadata for the sample information
 'oneKSoilsMeta'
 
-#' Soil sample coordinates
+#'
+#' Soil sample coordinates for the sample information
 'oneKSoilsCoords'
