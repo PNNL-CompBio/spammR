@@ -8,8 +8,8 @@
 #' @examples
 #' data(pancMeta)
 #' data(protMeta)
-#' data(pancDataList)
-#' img0.spe <- convert_to_spe(pancDataList$Image_0,
+#' data(smallPancData)
+#' img0.spe <- convert_to_spe(smallPancData$Image_0,
 #'             pancMeta,
 #'             protMeta,
 #'             feature_meta_colname = 'pancProts',

@@ -3,7 +3,9 @@
 \docType{data}
 \name{oneKSoilsMeta}
 \alias{oneKSoilsMeta}
-\title{Soil samples metadata for the sample information}
+\title{Soil samples from the 1000 soils project
+Row names indiciate KEGG Orthologs, Column names indicate locations
+Soil samples metadata for the sample information}
 \format{
 An object of class \code{data.frame} with 142 rows and 21 columns.
 }
@@ -11,6 +13,8 @@ An object of class \code{data.frame} with 142 rows and 21 columns.
 oneKSoilsMeta
 }
 \description{
+Soil samples from the 1000 soils project
+Row names indiciate KEGG Orthologs, Column names indicate locations
 Soil samples metadata for the sample information
 }
 \keyword{datasets}

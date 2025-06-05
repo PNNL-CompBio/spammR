@@ -78,9 +78,25 @@ Future versions of spatialPlot_feature() to include additional options for spati
 }
 \examples{
 data(pancMeta)
-data(pancDataList)
+data(smallPancData)
 data(protMeta)
-img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_id='with_grid')
-res = spatial_heatmap(img0.spe, feature='INS', sample_id='Image0', image_id='with_grid', feature_type='PrimaryGeneName',spatial_coord_names=c('x_pixels','y_pixels'), spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),label_column='IsletOrNot', interactive=FALSE)
+img0.spe <- convert_to_spe(pancDataList$Image_0,
+                        pancMeta,
+                        protMeta,
+                        feature_meta_colname='pancProts',
+                        image_files=system.file("extdata",'Image_0.png',package='spammR'),
+                        image_samples_common_identifier='Image0',
+                        spatialCoords_colnames=c('x_pixels','y_pixels'),
+                        samples_common_identifier = 'Image0',
+                        image_id='with_grid')
+res = spatial_heatmap(img0.spe, 
+        feature='INS', 
+        sample_id='Image0', 
+        image_id='with_grid', 
+        feature_type='PrimaryGeneName',
+        spatial_coord_names=c('x_pixels','y_pixels'), 
+        spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), 
+        image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
+        label_column='IsletOrNot', interactive=FALSE)
 
 }
