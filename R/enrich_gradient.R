@@ -11,10 +11,10 @@
 #' @returns A dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
 #'
 #' @examples
-#' data(pancDataList)
+#' data(smallPancData)
 #' data(pancMeta)
 #' data(protMeta)
-#' img0.spe <- convert_to_spe(pancDataList$Image_0,
+#' img0.spe <- convert_to_spe(smallPancData$Image_0,
 #'             pancMeta,
 #'             protMeta,
 #'             feature_meta_colname = 'pancProts',

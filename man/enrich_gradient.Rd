@@ -23,10 +23,10 @@ A dataframe containing results from over-representation analysis of members of g
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 }
 \examples{
-data(pancDataList)
+data(smallPancData)
 data(pancMeta)
 data(protMeta)
-img0.spe <- convert_to_spe(pancDataList$Image_0,
+img0.spe <- convert_to_spe(smallPancData$Image_0,
             pancMeta,
             protMeta,
             feature_meta_colname = 'pancProts',
