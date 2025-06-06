@@ -24,10 +24,10 @@
 #' interest list of genes based on filtering criteria above.
 #' 
 #' @examples
-#' data(pancDataList)
+#' data(smallPancData)
 #' data(pancMeta)
 #' data(protMeta)
-#' pooledPanc <- dplyr::bind_cols(pancDataList)
+#' pooledPanc <- dplyr::bind_cols(smallPancData)
 #' panc.spe <- convert_to_spe(pooledPanc,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 #' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot')
 #' library(leapR)

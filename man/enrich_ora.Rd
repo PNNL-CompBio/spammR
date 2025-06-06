@@ -53,10 +53,10 @@ based on the criteria specified in this function.It is a wrapper for the \code{l
 For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 }
 \examples{
-data(pancDataList)
+data(smallPancData)
 data(pancMeta)
 data(protMeta)
-pooledPanc <- dplyr::bind_cols(pancDataList)
+pooledPanc <- dplyr::bind_cols(smallPancData)
 panc.spe <- convert_to_spe(pooledPanc,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
 diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot')
 library(leapR)

@@ -16,10 +16,10 @@
 #' @export
 #' 
 #' @examples
-#' data(pancDataList)
+#' data(smallPancData)
 #' data(pancMeta)
 #' data(protMeta)
-#' pooledData<-dplyr::bind_cols(pancDataList)
+#' pooledData<-dplyr::bind_cols(smallPancData)
 #' pooled.panc.spe <- convert_to_spe(pooledData,
 #'                 pancMeta,
 #'                 protMeta,

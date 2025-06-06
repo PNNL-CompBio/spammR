@@ -54,9 +54,12 @@ We have downloaded the 1000 soil data and stored it as two separate files that c
 
 The first file is the actual KO measurements. 
 
-```{r oneksoils}
-data("oneKSoilsData")
+```{r oneksoils, echo=FALSE, warning=FALSE, message=FALSE}
 
+sd <- download.file('https://figshare.com/ndownloader/files/55158824',
+                    method='wget',dest='sdata.rda', quiet=TRUE)
+load("sdata.rda")
+file.remove('sdata.rda')
 
 ```
 
@@ -103,8 +106,11 @@ us_map
 ```
 Instead will load the file from the supplied `rda` file:
 
-```{r import-usmap-from-data-file}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/usMap.rda?raw=true"))
+```{r import-usmap-from-data-file, echo=FALSE, warning=FALSE, message=FALSE}
+maprda = download.file('https://figshare.com/ndownloader/files/55158815', method = 'wget',
+                       quiet=TRUE, destfile = 'map.rda')
+load('map.rda')
+file.remove('map.rda')
 
 ```
 
@@ -270,8 +276,9 @@ oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
 Why only use a subset of the data?
 
 ```{r}
-data_meta_testing <- subset(data_meta, Sample_ID %in% c('ANZA_TOP', 'ANZA_BTM', 'CFS1_TOP', 'CFS1_BTM'))
-oneKSoilsData_testing <- subset(oneKSoilsData, select=data_meta_testing$Sample_ID)
+data_meta_testing <- subset(data_meta, 
+                            Sample_ID %in% c('ANZA_TOP', 'ANZA_BTM', 'CFS1_TOP', 'CFS1_BTM'))
+oneKSoilsData_testing <- subset(oneKSoilsData, select = data_meta_testing$Sample_ID)
 
 
 ```
@@ -304,11 +311,11 @@ microbiome.spe <- spammR::convert_to_spe(
   oneKSoilsData_testing,  ##pooled data table
   data_meta_testing,  ##pooled metadata
   oneKSoilsOmicsMeta,  ##protein identifiers
-  feature_meta_colname='KO', #column name
-  spatialCoords_colnames=c('x_pixels','y_pixels'),
+  feature_meta_colname = 'KO', #column name
+  spatialCoords_colnames = c('x_pixels','y_pixels'),
   image_files = c("us_map.png"),
-  image_samples_common_identifier='test',
-  samples_common_identifier='test',
+  image_samples_common_identifier = 'test',
+  samples_common_identifier = 'test',
   image_ids = c('0'),
   assay_name = 'KO'
   )
@@ -322,15 +329,15 @@ microbiome.spe <- spammR::convert_to_spe(
 
 diff_ex <- spammR::calc_spatial_diff_ex(
     microbiome.spe,
-    assay_name='KO',
-    log_transformed=FALSE,
-    category_col='Core_Layer_bin',
+    assay_name = 'KO',
+    log_transformed = FALSE,
+    category_col = 'Core_Layer_bin'
     # feature_colname = 'KO'
     )
 
-sig_ko<-subset(rowData(diff_ex),TOP_vs_BTM.adj.P.Val.limma<0.01)
-ups<-subset(sig_ko, TOP_vs_BTM.logFC.limma>0)
-downs<-subset(sig_ko, TOP_vs_BTM.logFC.limma<0)
+sig_ko <- subset(rowData(diff_ex),TOP_vs_BTM.adj.P.Val.limma < 0.01)
+ups <- subset(sig_ko, TOP_vs_BTM.logFC.limma > 0)
+downs <- subset(sig_ko, TOP_vs_BTM.logFC.limma < 0)
 
 print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
             nrow(ups),'upregulated KOs and',nrow(downs),'downregulated'))
@@ -339,7 +346,9 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-load(url("https://github.com/PNNL-CompBio/spammR/blob/master/misc/keggPathwayToKo.rda?raw=true"))
+kk <- download.file('https://figshare.com/ndownloader/files/55158818',method='wget',destfile='kegg.rda',quiet=TRUE)
+load('kegg.rda')
+file.remove('kegg.rda')
 
 # data('keggPathwayToKo')
 ```

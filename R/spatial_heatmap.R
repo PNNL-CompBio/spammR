@@ -35,9 +35,9 @@
 #'
 #' @examples
 #' data(pancMeta)
-#' data(pancDataList)
+#' data(smallPancData)
 #' data(protMeta)
-#' img0.spe <- convert_to_spe(pancDataList$Image_0,
+#' img0.spe <- convert_to_spe(smallPancData$Image_0,
 #'                         pancMeta,
 #'                         protMeta,
 #'                         feature_meta_colname='pancProts',

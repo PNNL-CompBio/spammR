@@ -31,10 +31,10 @@ A Spatial Experiment object containing differential expression results, stored i
 \code{calc_spatial_diff_ex()} Calculates differential expression analysis using annotations in a SpatialExperiment object
 }
 \examples{
-data(pancDataList)
+data(smallPancData)
 data(pancMeta)
 data(protMeta)
-pooledData<-dplyr::bind_cols(pancDataList)
+pooledData<-dplyr::bind_cols(smallPancData)
 pooled.panc.spe <- convert_to_spe(pooledData,
                 pancMeta,
                 protMeta,

@@ -52,19 +52,22 @@ The `spammR` package requires omics data with spatial coordinates for the functi
 
 ### Omics Measurement Data
 
-`SpatialExperiment` can hold multiple omics measurements mapping to the same sample identifier in different 'slots'. This data can be a tabular data frame or matrix with rownames referencing measurements in a particular sample (e.g. gene, species) and column names representing sample identifiers. An example of this can be found by loading `data(pancDataList)` which contains a list of data frames.
+`SpatialExperiment` can hold multiple omics measurements mapping to the same sample identifier in different 'slots'. This data can be a tabular data frame or matrix with rownames referencing measurements in a particular sample (e.g. gene, species) and column names representing sample identifiers. An example of this can be found by loading `pancDataList.rda` file from Figshare.
 
 To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measured from 7 independent regions of a single human pancreas. Each image is segmented into nine 'voxels', with one voxel per image representing a cluster of islet cells.
 
 ```{r omics data}
-data(pancDataList)
+download.file("https://figshare.com/ndownloader/files/55158821",method='wget',
+              quiet=TRUE, dest='pdl.rda')
+load('pdl.rda')
 utils::head(pancDataList$Image_0[,1:8])
+file.remove('pdl.rda')
 ```
 
 Here the rownames represent protein identifiers and the column names represent individual samples. Each element of the list contains the measurements from a different sample:
 
 ```{r data list}
-data(pancDataList)
+
 print(length(pancDataList))
 head(pancDataList[[2]][,1:8])
 ```
@@ -90,7 +93,7 @@ There can be multiple image files associated with a single set of omics measurem
 ```{r img}
 library(cowplot)
 
-cowplot::ggdraw() + cowplot::draw_image(system.file('extdata','Image_1.png',package='spammR'))
+cowplot::ggdraw() + cowplot::draw_image(system.file('extdata','Image_1.png',package = 'spammR'))
 
 ```
 
@@ -283,7 +286,8 @@ We know that there are significantly enriched pathways in insulin secretion, so 
 
 ```{r pathway plotting,warning=FALSE}
 
-secprots<-subset(ora.res,msigdb=='REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION')|>dplyr::select(ingroupnames)|>
+secprots<-subset(ora.res,krbpaths=='REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION')|>
+    dplyr::select(ingroupnames)|>
   unlist()|>strsplit(split=', ')|>unlist()
 
 spe.plot = img.spes[[2]]

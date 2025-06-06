@@ -16,17 +16,13 @@
 #' Row names indicate individual proteins, columns indicate sample identifiers described in
 #' `pancMeta`. Individual values show un-transformed abundance values for each protein.
 #' List of proteomic measurements in a list sorted from individual regions of the pancreas.
+#' A subset of the data at https://figshare.com/articles/dataset/spammR_Files/29250962
 #' @source \url{panc paper}
-"pancDataList"
+"smallPancData"
 
 
 #' Soil samples from the 1000 soils project
 #' Row names indiciate KEGG Orthologs, Column names indicate locations
-#' @source \url{}
-'oneKSoilsData'
-
-
-#'
 #' Soil samples metadata for the sample information
 'oneKSoilsMeta'
 

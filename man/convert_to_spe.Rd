@@ -57,16 +57,16 @@ spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Re
 
 data(pancMeta)
 data(protMeta)
-data(pancDataList)
+data(smallPancData)
 #We can put all samples into the same object (for statistical power)
-pooledData<-dplyr::bind_cols(pancDataList)
+pooledData<-dplyr::bind_cols(smallPancData)
 pooled.panc.spe <- convert_to_spe(pooledData,
                 pancMeta,
                 protMeta,
                 feature_meta_colname = 'pancProts',
                 samples_common_identifier='')
 #or we can add the inmage to a single data capture
-img0.spe<-convert_to_spe(pancDataList$Image_0,
+img0.spe<-convert_to_spe(smallPancData$Image_0,
     pancMeta,
     protMeta,
     feature_meta_colname = 'pancProts',
