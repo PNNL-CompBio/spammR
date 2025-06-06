@@ -27,6 +27,7 @@ library(spammR)
 ## load test data
 data('smallPancData')
 data('pancMeta')
+data('protMeta')
 ```
 
 ## build into SpatialExperiment object
