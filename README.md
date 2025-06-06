@@ -25,14 +25,14 @@ This is a basic example which demonstrates how to organize spatial omics data in
 library(spammR)
 
 ## load test data
-data('pancData')
+data('smallPancData')
 data('pancMeta')
 ```
 
 ## build into SpatialExperiment object
 
 ``` r
-img0.spe<-convert_to_spe(pancDataList$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_ids='with_grid')
+img0.spe<-convert_to_spe(smallPancData$Image_0,pancMeta,protMeta,feature_meta_colname='pancProts',image_files=system.file("extdata",'Image_0.png',package='spammR'),image_samples_common_identifier='Image0',spatialCoords_colnames=c('x_pixels','y_pixels'),samples_common_identifier = 'Image0',image_ids='with_grid')
 
 ```
 
