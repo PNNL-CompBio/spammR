@@ -57,7 +57,7 @@ calc_spatial_diff_ex <- function(spe,
   if(!log_transformed){
     ldat = log2(dat)
   }
-  fit <- limma::lmFit(dat[,c(samp2,samp1)], design)
+  fit <- limma::lmFit(ldat[,c(samp2,samp1)], design)
   fit <- limma::eBayes(fit)
 
   diffex.spe = spe # initialize
