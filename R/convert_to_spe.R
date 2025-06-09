@@ -11,7 +11,7 @@
 #' @param remove_samples List of names of samples (as they occur in sample_colname) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.
 #' @param feature_data_colname Name of column in `dat`, that is to be used for identifying features. If missing defaults to rownames.
 #' @param feature_meta_colname Name of column in `feature_meta`, that is to be used for identifying features. If missing defaults to rownames.
-#' @param spatialCoords_colnames A list containing names of columns in `meta_dat` that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.
+#' @param spatialCoords_colnames A list containing names of columns in `meta_dat` that are spatial coordinates. Default value isNULL in which case no spatial coordinates are entered
 #' @param samples_common_identifier A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.
 #' @param image_files A list containing paths of image files to be stored in the SpatialExperiment object. More images can be added later, without using this function.
 #' @param image_ids  A list containing image names/identifiers for image paths provided in image_files
@@ -49,7 +49,7 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
                           remove_samples = NULL, #list of samples to remove
                           feature_data_colname = NULL, ##colname of features in `dat`, if not rowname of data matrix
                           feature_meta_colname = NULL, #column with protein identifeirs in `feature_meta` if not rownames
-                          spatialCoords_colnames = c('x_pixels','y_pixels'),
+                          spatialCoords_colnames = NULL,
                           samples_common_identifier = 'sample',
                           image_files = NULL,
                           image_ids = NULL,
@@ -109,9 +109,12 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
   feature_meta<-feature_meta[features,]
   dat_samples_only<-dat_samples_only[features,]
 
-  spatialCoords_dat = as.matrix(apply(sample_meta[,spatialCoords_colnames],2,as.numeric))
-  rownames(spatialCoords_dat) <- rownames(sample_meta)
-
+  if (!is.null(spatialCoords_colnames)) {
+      spatialCoords_dat = as.matrix(apply(sample_meta[,spatialCoords_colnames],2,as.numeric))
+    rownames(spatialCoords_dat) <- rownames(sample_meta)
+  }else{
+      spatialCoords_dat <- NULL
+  }
   spe.out <-SpatialExperiment::SpatialExperiment(assays=list(as.matrix(dat_samples_only)),
                               colData=sample_meta,
                               rowData=feature_meta,
