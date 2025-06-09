@@ -6,7 +6,7 @@
 \usage{
 impute_spe(
   spe,
-  assay_name,
+  assay_name = "proteomics",
   method = c("zero", "median", "median_half", "global_mean", "spatial_unit_mean",
     "knn_global", "spatial_unit_knn", "knn_global", "knn_splatial"),
   spatial_unit_colname,
@@ -37,7 +37,7 @@ impute_spe(
 \item{allowed_missingness_perSample}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
 }
 \value{
-An SPE with an 'imputed' data frame
+An SPE with an 'imputed' data frame with the appropriate imputation called
 }
 \description{
 \code{impute_spe()} carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
@@ -53,4 +53,18 @@ knn_proteins_global: imputation based on k-nearest neighbors, with proteins as n
 knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
 knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
 knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
+}
+\examples{
+
+data(pancMeta)
+data(protMeta)
+data(smallPancData)
+#We can put all samples into the same object (for statistical power)
+pooledData<-dplyr::bind_cols(smallPancData)
+pooled.panc.spe <- convert_to_spe(pooledData,
+                pancMeta,
+                protMeta,
+                feature_meta_colname = 'pancProts',
+                samples_common_identifier='')
+res <- impute_spe(pooled.panc.spe, method='global_mean')
 }

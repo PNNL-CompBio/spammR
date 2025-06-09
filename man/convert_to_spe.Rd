@@ -13,7 +13,7 @@ convert_to_spe(
   remove_samples = NULL,
   feature_data_colname = NULL,
   feature_meta_colname = NULL,
-  spatialCoords_colnames = c("x_pixels", "y_pixels"),
+  spatialCoords_colnames = NULL,
   samples_common_identifier = "sample",
   image_files = NULL,
   image_ids = NULL,
@@ -37,7 +37,7 @@ convert_to_spe(
 
 \item{feature_meta_colname}{Name of column in \code{feature_meta}, that is to be used for identifying features. If missing defaults to rownames.}
 
-\item{spatialCoords_colnames}{A list containing names of columns in \code{meta_dat} that are spatial coordinates. Default value is NA which indicates that these columns are not present in the metadata_file, and in that case, the argument 'spatialCoords_file' must be specified.}
+\item{spatialCoords_colnames}{A list containing names of columns in \code{meta_dat} that are spatial coordinates. Default value isNULL in which case no spatial coordinates are entered}
 
 \item{samples_common_identifier}{A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.}
 
