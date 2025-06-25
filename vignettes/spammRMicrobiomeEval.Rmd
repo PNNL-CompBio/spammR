@@ -250,42 +250,26 @@ data_meta[,'x_origin'] <- 0
 data_meta[,'y_origin'] <- 0
 data_meta[, 'spot_height'] <- 500
 data_meta[, 'spot_width'] <- 500
-data_meta[, 'above_40_deg_lat'] <- dplyr::if_else(data_meta[,'latitude'] >= 40, true=1, false = 0)
-data_meta[, 'psychrophile'] <- dplyr::if_else(data_meta[, 'Soil.Temperature.C'] <= 15, true=1, false=0)
-data_meta[, 'Core_Layer_bin'] <- dplyr::if_else(data_meta[, 'Core_Layer'] == 'TOP', true='TOP', false='BTM')
+data_meta[, 'above_40_deg_lat'] <- dplyr::if_else(data_meta[,'latitude'] >= 40, true = 1, false = 0)
+data_meta[, 'psychrophile'] <- dplyr::if_else(data_meta[, 'Soil.Temperature.C'] <= 15, true = 1, false = 0)
+data_meta[, 'Core_Layer_bin'] <- dplyr::if_else(data_meta[, 'Core_Layer'] == 'TOP', true = 'TOP', false = 'BTM')
+data_meta[, 'Desert'] <- dplyr::if_else(data_meta[, 'BIOME'] == '13', true = "Desert", false = "NonDesert")
 
 head(data_meta)
 
 
 ```
 ## CLEANING UP OF DATA
-@Yannick can we remove these? i'm not sure why they are here if not being evaluted
 
-```{r eval=FALSE}
+Limiting our selfs to only the top layer of the soil column.
+
+```{r}
 
 data_meta <- subset(data_meta, Sample_ID %in% colnames(oneKSoilsData))
 oneKSoilsData <- subset(oneKSoilsData, select=data_meta$Sample_ID)
-
-```
-
-```{r eval=FALSE}
 data_meta <- data_meta[data_meta$Core_Layer == 'TOP',]
 oneKSoilsData <- oneKSoilsData[, grep("TOP", x=names(oneKSoilsData))]
-```
 
-Why only use a subset of the data?
-
-```{r}
-data_meta_testing <- subset(data_meta, 
-                            Sample_ID %in% c('ANZA_TOP', 'ANZA_BTM', 'CFS1_TOP', 'CFS1_BTM'))
-oneKSoilsData_testing <- subset(oneKSoilsData, select = data_meta_testing$Sample_ID)
-
-
-```
-
-```{r}
-oneKSoilsData_testing['K00001','ANZA_TOP'] = 1000000
-oneKSoilsData_testing['K00001','CFS1_TOP'] = 1000000
 ```
 
 ## Create `SpatialExperiment` object
@@ -294,28 +278,15 @@ Now that our metadata is formatted correctly we can create the spatialExperiment
 
 ```{r}
 
-# microbiome.spe <- convert_to_spe(
-#   oneKSoilsData,  ##pooled data table
-#   data_meta,  ##pooled metadata
-#   oneKSoilsOmicsMeta,  ##protein identifiers
-#   feature_meta_colname='KO', #column name
-#   spatialCoords_colnames=c('x_pixels','y_pixels'),
-#   image_files = c("us_map.png"),
-#   image_samples_common_identifier='test',
-#   samples_common_identifier='test',
-#   image_ids = c('0'),
-#   assay_name = 'KO'
-#   )
-
 microbiome.spe <- spammR::convert_to_spe(
-  oneKSoilsData_testing,  ##pooled data table
-  data_meta_testing,  ##pooled metadata
+  oneKSoilsData,  ##pooled data table
+  data_meta,  ##pooled metadata
   oneKSoilsOmicsMeta,  ##protein identifiers
   feature_meta_colname = 'KO', #column name
   spatialCoords_colnames = c('x_pixels','y_pixels'),
   image_files = c("us_map.png"),
-  image_samples_common_identifier = 'test',
-  samples_common_identifier = 'test',
+  image_samples_common_identifier = '1000 Soils',
+  samples_common_identifier = '1000 Soils',
   image_ids = c('0'),
   assay_name = 'KO'
   )
@@ -324,6 +295,7 @@ microbiome.spe <- spammR::convert_to_spe(
 ```
 
 ## Metagenomic differential expression and enrichment
+The pathway enrichment analysis is done based on the presence and absence of KO associations found within the individual metagenomes. As such we are not strictly working with "gene abundances" that would be expected for a more traditional differential expression and pathway enrichment analysis. Conversely the "abundance" measurements of the individual KOs also distribute differently to what would be expecetd. To this end we are relying on much looser p-value thresholds than what normally would be cosidered acceptable, i.e. we are considering everything with an adjusted p-value of < 0.1 as being statistically significant for up / down regulation.
 
 ```{r}
 
@@ -331,56 +303,70 @@ diff_ex <- spammR::calc_spatial_diff_ex(
     microbiome.spe,
     assay_name = 'KO',
     log_transformed = FALSE,
-    category_col = 'Core_Layer_bin'
-    # feature_colname = 'KO'
+    category_col = 'Desert'
     )
 
-sig_ko <- subset(rowData(diff_ex),TOP_vs_BTM.adj.P.Val.limma < 0.01)
-ups <- subset(sig_ko, TOP_vs_BTM.logFC.limma > 0)
-downs <- subset(sig_ko, TOP_vs_BTM.logFC.limma < 0)
+sig_ko <- subset(rowData(diff_ex),Desert_vs_NonDesert.adj.P.Val.limma < 0.1)
+ups <- subset(sig_ko, Desert_vs_NonDesert.logFC.limma > 0)
+downs <- subset(sig_ko, Desert_vs_NonDesert.logFC.limma < 0)
 
 print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
             nrow(ups),'upregulated KOs and',nrow(downs),'downregulated'))
 
+print(ups)
+
 
 ```
+
+For the pathway enrichment part of the anaysis we first need to load "genesets" in the required format for leapR that will be called internally. The geneset is effectively a list of KOs that are associated with individual KEGG pathways.
 
 ```{r}
 kk <- download.file('https://figshare.com/ndownloader/files/55158818',method='wget',destfile='kegg.rda',quiet=TRUE)
 load('kegg.rda')
 file.remove('kegg.rda')
-
-# data('keggPathwayToKo')
 ```
 
-
+Next we are performing the enrichment analysis, again with the less stringet p-value cut-off of p-value < 0.1
 ```{r}
 
-ora.res <- spammR::enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO')
-
+ora.res <- spammR::enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO', pval_thres = 0.1)
+print(ora.res)
 ```
 
 
-## Metagenomic heatmap plotting
+## Spatial heatmap showing abundance of significant KO
 
 ```{r}
-# spatial_heatmap(
-#   microbiome.spe,
-#   assay_name='pathway',
-#   feature=1,
-#   feature_type='annotation',
-#   sample_id='test',
-#   image_id='0',
-#   spatial_coord_names=c('x_pixels','y_pixels'),
-#   metric_display = "Pathway abundance",
-#   spot_size=unlist(colData(microbiome.spe)[1,c('spot_width','spot_height')]),
-#   image_boundaries=unlist(colData(microbiome.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
-#   label_column='Sample_ID',
-#   interactive=FALSE,
-#   sample_label_color = 'grey',
-#   sample_label_size = 3,
-# )
+spatial_heatmap(
+    microbiome.spe,
+    feature = 'K00003',
+    # feature_type = 'KO',
+    assay_name = 'KO',
+    sample_id = '1000 Soils', 
+    image_id = '0',
+    spatial_coord_names = c('x_pixels','y_pixels'), 
+    # spatial_coord_type = 'topleft_corner',
+    spot_size = unlist(
+        colData(microbiome.spe)[
+            1,
+            c('spot_width','spot_height')
+            ]
+        ), 
+    image_boundaries = unlist(
+        colData(microbiome.spe)[
+            1,
+            c(
+              'x_origin',
+              'y_origin',
+              'x_max',
+              'y_max')
+            ]
+        ),
+    label_column = 'Desert', 
+    interactive = FALSE
+    )
 ```
+
 
 ## Session Information
 ```{r session}
