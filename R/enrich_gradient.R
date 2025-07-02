@@ -39,15 +39,16 @@ enrich_gradient <- function(spe,
                       ranking_column){
 
     ##first we get the ranking of the values
-  rvals <- SummarizedExperiment::rowData(spe) |>
-    as.data.frame() |>
-    dplyr::rename(feature = feature_column,rank = ranking_column) |>
-    dplyr::select(feature,rank)
+#  rvals <- SummarizedExperiment::rowData(spe) |>
+#    as.data.frame() |>
+#    dplyr::rename(feature = feature_column,rank = ranking_column) |>
+#    dplyr::select(feature,rank)
 
+   eset = as(spe,'ExpressionSet')
   #here we use the leapR package for the rank enrichment
-  es <- leapR::leapR(rvals, geneset = geneset,
+  es <- leapR::leapR(eset = eset, geneset = geneset,
             enrichment_method = 'enrichment_in_order',
-            id_column = 'feature', primary_columns = 'rank') |>
+            id_column = feature_column, primary_columns = ranking_column) |>
     subset(!is.na(pvalue)) |>
     dplyr::arrange(pvalue)
 

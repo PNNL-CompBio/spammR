@@ -52,42 +52,61 @@ enrich_ora <- function(spe,
   # If gene names are not present in spatialDiffEx results, a helper function (which I will add later), can be run to obtain gene names from the UniProt db files
   # and have a "PG.genes" column added to spatialDiffEx results excel file.
 
-  sp_diffEx <- SummarizedExperiment::rowData(spe) #data.frame(read_excel(spatialDiffEx_results))
+  res <- as(spe,'ExpressionSet') ##convert to expressionSet   
+
   if (pval_type_forThresh == "adjusted_pval") {
-    pval_col_text = "adj.P.Val"
+      pval_col_text = "adj.P.Val"
   }else if (pval_type_forThresh == "pval") {
-    pval_col_text = "P.Value"
+      pval_col_text = "P.Value"
   }else {
-    # Throw error "Invalid value for pval_type_forThresh"
+      # Throw error "Invalid value for pval_type_forThresh"
   }
-  colnum_pvalue = grep(pval_col_text, colnames(sp_diffEx))
-  colnum_logfc = grep("logFC",colnames(sp_diffEx))
+  
+  fvals <- colnames(Biobase::fData(res))
+  
+  pval_column = fvals[grep(pval_col_text,fvals)]
+  logfc_column = fvals[grep("logFC",fvals)]
+  
   # Filter based on p-value criteria
-  int_list = sp_diffEx[!is.na(sp_diffEx[,colnum_pvalue]),]
-  int_list = int_list[int_list[,colnum_pvalue] < pval_thresh,]
+#  int_list = sp_diffEx[!is.na(sp_diffEx[,colnum_pvalue]),]
+#  int_list = int_list[int_list[,colnum_pvalue] < pval_thresh,]
 
   # Filter based on Log fold change criteria
   if (!is.na(logFC_lowerThresh)) {
-    int_list = int_list[int_list[,colnum_logfc] > logFC_lowerThresh,]
+    low_vals = which(Biobase::fData(res)[,logfc_column] < logFC_lowerThresh)
+    if(length(low_vals)==0)
+        stop("No values below `logFC_lowerThresh")
+    res = res[low_vals,] 
+    #int_list = int_list[int_list[,colnum_logfc] > logFC_lowerThresh,]
   }
   if (!is.na(logFC_upperThresh)) {
-    int_list = int_list[int_list[,colnum_logfc] < logFC_upperThresh,]
+    high_vals = which(Biobase::fData(res)[,logfc_column] > logFC_upperThresh)
+    if(length(high_vals)==0)
+        stop("No values above `logFC_upperThresh")
+    res = res[high_vals,]      
+    #int_list = int_list[int_list[,colnum_logfc] < logFC_upperThresh,]
   }
+  
+  ora.res <- leapR(eset=res, geneset=geneset,enrichment_method='enrichment_in_sets',
+                   id_column=feature_column,
+                   primary_column=pval_column,threshold=pval_thresh,
+                   greaterthan=FALSE)
+  
+  return(ora.res)
+  # int_list_geneNames = int_list[,feature_column]
+  # 
+  # es = c()
+  # es_sorted = c()
+  # # Over-representation analysis: Run Enrichment in Sets (es) in leapR
+  # background_genes = SummarizedExperiment::rowData(spe)[,feature_column]
+  # es = leapR::leapR(geneset = geneset,
+  #           enrichment_method = 'enrichment_in_sets',
+  #           targets = int_list_geneNames, background = background_genes)
+  # # Sort results by column name specified by user
+  # es_sorted =  es[order( es[,"BH_pvalue"]),]
+  # num_sets = dim(es_sorted)[1]
+  # es_sorted = cbind(rep(comparison_name,num_sets), rownames(es_sorted), es_sorted)
+  # colnames(es_sorted)[1:2] = c("Comparison", geneset_name)
 
-  int_list_geneNames = int_list[,feature_column]
-
-  es = c()
-  es_sorted = c()
-  # Over-representation analysis: Run Enrichment in Sets (es) in leapR
-  background_genes = SummarizedExperiment::rowData(spe)[,feature_column]
-  es = leapR::leapR(geneset = geneset,
-            enrichment_method = 'enrichment_in_sets',
-            targets = int_list_geneNames, background = background_genes)
-  # Sort results by column name specified by user
-  es_sorted =  es[order( es[,"BH_pvalue"]),]
-  num_sets = dim(es_sorted)[1]
-  es_sorted = cbind(rep(comparison_name,num_sets), rownames(es_sorted), es_sorted)
-  colnames(es_sorted)[1:2] = c("Comparison", geneset_name)
-
-  return(es_sorted)
+  #return(es_sorted)
 }

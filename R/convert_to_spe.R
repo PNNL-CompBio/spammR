@@ -36,6 +36,7 @@
 #'     feature_meta_colname = 'pancProts',
 #'     image_files=system.file("extdata",'Image_0.png',package='spammR'),
 #'     image_samples_common_identifier = 'Image0',
+#'     spatialCoords_colnames = c('x_pixels','y_pixels'),
 #'     samples_common_identifier = 'Image0',
 #'     image_ids = 'Image0')
 
@@ -58,10 +59,13 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
   ##first clean up samples: make sure rowanmes of metadata file are samples
   # Separate sample columns and feature meta data columns in dat
   if(!is.null(sample_colname)){
-    rownames(sample_meta)<-sample_meta[[sample_colname]]
+    rownames(sample_meta) <- sample_meta[[sample_colname]]
   }
 
-  ##remove problematic samples - do we need this?
+  if(is.null(spatialCoords_colnames))
+      warning("Spatial object created without spatial coordinate column names provided. Distance based analysis will not be enabled.")
+
+ #remove problematic samples - do we need this?
   if(!is.null(remove_samples)){
     remove_sample_colnums = which(colnames(dat) %in% remove_samples)
     dat = dat[,-remove_sample_colnums]
@@ -120,15 +124,25 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
                               rowData=feature_meta,
                               spatialCoords = spatialCoords_dat,
                               sample_id = samples_common_identifier)
+  
   SummarizedExperiment::assayNames(spe.out) = c(assay_name)
+  
   # Add image(s) to SPE
-  if (!is.null(image_files)){
-    if (is.null(image_ids)){
+  if (!is.null(image_files)) {
+    if (is.null(image_ids)) {
       # Throw error: Error: image_ids must be specified
+        stop('Need `image_id` values for image files')
+    }else if(length(image_ids) != length(image_files)){
+        stop("Need `image_ids` for each image provided")
     }
-    if (!is.null(image_samples_common_identifier)){
+    if (is.null(image_samples_common_identifier)) {
       # Throw error: Error: image_samples_common_identifier must be specified
+        stop ('Need `image_samples_common_identifier`')
+    }else if (length(image_samples_common_identifier) != length(image_files)){
+        stop ('Need `image_samples_common_identifier` for each image provided')
+        
     }
+      
     for (i in 1:length(image_files)){
       # scaleFactor under addImg() is a "single numeric scale factor used to rescale spatial coordinates according to the image's resolution."
       # Can turn scaleFactor into a parameter specified by user also, but not needed right now.

@@ -9,6 +9,7 @@ volcano_plot(
   logFC_colname,
   pval_colname,
   pval_corrected = TRUE,
+  log_transformed = TRUE,
   title,
   thresh = 0.05,
   sigLabel_colname
@@ -22,6 +23,8 @@ volcano_plot(
 \item{pval_colname}{column name in differential epxression results that represents the p-value to be plotted}
 
 \item{pval_corrected}{Boolean indicating whether pval_colname represents the corrected p-value or not}
+
+\item{log_transformed}{set to TRUE if data is log transformed}
 
 \item{title}{title for the plot}
 

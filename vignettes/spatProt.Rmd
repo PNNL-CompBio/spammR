@@ -219,7 +219,7 @@ Now we can plot those differentially expressed proteins across images.
 If we are interested in the combined expression of proteins we can also visualize those.
 
 ```{r plot pathway, message=FALSE, warning=FALSE, error=FALSE}
-spe.plot = img.spes[[3]]
+spe.plot = img.spes[[1]]
 ##we need the image boundaries based on the x/y coordinates. The image will 
 ##be stretched between the origin and max in both directions
 bounds = unlist(SummarizedExperiment::colData(spe.plot)[1,c('x_origin',
@@ -232,7 +232,7 @@ sizes = unlist(SummarizedExperiment::colData(spe.plot)[1,c('spot_width',
                                                           'spot_height')])
 
 hup <- spatial_heatmap(spe.plot,feature = rownames(ups),
-                      sample_id = 'Image_2', 
+                      sample_id = 'Image_0', 
                       image_id = 'with_grid',
                       spatial_coord_names = c('x_pixels','y_pixels'), 
                       spot_size = sizes, 
@@ -276,7 +276,7 @@ Now we can calculate the enriched pathways in the islets.
 library(leapR)
 data('krbpaths')
 ora.res <- enrich_ora(islet_res,geneset=krbpaths,geneset_name='krbpaths', feature_column='PrimaryGeneName')
-print(ora.res[grep("INSULIN",ora.res$krbpaths),c('ingroup_n','pvalue','BH_pvalue')])
+print(ora.res[grep("INSULIN",rownames(ora.res)),c('ingroup_n','pvalue','BH_pvalue')])
 ```
 
 
@@ -286,7 +286,7 @@ We know that there are significantly enriched pathways in insulin secretion, so 
 
 ```{r pathway plotting,warning=FALSE}
 
-secprots<-subset(ora.res,krbpaths=='REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION')|>
+secprots <- ora.res['REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION',]|>
     dplyr::select(ingroupnames)|>
   unlist()|>strsplit(split=', ')|>unlist()
 
