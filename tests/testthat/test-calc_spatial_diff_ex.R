@@ -8,6 +8,7 @@ test_that("diffex works", {
                  protMeta,
                  feature_meta_colname = 'pancProts',
                  samples_common_identifier = '')
+ 
  diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
                  category_col = 'IsletOrNot')
                  

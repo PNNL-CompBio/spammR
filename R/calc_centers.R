@@ -15,6 +15,7 @@
 #'             feature_meta_colname = 'pancProts',
 #'             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
 #'             image_samples_common_identifier = 'Image0',
+#'             spatialCoords_colnames = c('x_pixels','y_pixels'),
 #'             samples_common_identifier = 'Image0',image_ids='Image0')
 #' calc_centers(img0.spe)
 #' 
@@ -22,6 +23,9 @@ calc_centers <- function(spe){
 
   ##get relevant column data - x,y coords and spot height/width
   spatial_coords <- spatialCoords(spe)
+  
+  if(ncol(spatial_coords)==0)
+      stop("No spatial coordinates were set in image object")
   spatial_sizes <- colData(spe)[,c('spot_width','spot_height')]
 
   new_coords <- data.frame(spatial_coords[,1] + spatial_sizes[,1]/2,spatial_coords[,2] + spatial_sizes[,2]/2)
