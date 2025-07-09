@@ -31,9 +31,10 @@ img0.spe <- convert_to_spe(smallPancData$Image_0,
             protMeta,
             feature_meta_colname = 'pancProts',
             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
-            image_samples_common_identifier = 'Image0',
+            image_sample_ids = 'Image0',
             spatialCoords_colnames = c('x_pixels','y_pixels'),
-            samples_common_identifier = 'Image0',image_ids='Image0')
+            sample_id = 'Image0',
+            image_ids='Image0')
 img0.spe<-distance_based_analysis(img0.spe,
             'proteomics',
             sampleCategoryCol = 'IsletOrNot',

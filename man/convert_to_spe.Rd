@@ -9,19 +9,17 @@ convert_to_spe(
   sample_meta,
   feature_meta,
   assay_name = "proteomics",
+  sample_id = "sample",
   sample_colname = NULL,
-  remove_samples = NULL,
-  feature_data_colname = NULL,
   feature_meta_colname = NULL,
-  spatialCoords_colnames = NULL,
-  samples_common_identifier = "sample",
+  spatial_coords_colnames = NULL,
   image_files = NULL,
   image_ids = NULL,
-  image_samples_common_identifier = NULL
+  image_sample_ids = rep(sample_id, length(image_files))
 )
 }
 \arguments{
-\item{dat}{Matrix or data frame with omics measurements. Rows or \code{feature_colname} are features, columns are samples}
+\item{dat}{Matrix or data frame with omics measurements. Rows are features, columns are samples}
 
 \item{sample_meta}{Data frame of metadata with either \code{sample_colname} or rownames as samples (if empty)}
 
@@ -29,23 +27,19 @@ convert_to_spe(
 
 \item{assay_name}{Name to be given to the data in omics_measurements_file. Example: "abundance", "log2", "znormalized_log2" or any other descriptive name}
 
-\item{sample_colname}{Column name in \code{sample_meta} table whose entries contain sample identifiers provided in \code{dat}.}
+\item{sample_id}{Name of sample, defaults to "sample01"}
 
-\item{remove_samples}{List of names of samples (as they occur in sample_colname) that should be removed/excluded from the data for SPE. Don't need to specify if no samples need to be removed.}
+\item{sample_colname}{Column name in \code{sample_meta} table whose entries contain sample identifiers provided as column names in \code{dat}.}
 
-\item{feature_data_colname}{Name of column in \code{dat}, that is to be used for identifying features. If missing defaults to rownames.}
+\item{feature_meta_colname}{Name of column in \code{feature_meta}, that is to be used for identifying features. If missing defaults to rownames, which should match rownames of \code{dat}}
 
-\item{feature_meta_colname}{Name of column in \code{feature_meta}, that is to be used for identifying features. If missing defaults to rownames.}
-
-\item{spatialCoords_colnames}{A list containing names of columns in \code{meta_dat} that are spatial coordinates. Default value isNULL in which case no spatial coordinates are entered}
-
-\item{samples_common_identifier}{A string (if same for all samples in omics_measurements_file) or a character vector (same length as number of samples in omics_measurements_file) corresponding to a descriptive name for samples in the current dataset. Examples: "Image0", "Experiment1", etc.}
+\item{spatial_coords_colnames}{A list containing names of columns in \code{meta_dat} that are spatial coordinates. Default value is NULL in which case no spatial coordinates are entered}
 
 \item{image_files}{A list containing paths of image files to be stored in the SpatialExperiment object. More images can be added later, without using this function.}
 
 \item{image_ids}{A list containing image names/identifiers for image paths provided in image_files}
 
-\item{image_samples_common_identifier}{A list containing names of samples_common_identifier(s) corresponding to images provided in image_files. This identifier links specific samples to a experiment/condition represented by a given image.}
+\item{image_sample_ids}{A list of sample identifiers for each of the images provided in image_files, defaults to the value from sample_id}
 }
 \value{
 spe.out a SpatialExperiment (SPE) object that contains all data and image(s). Ready to be used as input in spammR functions that require SPE object as input.
@@ -63,16 +57,15 @@ pooledData<-dplyr::bind_cols(smallPancData)
 pooled.panc.spe <- convert_to_spe(pooledData,
                 pancMeta,
                 protMeta,
-                feature_meta_colname = 'pancProts',
-                samples_common_identifier='')
+                feature_meta_colname = 'pancProts')
+
 #or we can add the inmage to a single data capture
 img0.spe<-convert_to_spe(smallPancData$Image_0,
     pancMeta,
     protMeta,
+    sample_id = 'Image0',
     feature_meta_colname = 'pancProts',
     image_files=system.file("extdata",'Image_0.png',package='spammR'),
-    image_samples_common_identifier = 'Image0',
-    spatialCoords_colnames = c('x_pixels','y_pixels'),
-    samples_common_identifier = 'Image0',
+    spatial_coords_colnames = c('x_pixels','y_pixels'),
     image_ids = 'Image0')
 }

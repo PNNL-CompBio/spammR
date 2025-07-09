@@ -57,7 +57,7 @@ The first file is the actual KO measurements.
 ```{r oneksoils, echo=FALSE, warning=FALSE, message=FALSE}
 
 sd <- download.file('https://figshare.com/ndownloader/files/55158824',
-                    method='wget',dest='sdata.rda', quiet=TRUE)
+                    method='libcurl',dest='sdata.rda', quiet=TRUE)
 load("sdata.rda")
 file.remove('sdata.rda')
 
@@ -107,7 +107,7 @@ us_map
 Instead will load the file from the supplied `rda` file:
 
 ```{r import-usmap-from-data-file, echo=FALSE, warning=FALSE, message=FALSE}
-maprda = download.file('https://figshare.com/ndownloader/files/55158815', method = 'wget',
+maprda = download.file('https://figshare.com/ndownloader/files/55158815', method = 'libcurl',
                        quiet=TRUE, destfile = 'map.rda')
 load('map.rda')
 file.remove('map.rda')
@@ -299,10 +299,10 @@ Now that our metadata is formatted correctly we can create the spatialExperiment
 #   data_meta,  ##pooled metadata
 #   oneKSoilsOmicsMeta,  ##protein identifiers
 #   feature_meta_colname='KO', #column name
-#   spatialCoords_colnames=c('x_pixels','y_pixels'),
+#   spatial_coords_colnames=c('x_pixels','y_pixels'),
 #   image_files = c("us_map.png"),
-#   image_samples_common_identifier='test',
-#   samples_common_identifier='test',
+#   sample_id='test',
+#   image_sample_ids='test',
 #   image_ids = c('0'),
 #   assay_name = 'KO'
 #   )
@@ -312,10 +312,10 @@ microbiome.spe <- spammR::convert_to_spe(
   data_meta_testing,  ##pooled metadata
   oneKSoilsOmicsMeta,  ##protein identifiers
   feature_meta_colname = 'KO', #column name
-  spatialCoords_colnames = c('x_pixels','y_pixels'),
+  spatial_coords_colnames = c('x_pixels','y_pixels'),
   image_files = c("us_map.png"),
-  image_samples_common_identifier = 'test',
-  samples_common_identifier = 'test',
+  image_sample_ids = 'test',
+  sample_id = 'test',
   image_ids = c('0'),
   assay_name = 'KO'
   )
@@ -346,7 +346,7 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-kk <- download.file('https://figshare.com/ndownloader/files/55158818',method='wget',destfile='kegg.rda',quiet=TRUE)
+kk <- download.file('https://figshare.com/ndownloader/files/55158818',method='libcurl',destfile='kegg.rda',quiet=TRUE)
 load('kegg.rda')
 file.remove('kegg.rda')
 
