@@ -98,7 +98,10 @@ spatial_heatmap <- function(spe,
       feature_values_toplot  = f[rowNum_toplot,]
   }else { ##we are plotting more than one value and need to average
       feature_values_toplot = colMeans(f[rowNum_toplot,],na.rm=TRUE)
+      feature_values_toplot = feature_values_toplot[is.finite(feature_values_toplot)]
   }
+  if(length(feature_values_toplot)==0)
+      stop(paste("Cannot plot heatmap:",paste(feature,collapse=','),"not in dataset"))
   #create a title of the plot
   spatial_meta = SummarizedExperiment::colData(spe)
   if (is.null(plot_title)) {

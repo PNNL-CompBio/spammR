@@ -57,7 +57,7 @@ The `spammR` package requires omics data with spatial coordinates for the functi
 To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measured from 7 independent regions of a single human pancreas. Each image is segmented into nine 'voxels', with one voxel per image representing a cluster of islet cells.
 
 ```{r omics data}
-download.file("https://figshare.com/ndownloader/files/55158821",method='wget',
+download.file("https://figshare.com/ndownloader/files/55158821",method='libcurl',
               quiet=TRUE, dest='pdl.rda')
 load('pdl.rda')
 utils::head(pancDataList$Image_0[,1:8])
@@ -120,7 +120,7 @@ pooled.panc.spe <- convert_to_spe(pooledData,  ##pooled data table
                                   pancMeta,  ##pooled metadata
                                   protMeta,  ##protein identifiers
                                   feature_meta_colname = 'pancProts', #column name
-                                  samples_common_identifier = '')
+                                  )
 print(pooled.panc.spe)
 
 ```
@@ -137,13 +137,13 @@ img.spes = lapply(imglist,
                 convert_to_spe(pancDataList[[x]],
                                pancMeta,
                                protMeta,
+                               sample_id = x,
                               feature_meta_colname = 'pancProts',
-                              spatialCoords_colnames = c('x_pixels','y_pixels'),
+                              spatial_coords_colnames = c('x_pixels','y_pixels'),
                               image_files = system.file('extdata',
                                                       paste0(x,'.png'),
                                                       package = 'spammR'),
-                              image_samples_common_identifier = x,
-                              samples_common_identifier = x,
+                              image_sample_ids = x,
                               image_ids = 'with_grid')
               })
 names(img.spes) <- imglist

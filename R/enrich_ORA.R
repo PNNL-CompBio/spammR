@@ -29,7 +29,7 @@
 #' data(pancMeta)
 #' data(protMeta)
 #' pooledPanc <- dplyr::bind_cols(smallPancData)
-#' panc.spe <- convert_to_spe(pooledPanc,pancMeta,protMeta,feature_meta_colname='pancProts',samples_common_identifier='')
+#' panc.spe <- convert_to_spe(pooledPanc,pancMeta,protMeta,feature_meta_colname='pancProts')
 #' diffex.spe <- calc_spatial_diff_ex(panc.spe,category_col='IsletOrNot')
 #' library(leapR)
 #' data('krbpaths')
@@ -88,7 +88,7 @@ enrich_ora <- function(spe,
     #int_list = int_list[int_list[,colnum_logfc] < logFC_upperThresh,]
   }
   
-  ora.res <- leapR(eset=res, geneset=geneset,enrichment_method='enrichment_in_sets',
+  ora.res <- leapR(eset=res, geneset = geneset,enrichment_method='enrichment_in_sets',
                    id_column=feature_column,
                    primary_column=pval_column,threshold=pval_thresh,
                    greaterthan=FALSE)
