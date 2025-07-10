@@ -89,7 +89,7 @@ This metadata contains information for all 7 images, so we do not need a separat
 ### Image files
 There can be multiple image files associated with a single set of omics measurements. Currently we have tested working with files in `png` format. Each image we have is stained so that we can identify the Islet cells. Each image also has a grid superimposed to show where the sample measurements came from. The grid is not necessary, of course, but can help calibrate the coordinates.
 
-```{r img}
+```{r img, eval=FALSE}
 library(cowplot)
 
 cowplot::ggdraw() + cowplot::draw_image(system.file('extdata','Image_1.png',package = 'spammR'))
@@ -218,30 +218,6 @@ Now we can plot those differentially expressed proteins across images.
 If we are interested in the combined expression of proteins we can also visualize those.
 
 ```{r plot pathway, message=FALSE, warning=FALSE, error=FALSE}
-spe.plot = img.spes[[1]]
-##we need the image boundaries based on the x/y coordinates. The image will 
-##be stretched between the origin and max in both directions
-bounds = unlist(SummarizedExperiment::colData(spe.plot)[1,c('x_origin',
-                                                                 'y_origin',
-                                                                 'x_max',
-                                                                 'y_max')])
-#the spot size can vary between every sample, but for now 
-# we assume a square spot (with a width and a height)
-sizes = unlist(SummarizedExperiment::colData(spe.plot)[1,c('spot_width',
-                                                          'spot_height')])
-
-hup <- spatial_heatmap(spe.plot,feature = rownames(ups),
-                      sample_id = 'Image_0', 
-                      image_id = 'with_grid',
-                      spatial_coord_names = c('x_pixels','y_pixels'), 
-                      spot_size = sizes, 
-                      image_boundaries = bounds,
-                      label_column = 'IsletOrNot', 
-                      interactive = FALSE)
-
-hup
-##what if we want to plot in image 3?
-
 spe.plot = img.spes[[2]]
 ##we need the image boundaries based on the x/y coordinates. The image will 
 ##be stretched between the origin and max in both directions
@@ -254,8 +230,32 @@ bounds = unlist(SummarizedExperiment::colData(spe.plot)[1,c('x_origin',
 sizes = unlist(SummarizedExperiment::colData(spe.plot)[1,c('spot_width',
                                                           'spot_height')])
 
+hup <- spatial_heatmap(spe.plot,feature = rownames(ups),
+                      sample_id = 'Image_1', 
+                      image_id = 'with_grid',
+                      spatial_coord_names = c('x_pixels','y_pixels'), 
+                      spot_size = sizes, 
+                      image_boundaries = bounds,
+                      label_column = 'IsletOrNot', 
+                      interactive = FALSE)
+
+hup
+##what if we want to plot in image 3?
+
+spe.plot = img.spes[[3]]
+##we need the image boundaries based on the x/y coordinates. The image will 
+##be stretched between the origin and max in both directions
+bounds = unlist(SummarizedExperiment::colData(spe.plot)[1,c('x_origin',
+                                                                 'y_origin',
+                                                                 'x_max',
+                                                                 'y_max')])
+#the spot size can vary between every sample, but for now 
+# we assume a square spot (with a width and a height)
+sizes = unlist(SummarizedExperiment::colData(spe.plot)[1,c('spot_width',
+                                                          'spot_height')])
+
 hup<-spatial_heatmap(spe.plot,feature=rownames(ups),
-                      sample_id='Image_1', 
+                      sample_id='Image_2', 
                       image_id='with_grid',
                       spatial_coord_names=c('x_pixels','y_pixels'), 
                       spot_size=sizes, 

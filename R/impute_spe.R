@@ -37,7 +37,7 @@
 #'                 pancMeta,
 #'                 protMeta,
 #'                 feature_meta_colname = 'pancProts',
-#'                 samples_common_identifier='')
+#'                 sample_id='')
 #' res <- impute_spe(pooled.panc.spe, method='global_mean')
 
 impute_spe <- function(spe,

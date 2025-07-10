@@ -20,7 +20,7 @@
 #'             feature_meta_colname = 'pancProts',
 #'             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
 #'             image_sample_ids = 'Image0',
-#'             spatialCoords_colnames = c('x_pixels','y_pixels'),
+#'             spatial_coords_colnames = c('x_pixels','y_pixels'),
 #'             sample_id = 'Image0',
 #'             image_ids='Image0')
 #' img0.spe<-distance_based_analysis(img0.spe,
