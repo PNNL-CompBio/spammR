@@ -19,8 +19,10 @@
 #'             protMeta,
 #'             feature_meta_colname = 'pancProts',
 #'             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
-#'             image_samples_common_identifier = 'Image0',
-#'             samples_common_identifier = 'Image0',image_ids='Image0')
+#'             image_sample_ids = 'Image0',
+#'             spatial_coords_colnames = c('x_pixels','y_pixels'),
+#'             sample_id = 'Image0',
+#'             image_ids='Image0')
 #' img0.spe<-distance_based_analysis(img0.spe,
 #'             'proteomics',
 #'             sampleCategoryCol = 'IsletOrNot',
@@ -39,15 +41,16 @@ enrich_gradient <- function(spe,
                       ranking_column){
 
     ##first we get the ranking of the values
-  rvals <- SummarizedExperiment::rowData(spe) |>
-    as.data.frame() |>
-    dplyr::rename(feature = feature_column,rank = ranking_column) |>
-    dplyr::select(feature,rank)
+#  rvals <- SummarizedExperiment::rowData(spe) |>
+#    as.data.frame() |>
+#    dplyr::rename(feature = feature_column,rank = ranking_column) |>
+#    dplyr::select(feature,rank)
 
+   eset = as(spe,'ExpressionSet')
   #here we use the leapR package for the rank enrichment
-  es <- leapR::leapR(rvals, geneset = geneset,
+  es <- leapR::leapR(eset = eset, geneset = geneset,
             enrichment_method = 'enrichment_in_order',
-            id_column = 'feature', primary_columns = 'rank') |>
+            id_column = feature_column, primary_columns = ranking_column) |>
     subset(!is.na(pvalue)) |>
     dplyr::arrange(pvalue)
 
