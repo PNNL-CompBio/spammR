@@ -15,7 +15,7 @@
 #'             feature_meta_colname = 'pancProts',
 #'             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
 #'             sample_id = 'Image0',
-#'             spatialCoords_colnames = c('x_pixels','y_pixels'),
+#'             spatial_coords_colnames = c('x_pixels','y_pixels'),
 #'             image_sample_ids = 'Image0',image_ids='Image0')
 #' calc_centers(img0.spe)
 #' 

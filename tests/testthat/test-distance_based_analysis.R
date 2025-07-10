@@ -8,7 +8,6 @@ test_that("distance analysis works", {
                             spatial_coords_colnames = c('x_pixels','y_pixels'),
                             image_files = system.file("extdata",'Image_0.png',
                                                     package = 'spammR'),
-                            image_samples_common_identifier = 'Image0',
                             sample_id  =  'Image0',
                             image_ids = 'Image0')
     img0.spe<-distance_based_analysis(img0.spe,'proteomics',

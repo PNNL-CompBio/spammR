@@ -56,8 +56,7 @@ The first file is the actual KO measurements.
 
 ```{r oneksoils, echo=FALSE, warning=FALSE, message=FALSE}
 
-sd <- download.file('https://figshare.com/ndownloader/files/55158824',
-                    method='libcurl',dest='sdata.rda', quiet=TRUE)
+sd <- download.file('https://api.figshare.com/v2/file/download/55158824',dest='sdata.rda', quiet=TRUE)
 load("sdata.rda")
 file.remove('sdata.rda')
 
@@ -107,8 +106,7 @@ us_map
 Instead will load the file from the supplied `rda` file:
 
 ```{r import-usmap-from-data-file, echo=FALSE, warning=FALSE, message=FALSE}
-maprda = download.file('https://figshare.com/ndownloader/files/55158815', method = 'libcurl',
-                       quiet=TRUE, destfile = 'map.rda')
+maprda = download.file('https://api.figshare.com/v2/file/download/55158815', quiet=TRUE, destfile = 'map.rda')
 load('map.rda')
 file.remove('map.rda')
 
@@ -346,7 +344,7 @@ print(paste('We found',nrow(sig_ko),'significantly differentally abundant KOs',
 ```
 
 ```{r}
-kk <- download.file('https://figshare.com/ndownloader/files/55158818',method='libcurl',destfile='kegg.rda',quiet=TRUE)
+kk <- download.file('https://api.figshare.com/v2/file/download/55158818',destfile='kegg.rda',quiet=TRUE)
 load('kegg.rda')
 file.remove('kegg.rda')
 

@@ -57,8 +57,7 @@ The `spammR` package requires omics data with spatial coordinates for the functi
 To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measured from 7 independent regions of a single human pancreas. Each image is segmented into nine 'voxels', with one voxel per image representing a cluster of islet cells.
 
 ```{r omics data}
-download.file("https://figshare.com/ndownloader/files/55158821",method='libcurl',
-              quiet=TRUE, dest='pdl.rda')
+download.file("https://api.figshare.com/v2/file/download/55158821", mode='wb', quiet=TRUE, dest='pdl.rda')
 load('pdl.rda')
 utils::head(pancDataList$Image_0[,1:8])
 file.remove('pdl.rda')
