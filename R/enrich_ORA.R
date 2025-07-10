@@ -6,7 +6,7 @@
 #' For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 #' @export
 #' @import leapR
-#' @import Biobase
+#' @importFrom Biobase fData
 #' @import SummarizedExperiment
 #' @param spe SpatialExperiment object containing spatial omics data and spatial diffex results
 #' @param geneset in GMT format
