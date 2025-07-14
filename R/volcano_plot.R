@@ -42,7 +42,7 @@ volcano_plot <- function(diffex.spe,
                          thresh=0.05,
                          sigLabel_colname){
 
-  diffEx_df <- SummarizedExperiment::rowData(diffex.spe)
+  diffEx_df <- as.data.frame(SummarizedExperiment::rowData(diffex.spe))
   if (missing(pval_colname)) {
     pval_colname = colnames(diffEx_df)[grep('adj.P.Val', colnames(diffEx_df), fixed = TRUE)[1]]
   }
