@@ -284,8 +284,8 @@ microbiome.spe <- spammR::convert_to_spe(
   feature_meta_colname = 'KO', #column name
   spatial_coords_colnames = c('x_pixels','y_pixels'),
   image_files = c("us_map.png"),
-  image_sample_ids = 'test',
-  sample_id = 'test',
+  image_sample_ids = '1000 Soils',
+  sample_id = '1000 Soils',
   image_ids = c('0'),
   assay_name = 'KO'
   )
