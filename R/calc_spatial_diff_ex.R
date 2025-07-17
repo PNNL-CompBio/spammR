@@ -20,8 +20,7 @@
 #' pooled.panc.spe <- convert_to_spe(pooledData,
 #'                 pancMeta,
 #'                 protMeta,
-#'                 feature_meta_colname = 'pancProts',
-#'                 samples_common_identifier='')
+#'                 feature_meta_colname = 'pancProts')
 #' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
 #'                 category_col='IsletOrNot')
 #' 
@@ -32,18 +31,18 @@ calc_spatial_diff_ex <- function(spe,
                                compare_vals){
   #collect samples by factor
   factors <- unique(SummarizedExperiment::colData(spe)[[category_col]])
-  if(length(factors)<1){
+  if(length(factors) < 1) {
     ##throw error we need at least two categories
-  }else if(length(factors)>2){
-    if(missing(compare_vals) || length(setdiff(compare_vals,factors))>0){
+  } else if(length(factors) > 2) {
+    if(missing(compare_vals) || length(setdiff(compare_vals,factors)) > 0) {
       ##throw error - need exactly 2 values in category_col or 2 values in category_col to compare
-    }
+  }
     factors=compare_vals
   }
 
   ##now select the samples for each category
-  samp1<-which(SummarizedExperiment::colData(spe)[[category_col]]==factors[1])
-  samp2<-which(SummarizedExperiment::colData(spe)[[category_col]]==factors[2]) #Later, limma call does samp2 vs. samp1 analysis
+  samp1 <- which(SummarizedExperiment::colData(spe)[[category_col]] == factors[1])
+  samp2 <- which(SummarizedExperiment::colData(spe)[[category_col]] == factors[2]) #Later, limma call does samp2 vs. samp1 analysis
   comparison_name = paste(factors[1],"_vs_",factors[2],sep="")
 
   ##create design matrix with two factors
@@ -52,11 +51,12 @@ calc_spatial_diff_ex <- function(spe,
   design <- stats::model.matrix(~fac)
   #print(design)
   dat = SummarizedExperiment::assays(spe)[[ assay_name ]]
-#  rownames(dat) = SummarizedExperiment::rowData(spe)[rownames(dat),feature_colname] # Rownames for dat, so that results from limma later will also have corresponding rownames
+  ldat <- dat
+#  rownames(dat) = SummarizedExperiment::rowData(spe)[rownames(dat),feature_colname] Rownames for dat, so that results from limma later will also have corresponding rownames
   if(!log_transformed){
-    dat = log2(dat)
+    ldat = log2(dat)
   }
-  fit <- limma::lmFit(dat[,c(samp2,samp1)], design)
+  fit <- limma::lmFit(ldat[,c(samp2,samp1)], design)
   fit <- limma::eBayes(fit)
 
   diffex.spe = spe # initialize
@@ -65,6 +65,13 @@ calc_spatial_diff_ex <- function(spe,
   # withDimnames=FALSE drops rownames from dat while saving into the assay. We want this because rownames(spe.out) may not necessarily have rownames, depending on how the spe was defined.
   # Differential expression results will be stored in rowData(diffex.spe)
   res <- limma::topTable(fit, coef=2, number=Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
+  
+  ##message telling us how many genes are differentially expressedion
+  nd <- subset(res,adj.P.Val<0.05)|>
+      subset(abs(logFC)>1)|>
+      nrow()
+  message(paste("We found",nd,'features with a logFC greater than 1 and an ajusted p-value less than 0.05'))
+  
   colnames_res<-paste(paste(comparison_name, colnames(res), "limma",sep="."))
   #res = data.frame(cbind(rownames(res),res))
 

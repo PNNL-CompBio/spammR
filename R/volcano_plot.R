@@ -9,6 +9,7 @@
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
 #' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
 #' @param pval_corrected Boolean indicating whether pval_colname represents the corrected p-value or not
+#' @param log_transformed set to TRUE if data is log transformed
 #' @param title title for the plot
 #' @param thresh Threshold for p-value to be used to annotate significant results on the plot
 #' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
@@ -24,7 +25,7 @@
 #'                 pancMeta,
 #'                 protMeta,
 #'                 feature_meta_colname = 'pancProts',
-#'                 samples_common_identifier='')
+#'                 sample_id='')
 #' diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
 #'                 category_col='IsletOrNot')
 #' volcano_plot(diffex.spe,
@@ -36,11 +37,12 @@ volcano_plot <- function(diffex.spe,
                          logFC_colname,
                          pval_colname,
                          pval_corrected=TRUE,
+                         log_transformed=TRUE,
                          title,
                          thresh=0.05,
                          sigLabel_colname){
 
-  diffEx_df <- SummarizedExperiment::rowData(diffex.spe)
+  diffEx_df <- data.frame(SummarizedExperiment::rowData(diffex.spe), check.names = FALSE)
   if (missing(pval_colname)) {
     pval_colname = colnames(diffEx_df)[grep('adj.P.Val', colnames(diffEx_df), fixed = TRUE)[1]]
   }

@@ -42,10 +42,9 @@
 #'                         protMeta,
 #'                         feature_meta_colname='pancProts',
 #'                         image_files=system.file("extdata",'Image_0.png',package='spammR'),
-#'                         image_samples_common_identifier='Image0',
-#'                         spatialCoords_colnames=c('x_pixels','y_pixels'),
-#'                         samples_common_identifier = 'Image0',
-#'                         image_id='with_grid')
+#'                         spatial_coords_colnames=c('x_pixels','y_pixels'),
+#'                         sample_id = 'Image0',
+#'                         image_ids = 'with_grid')
 #' res = spatial_heatmap(img0.spe, 
 #'         feature='INS', 
 #'         sample_id='Image0', 
@@ -98,7 +97,10 @@ spatial_heatmap <- function(spe,
       feature_values_toplot  = f[rowNum_toplot,]
   }else { ##we are plotting more than one value and need to average
       feature_values_toplot = colMeans(f[rowNum_toplot,],na.rm=TRUE)
+      feature_values_toplot = feature_values_toplot[is.finite(feature_values_toplot)]
   }
+  if(length(feature_values_toplot)==0)
+      stop(paste("Cannot plot heatmap:",paste(feature,collapse=','),"not in dataset"))
   #create a title of the plot
   spatial_meta = SummarizedExperiment::colData(spe)
   if (is.null(plot_title)) {
