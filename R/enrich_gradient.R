@@ -6,6 +6,7 @@
 #' @import SummarizedExperiment
 #' @param spe SpatialExperiment object containing spatial omics data and spatial diffex results
 #' @param geneset in GMT format
+#' @param assay_name name of assay
 #' @param feature_column Column of rowData that maps to gene set
 #' @param ranking_column Column of rowData that maps to ranks
 #' @returns A dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
@@ -36,6 +37,7 @@
 #' head(rank.res)
 
 enrich_gradient <- function(spe,
+                            assay_name, 
                       geneset,
                       feature_column, #primary gene name to be mapped to enrichment data
                       ranking_column){
@@ -46,9 +48,8 @@ enrich_gradient <- function(spe,
 #    dplyr::rename(feature = feature_column,rank = ranking_column) |>
 #    dplyr::select(feature,rank)
 
-   eset = as(spe,'ExpressionSet')
   #here we use the leapR package for the rank enrichment
-  es <- leapR::leapR(eset = eset, geneset = geneset,
+  es <- leapR::leapR(eset = spe, assay_name = assay_name, geneset = geneset,
             enrichment_method = 'enrichment_in_order',
             id_column = feature_column, primary_columns = ranking_column) |>
     subset(!is.na(pvalue)) |>

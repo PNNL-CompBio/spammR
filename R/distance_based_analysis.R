@@ -7,7 +7,7 @@
 #' @importFrom stats cor.test
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data
-#' @param assayName Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
+#' @param assay_name Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"
 #' @param spotHeightCol Column containing height of spot
 #' @param spotWidthCol Column containing width of spot
 #' @param sampleCategoryCol Column name in metadata (colData(spe)) that should be used for selecting samples of certain type, to define the "origin" region for distance based analysis
@@ -40,7 +40,7 @@
 #'     
 
 distance_based_analysis <- function(spe,
-                                    assayName,
+                                    assay_name,
                                     spotHeightCol = 'spot_height',
                                     spotWidthCol = 'spot_width',
                                     sampleCategoryCol,
@@ -81,7 +81,7 @@ distance_based_analysis <- function(spe,
                                                method = "euclidean", 
                                                diag = TRUE))
 
-  assay_data = SummarizedExperiment::assays(spe)[[assayName]]
+  assay_data = SummarizedExperiment::assays(spe)[[assay_name]]
   #rownames(assay_data) = SummarizedExperiment::rowData(spe)[,featuresNameCol]
   source_samples_indices = which(SummarizedExperiment::colData(spe)[,sampleCategoryCol] == sampleCategoryValue)
   if (length(source_samples_indices) > 1) {

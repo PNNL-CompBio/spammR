@@ -6,7 +6,6 @@
 #' For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
 #' @export
 #' @import leapR
-#' @importFrom Biobase fData
 #' @import SummarizedExperiment
 #' @param spe SpatialExperiment object containing spatial omics data and spatial diffex results
 #' @param geneset in GMT format
@@ -53,8 +52,6 @@ enrich_ora <- function(spe,
   # If gene names are not present in spatialDiffEx results, a helper function (which I will add later), can be run to obtain gene names from the UniProt db files
   # and have a "PG.genes" column added to spatialDiffEx results excel file.
 
-  res <- as(spe,'ExpressionSet') ##convert to expressionSet   
-
   if (pval_type_forThresh == "adjusted_pval") {
       pval_col_text = "adj.P.Val"
   }else if (pval_type_forThresh == "pval") {
@@ -63,7 +60,7 @@ enrich_ora <- function(spe,
       # Throw error "Invalid value for pval_type_forThresh"
   }
   
-  fvals <- colnames(Biobase::fData(res))
+  fvals <- colnames(rowData(spe))
   
   pval_column = fvals[grep(pval_col_text,fvals)]
   logfc_column = fvals[grep("logFC",fvals)]
@@ -74,21 +71,21 @@ enrich_ora <- function(spe,
 
   # Filter based on Log fold change criteria
   if (!is.na(logFC_lowerThresh)) {
-    low_vals = which(Biobase::fData(res)[,logfc_column] < logFC_lowerThresh)
+    low_vals = which(rowData(spe)[,logfc_column] < logFC_lowerThresh)
     if(length(low_vals)==0)
         stop("No values below `logFC_lowerThresh")
-    res = res[low_vals,] 
+    spe = spe[low_vals,] 
     #int_list = int_list[int_list[,colnum_logfc] > logFC_lowerThresh,]
   }
   if (!is.na(logFC_upperThresh)) {
-    high_vals = which(Biobase::fData(res)[,logfc_column] > logFC_upperThresh)
+    high_vals = which(rowData(spe)[,logfc_column] > logFC_upperThresh)
     if(length(high_vals)==0)
         stop("No values above `logFC_upperThresh")
-    res = res[high_vals,]      
+    spe = spe[high_vals,]      
     #int_list = int_list[int_list[,colnum_logfc] < logFC_upperThresh,]
   }
   
-  ora.res <- leapR(eset=res, geneset = geneset,enrichment_method='enrichment_in_sets',
+  ora.res <- leapR(eset=spe, geneset = geneset,enrichment_method='enrichment_in_sets',
                    id_column=feature_column,
                    primary_column=pval_column,threshold=pval_thresh,
                    greaterthan=FALSE)

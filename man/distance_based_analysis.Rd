@@ -6,7 +6,7 @@
 \usage{
 distance_based_analysis(
   spe,
-  assayName,
+  assay_name,
   spotHeightCol = "spot_height",
   spotWidthCol = "spot_width",
   sampleCategoryCol,
@@ -21,7 +21,7 @@ distance_based_analysis(
 \arguments{
 \item{spe}{SpatialExperiment object containing spatial omics data}
 
-\item{assayName}{Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"}
+\item{assay_name}{Name of the assay stored in spe that is to be used for distance based analysis. Example: "znormalized_log2"}
 
 \item{spotHeightCol}{Column containing height of spot}
 

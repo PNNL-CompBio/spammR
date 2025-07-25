@@ -4,10 +4,12 @@
 \alias{enrich_gradient}
 \title{Calculate functional or pathway enrichment from a gradient}
 \usage{
-enrich_gradient(spe, geneset, feature_column, ranking_column)
+enrich_gradient(spe, assay_name, geneset, feature_column, ranking_column)
 }
 \arguments{
 \item{spe}{SpatialExperiment object containing spatial omics data and spatial diffex results}
+
+\item{assay_name}{name of assay}
 
 \item{geneset}{in GMT format}
 
