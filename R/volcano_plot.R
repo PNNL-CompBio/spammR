@@ -4,7 +4,7 @@
 #' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
 #' -log10(p-value) vs. log2(fold change)
 #' @import ggplot2
-#' @import ggrepel
+#' @importFrom ggrepel geom_text_repel
 #' @param diffex.spe A `SpatialExperiment` object containing differentail expression results in rowData
 #' @param logFC_colname column name in differenital expression results that represents log10 fold change
 #' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
