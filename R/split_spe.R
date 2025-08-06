@@ -17,20 +17,20 @@
 #' split_list <- split_spe(panc.spe,split_colname='Image')
 #' 
 #' 
-split_spe <- function(spe, split_colname,assay_name){
+split_spe <- function(spe, split_colname,assay_name=NULL){
     
-    if(missing(split_colname) | !split_colname%in%colData(spe))
+    if(missing(split_colname) | !split_colname%in%names(colData(spe)))
         stop("Need a column to split on that is in the spe object")
     
     vals <- SummarizedExperiment::colData(spe)[,split_colname] |> unique() 
     
     spe.list <- lapply(vals, function(v){
         dvals <- which(colData(spe)[,split_colname]==v)
-        mdat <- colData(spe[dvals,])
-        if(!missing(assay_name))
-            dat <- assay(spe,assay_name)[,mdat]
+        mdat <- colData(spe)[dvals,]
+        if(!is.null(assay_name))
+            dat <- assay(spe,assay_name)[,dvals]
         else
-            dat <- assay(spe)[,dat]
+            dat <- assay(spe)[,dvals]
     
        res = convert_to_spe(dat = dat,
                     sample_meta = mdat,
@@ -38,6 +38,8 @@ split_spe <- function(spe, split_colname,assay_name){
                      sample_id=as.character(v),
                     feature_meta_colname = 'pancProts')
        imgData(res) <- imgData(spe) ## if the image is there, keep it the same!
+       return(res)
     })
+    names(spe.list) <- as.character(vals)
     return(spe.list)
 }

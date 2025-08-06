@@ -4,7 +4,7 @@
 \alias{split_spe}
 \title{Divide SPE object into smaller objects by column features}
 \usage{
-split_spe(spe, split_colname, assay_name)
+split_spe(spe, split_colname, assay_name = NULL)
 }
 \arguments{
 \item{spe}{SpatialExperiment object containing spatial omics data and spatial diffex results}
