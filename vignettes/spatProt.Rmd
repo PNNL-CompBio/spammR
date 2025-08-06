@@ -399,10 +399,9 @@ enriched.paths<-do.call(rbind,lapply(names(rank.imgs),function(x){
   es <- enrich_gradient(spe,
                       geneset=krbpaths,
                       feature_column='PrimaryGeneName', #primary gene name to be mapped to enrichment data
-                      ranking_column='IsletDistancespearmanCor')|>
-          dplyr::mutate(comp=x)
-  rownames(es) <- es$krbpaths
- 
+                      ranking_column='IsletDistancespearmanCor')
+  es$comp <- rep(x,nrow(es))
+  es$krbpaths <- rownames(es)
 }))
 
 enriched.paths|>
