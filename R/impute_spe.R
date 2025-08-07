@@ -9,8 +9,9 @@
 #' @param method Method of imputation to be used. See details.
 #' @param group_colname Column name in metadata that specifies the group information to use for group_mean or knn_group. Example: ROI_abbreviation.
 #' @param k K value to be used for k-nearest neighbor imputation
-#' @param protein_missingness Proportion of samples allowed to have missing data for a protein in the given spatial unit specified by the imputation method. Example: When method="global_mean," an allowed_missingness_perProtein of 0.5 indicates that any protein missing data for more than 50% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="mean_perSpatialUnit," then allowed_missingness_perProtein of 0.5 indicates that a protein must have data for at least 50% of samples in the specified spatial unit (example: a brain ROI) to be used in the imputation algorithm and to be imputed. This argument is only needed for methods that rely on statistics based on per protein. It is used for the following methods: median_a, median_b, global_mean, mean_perSpatialUnit, knn_proteins_global and knn_proteins_perSpatialUnit.
-#' @param sample_missingness  Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.
+#' @param protein_missingness Proportion of samples allowed to have missing data for a protein in the given imputation method. Example: When method="global_mean," an protein_missingness of 0.5 indicates that any protein missing data for more than 50% of samples across the entire spatial tissue covered by all 
+#' samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="group_mean," then protein_missingness of 0.5 indicates that a protein must have data for at least 50% of samples in the specified group to be used in the 
+#' imputation algorithm and to be imputed. 
 #' @returns An SPE with an 'imputed' data frame with the appropriate imputation called
 #' @export 
 #' 
@@ -36,8 +37,8 @@
 #'                 feature_meta_colname = 'pancProts',
 #'                 sample_id='')
 #' res <- impute_spe(pooled.panc.spe, method='mean')
-#' res2 <- imput_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
-#' mean(assay(res,'imputed')-assay(res2,'imputed')
+#' res2 <- impute_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
+#' mean(assay(res,'imputed')-assay(res2,'imputed',na.rm=T)
 #' 
 
 impute_spe <- function(spe,
@@ -45,8 +46,7 @@ impute_spe <- function(spe,
                       method =  NULL ,
                       group_colname,
                       k=NULL,
-                      protein_missingness=NULL,
-                      sample_missingness=NULL){
+                      protein_missingness=NULL){
 
     
   # # Set defult values if not specified by user
@@ -76,16 +76,12 @@ impute_spe <- function(spe,
   imputed_data = c()
   replace_vals = c()
   
-  ##first lets see if there are proteins that we dont impute
+  ##first lets see if there are proteins that we dont impute for global methods
   fix_prots = which((rowSums(is.na(dat)) / ncol(dat)) > protein_missingness )
-  
-  ##and samples
-  fix_samps = which((colSums(is.na(dat)) / nrow(dat)) > sample_missingness )
-  
-  
-  
+
   ###first iterate through the global methods
   if(method%in%c('zero','mean','median','median_half')){
+    
       ##row-wise values first
       if (method == "zero") {
         replace_vals = rep(0,nrow(dat))
@@ -110,7 +106,7 @@ impute_spe <- function(spe,
       # By default, impute.knn uses the mean of all proteins in a sample for this case, which is not that meaningful.
       # Instead, we replace the missing values (for the case when missingness in a row is greater than rowmax) with global_mean or na for that row
       imputed_data <- kres$dat
-      #print(fix_prots)
+      #now we go back and uninfer values for which we have poor coverage
       for (f in fix_prots) {
           na_indices = which(is.na(dat[f,]))
           #knn_imputed_proteins_global$dat[f,na_indices] = mean(dat[f,],na.rm=TRUE)
@@ -127,17 +123,28 @@ impute_spe <- function(spe,
     ##iterate through each group, identify means, and replace those values
     for (s in spatUnits) {
       ROI_indices = which(metadata[,group_colname] == s)
+      
+      ##first lets see if there are proteins that we dont impute
+      fix_prots = which((rowSums(is.na(dat[,ROI_indices])) / length(ROI_indices)) > protein_missingness )
+      
       #        grep(spatUnits[s],colnames(dat)) ##FIX: spatial unit should not be in column name
       if (method == "group_mean") {
         replace_vals = rowMeans(dat[,ROI_indices],na.rm = TRUE)
           
         for(i in setdiff(1:nrow(imputed_data),fix_prots)){ ##for all of the values we WANT to fix
-            imputed_data[i,which(is.na(dat[i,ROI_indices]))] <- replace_vals[i] ##replace the values WITHIN THIS GROUP
+          if(any(is.na(dat[i,ROI_indices])))
+              imputed_data[i,which(is.na(dat[i,ROI_indices]))] <- replace_vals[i] ##replace the values WITHIN THIS GROUP
         }
       } else if (method == "group_knn") {
             gdat <- dat[,ROI_indices]
             imputed_gdata = impute::impute.knn(as.matrix(gdat),k = k, rowmax = protein_missingness, colmax = 1, maxp = dim(gdat)[1], rng.seed=12345)
             imputed_data[,ROI_indices] <- imputed_gdata$dat
+            #now we go back and uninfer values for which we have poor coverage
+            for (f in fix_prots) {
+              na_indices = which(is.na(gdat[f,]))
+              if(length(na_indices)>0)
+                imputed_data[f,na_indices] = NA #Keep those missing values as NA since there is not enough dat to impute reliably.
+            }
      }
     # Make sure the imputed data appears in the same order as the original data
     imputed_data = imputed_data[,colnames(dat)]
@@ -159,40 +166,8 @@ impute_spe <- function(spe,
       }
       imputed_data = rbind(imputed_data,this.prot)
     }
-    #imputed_data <- data_imputed[rownames(dat),]
   }
-  ##TODO: figure out missingness values for knn code
 
-  # 
-  # if (is.null(replace_vals)){
-  #   #don't change data_imputed
-  # }else{
-  #   data_imputed = c() #start with this, then replace na values
-  #   # Update replace_vals to reflect allowed_missingness_perProtein criteria.
-  #   # replace_vals should retain NAs (missing values) for proteins above the allowed_missingness_perProtein criteria for the following methods
-  #   dontImpute_rows = c()
-  #   if (method=="median" | method=="median_half" | method=="global_mean"){
-  #     dontImpute_rows = which ( (rowSums(is.na(dat))/dim(dat)[2]) > allowed_missingness_perProtein)
-  #   }
-  #   replace_vals[dontImpute_rows] = NA
-  #   for (i in 1:nrow[1]){
-  #     this.row = dat[i,]
-  #     this.row.na_indices = which(is.na(this.row))
-  #     if (length(this.row.na_indices)>0){
-  #       if (length(replace_vals)>1){
-  #         this.row[this.row.na_indices] <- replace_vals[i]
-  #       }else{
-  #         this.row[this.row.na_indices] <- replace_vals
-  #       }
-  #     }
-  #     data_imputed = rbind(data_imputed,this.row)
-  #   }
-  # }
-  # data_imputed = data.frame(data_imputed, row.names=rownames(dat))
-  # colnames(data_imputed) = colnames(dat)
-  # return(data_imputed)
-  
-  
   assays(spe, withDimnames=FALSE) <- c(assays(spe),list(imputed=imputed_data))
   return(spe)
 }

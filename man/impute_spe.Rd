@@ -10,8 +10,7 @@ impute_spe(
   method = NULL,
   group_colname,
   k = NULL,
-  protein_missingness = NULL,
-  sample_missingness = NULL
+  protein_missingness = NULL
 )
 }
 \arguments{
@@ -25,9 +24,9 @@ impute_spe(
 
 \item{k}{K value to be used for k-nearest neighbor imputation}
 
-\item{protein_missingness}{Proportion of samples allowed to have missing data for a protein in the given spatial unit specified by the imputation method. Example: When method="global_mean," an allowed_missingness_perProtein of 0.5 indicates that any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="mean_perSpatialUnit," then allowed_missingness_perProtein of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified spatial unit (example: a brain ROI) to be used in the imputation algorithm and to be imputed. This argument is only needed for methods that rely on statistics based on per protein. It is used for the following methods: median_a, median_b, global_mean, mean_perSpatialUnit, knn_proteins_global and knn_proteins_perSpatialUnit.}
-
-\item{sample_missingness}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
+\item{protein_missingness}{Proportion of samples allowed to have missing data for a protein in the given imputation method. Example: When method="global_mean," an protein_missingness of 0.5 indicates that any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all
+samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="group_mean," then protein_missingness of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified group to be used in the
+imputation algorithm and to be imputed.}
 }
 \value{
 An SPE with an 'imputed' data frame with the appropriate imputation called
@@ -61,7 +60,7 @@ pooled.panc.spe <- convert_to_spe(pooledData,
                 feature_meta_colname = 'pancProts',
                 sample_id='')
 res <- impute_spe(pooled.panc.spe, method='mean')
-res2 <- imput_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
-mean(assay(res,'imputed')-assay(res2,'imputed')
+res2 <- impute_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
+mean(assay(res,'imputed')-assay(res2,'imputed',na.rm=T)
 
 }
