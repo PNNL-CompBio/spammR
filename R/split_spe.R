@@ -17,7 +17,7 @@
 #' split_list <- split_spe(panc.spe,split_colname='Image')
 #' 
 #' 
-split_spe <- function(spe, split_colname,assay_name=NULL){
+split_spe <- function(spe, split_colname,assay_name=NULL,feature_column=NULL){
     
     if(missing(split_colname) | !split_colname%in%names(colData(spe)))
         stop("Need a column to split on that is in the spe object")
@@ -35,8 +35,7 @@ split_spe <- function(spe, split_colname,assay_name=NULL){
        res = convert_to_spe(dat = dat,
                     sample_meta = mdat,
                     feature_meta = rowData(spe),  
-                     sample_id=as.character(v),
-                    feature_meta_colname = 'pancProts')
+                     sample_id=as.character(v))
        imgData(res) <- imgData(spe) ## if the image is there, keep it the same!
        return(res)
     })
