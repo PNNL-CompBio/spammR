@@ -1,7 +1,7 @@
 #' Calculate centers of spots/samples for distance based analysis
-#' @description calc_centers calculates the centers of spots for numerical analysis
+#' @description calc_centers calculates the centers of spots for numerical analysis. Currently not used.
 #' @import SpatialExperiment
-#' @export
+#'
 #' @param spe SpatialExperiment object containing omics data
 #' @return Data frame of new coordinates
 #' 

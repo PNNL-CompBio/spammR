@@ -13,7 +13,7 @@ calc_centers(spe)
 Data frame of new coordinates
 }
 \description{
-calc_centers calculates the centers of spots for numerical analysis
+calc_centers calculates the centers of spots for numerical analysis. Currently not used.
 }
 \examples{
 data(pancMeta)
