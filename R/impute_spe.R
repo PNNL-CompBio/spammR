@@ -1,18 +1,18 @@
 #' Impute missing values based on spatial coordinates
-#' @description `impute_spe()` carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
+#' @description `impute_spe()` carries out imputation for missing data in the primary assay using a specified method from a range of methods. Returns additional assay in the same SPE
 #' @importFrom matrixStats rowMedians
 #' @importFrom impute impute.knn
 #' @importFrom spdep knearneigh
 #' 
-#' @param spe SPE containing data Data frame containing data to be imputed, where rows correspond to features (which can be specified as row names of dat but it is not required that they be specified) and columns correspond to samples. Column names must correspond to names provided in the sample identifier column in the metadata parameter.
+#' @param spe SPE containing data to be imputed.
 #' @param assay_name name of assay with data to be imputed
 #' @param method Method of imputation to be used. See details.
 #' @param group_colname Column name in metadata that specifies the group information to use for group_mean or knn_group. Example: ROI_abbreviation.
 #' @param k K value to be used for k-nearest neighbor imputation
-#' @param protein_missingness Proportion of samples allowed to have missing data for a protein in the given imputation method. Example: When method="global_mean," an protein_missingness of 0.5 indicates that any protein missing data for more than 50% of samples across the entire spatial tissue covered by all 
-#' samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="group_mean," then protein_missingness of 0.5 indicates that a protein must have data for at least 50% of samples in the specified group to be used in the 
-#' imputation algorithm and to be imputed. 
-#' @returns An SPE with an 'imputed' data frame with the appropriate imputation called
+#' @param protein_missingness Proportion of samples allowed to have missing data for a protein in the given imputation method. Example: When method="global_mean," an protein_missingness of 0.5 indicates that 
+#' any protein missing data for more than 50% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. 
+#' When method="group_mean," then protein_missingness of 0.5 indicates that a protein must have data for at least 50% of samples in the specified group to be used in the imputation algorithm and to be imputed. 
+#' @returns An SPE with an 'imputed' assay with the appropriate imputation called
 #' @export 
 #' 
 #' @details Methods options and descriptions:
@@ -36,9 +36,10 @@
 #'                 protMeta,
 #'                 feature_meta_colname = 'pancProts',
 #'                 sample_id='')
+#' #we can try two imputation methods and compare the difference                 
 #' res <- impute_spe(pooled.panc.spe, method='mean')
 #' res2 <- impute_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
-#' mean(assay(res,'imputed')-assay(res2,'imputed',na.rm=T)
+#' mean(assay(res,'imputed')-assay(res2,'imputed'),na.rm=TRUE)
 #' 
 
 impute_spe <- function(spe,
