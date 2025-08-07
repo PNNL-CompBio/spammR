@@ -17,8 +17,8 @@ split_spe(spe, split_colname, assay_name = NULL)
 A list of SpatialExperiment objects containing a subset of the data
 }
 \description{
-\code{split_spe()} splits an SPE object into smaller objects by a column feature. Ideally this shoudl be in the SpatialExperiment
-class
+\code{split_spe()} splits an SPE object into smaller objects by a column feature. Ideally this should be in the SpatialExperiment
+class or some utility package.
 }
 \examples{
 data(smallPancData)
