@@ -1,11 +1,12 @@
 #' Divide SPE object into smaller objects by column features
 #' 
-#' @description `split_spe()` splits an SPE object into smaller objects by a column feature. Ideally this shoudl be in the SpatialExperiment
-#' class
+#' @description `split_spe()` splits an SPE object into smaller objects by a column feature. Ideally this should be in the SpatialExperiment
+#' class or some utility package.
 #' @export
 #' @param spe SpatialExperiment object containing spatial omics data and spatial diffex results
 #' @param split_colname Column of rowData that maps to gene set
 #' @param assay_name Optional name of assay to use in split data
+#' 
 #' @returns A list of SpatialExperiment objects containing a subset of the data
 #' 
 #' @examples
@@ -17,7 +18,7 @@
 #' split_list <- split_spe(panc.spe,split_colname='Image')
 #' 
 #' 
-split_spe <- function(spe, split_colname,assay_name=NULL,feature_column=NULL){
+split_spe <- function(spe, split_colname,assay_name=NULL){
     
     if(missing(split_colname) | !split_colname%in%names(colData(spe)))
         stop("Need a column to split on that is in the spe object")
