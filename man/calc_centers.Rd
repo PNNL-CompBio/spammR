@@ -13,7 +13,7 @@ calc_centers(spe)
 Data frame of new coordinates
 }
 \description{
-calc_centers calculates the centers of spots for numerical analysis
+calc_centers calculates the centers of spots for numerical analysis. Currently not used.
 }
 \examples{
 data(pancMeta)
@@ -27,6 +27,5 @@ img0.spe <- convert_to_spe(smallPancData$Image_0,
             sample_id = 'Image0',
             spatial_coords_colnames = c('x_pixels','y_pixels'),
             image_sample_ids = 'Image0',image_ids='Image0')
-calc_centers(img0.spe)
 
 }
