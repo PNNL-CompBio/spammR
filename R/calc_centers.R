@@ -17,8 +17,7 @@
 #'             sample_id = 'Image0',
 #'             spatial_coords_colnames = c('x_pixels','y_pixels'),
 #'             image_sample_ids = 'Image0',image_ids='Image0')
-#' calc_centers(img0.spe)
-#' 
+#' ##can't actually call internal functuon
 calc_centers <- function(spe){
 
   ##get relevant column data - x,y coords and spot height/width
