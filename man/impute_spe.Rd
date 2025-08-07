@@ -6,7 +6,7 @@
 \usage{
 impute_spe(
   spe,
-  assay_name = "proteomics",
+  assay_name = NULL,
   method = NULL,
   group_colname,
   k = NULL,
@@ -42,9 +42,9 @@ Methods options and descriptions:
 \item median : replace missing values with global median per protein
 \item median_half : replace missing values with 1/2 global median per protein
 \item mean: replace missing values with global mean per protein
-\item group_mean: replace msising values with mean per group, e.g. group (example: ROI) for each protein
-\item knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all groups
-\item group_knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified group (e.g. ROI, tissue)
+\item group_mean: replace missing values with mean per group, e.g. group (example: ROI) for each protein
+\item knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all groups. NOTE: There will still be NA values if the protein is not expressed in this group.
+\item group_knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified group (e.g. ROI, tissue). NOTE: There will still be NA values if the protein is not expressed in this group.
 \item spatial_knn: imputation based on k-nearest neighors in space
 }
 }
@@ -61,4 +61,7 @@ pooled.panc.spe <- convert_to_spe(pooledData,
                 feature_meta_colname = 'pancProts',
                 sample_id='')
 res <- impute_spe(pooled.panc.spe, method='mean')
+res2 <- imput_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
+mean(assay(res,'imputed')-assay(res2,'imputed')
+
 }
