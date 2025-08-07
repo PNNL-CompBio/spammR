@@ -19,9 +19,9 @@
 #' - median : replace missing values with global median per protein
 #' - median_half : replace missing values with 1/2 global median per protein
 #' - mean: replace missing values with global mean per protein
-#' - group_mean: replace msising values with mean per group, e.g. group (example: ROI) for each protein
-#' - knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all groups 
-#' - group_knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified group (e.g. ROI, tissue)
+#' - group_mean: replace missing values with mean per group, e.g. group (example: ROI) for each protein
+#' - knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all groups. NOTE: There will still be NA values if the protein is not expressed in this group.
+#' - group_knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified group (e.g. ROI, tissue). NOTE: There will still be NA values if the protein is not expressed in this group.
 #' - spatial_knn: imputation based on k-nearest neighors in space
 #' @examples
 #' 
@@ -36,11 +36,12 @@
 #'                 feature_meta_colname = 'pancProts',
 #'                 sample_id='')
 #' res <- impute_spe(pooled.panc.spe, method='mean')
-
-#.methods <- 
+#' res2 <- imput_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
+#' mean(assay(res,'imputed')-assay(res2,'imputed')
+#' 
 
 impute_spe <- function(spe,
-                      assay_name = 'proteomics',
+                      assay_name = NULL,
                       method =  NULL ,
                       group_colname,
                       k=NULL,
@@ -64,9 +65,13 @@ impute_spe <- function(spe,
     if(method %in% c('knn','group_knn','spatial_knn') && is.null(k))
         stop(paste('Method',method,'requires parameter k to be set'))
     
-    dat <- SummarizedExperiment::assays(spe)[[assay_name]]
-  metadata <- SummarizedExperiment::colData(spe)
-  spcoords <- SpatialExperiment::spatialCoords(spe)
+    if(is.null(assay_name))
+      dat <- SummarizedExperiment::assay(spe)
+    else
+      dat <- SummarizedExperiment::assay(spe,assay_name)
+  
+    metadata <- SummarizedExperiment::colData(spe)
+    spcoords <- SpatialExperiment::spatialCoords(spe)
 
   imputed_data = c()
   replace_vals = c()
@@ -120,7 +125,7 @@ impute_spe <- function(spe,
     spatUnits = unique(metadata[,group_colname]) ##whats is the spatial unit?
     imputed_data = dat
     ##iterate through each group, identify means, and replace those values
-    for (s in 1:length(spatUnits)) {
+    for (s in spatUnits) {
       ROI_indices = which(metadata[,group_colname] == s)
       #        grep(spatUnits[s],colnames(dat)) ##FIX: spatial unit should not be in column name
       if (method == "group_mean") {
