@@ -7,14 +7,11 @@
 impute_spe(
   spe,
   assay_name = "proteomics",
-  method = c("zero", "median", "median_half", "global_mean", "spatial_unit_mean",
-    "knn_global", "spatial_unit_knn", "knn_global", "knn_splatial"),
-  spatial_unit_colname,
-  spatialCoord_x_colname,
-  spatialCoord_y_colname,
-  knn_k = NULL,
-  allowed_missingness_perProtein = NULL,
-  allowed_missingness_perSample = NULL
+  method = NULL,
+  group_colname,
+  k = NULL,
+  protein_missingness = NULL,
+  sample_missingness = NULL
 )
 }
 \arguments{
@@ -24,17 +21,13 @@ impute_spe(
 
 \item{method}{Method of imputation to be used. See details.}
 
-\item{spatial_unit_colname}{Column name in metadata that specifies spatial unit information. Example: ROI_abbreviation.}
+\item{group_colname}{Column name in metadata that specifies the group information to use for group_mean or knn_group. Example: ROI_abbreviation.}
 
-\item{spatialCoord_x_colname}{Column name in metadata that specifies the X coordinate for each sample.}
+\item{k}{K value to be used for k-nearest neighbor imputation}
 
-\item{spatialCoord_y_colname}{Column name in metadata that specifies the Y coordinate for each sample.}
+\item{protein_missingness}{Proportion of samples allowed to have missing data for a protein in the given spatial unit specified by the imputation method. Example: When method="global_mean," an allowed_missingness_perProtein of 0.5 indicates that any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="mean_perSpatialUnit," then allowed_missingness_perProtein of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified spatial unit (example: a brain ROI) to be used in the imputation algorithm and to be imputed. This argument is only needed for methods that rely on statistics based on per protein. It is used for the following methods: median_a, median_b, global_mean, mean_perSpatialUnit, knn_proteins_global and knn_proteins_perSpatialUnit.}
 
-\item{knn_k}{K value to be used for k-nearest neighbor imputation}
-
-\item{allowed_missingness_perProtein}{Proportion of samples allowed to have missing data for a protein in the given spatial unit specified by the imputation method. Example: When method="global_mean," an allowed_missingness_perProtein of 0.5 indicates that any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed. When method="mean_perSpatialUnit," then allowed_missingness_perProtein of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified spatial unit (example: a brain ROI) to be used in the imputation algorithm and to be imputed. This argument is only needed for methods that rely on statistics based on per protein. It is used for the following methods: median_a, median_b, global_mean, mean_perSpatialUnit, knn_proteins_global and knn_proteins_perSpatialUnit.}
-
-\item{allowed_missingness_perSample}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
+\item{sample_missingness}{Proportion of proteins allowed to be missing for a sample. This argument is only needed when imputing using k-nearest neighbor methods where neighbors are samples. For all other imputation methods provided here, allowed_missingness_perSample does not apply; no samples are excluded from the imputation process for those methods. If missingness in a sample is greater than this thershold, then that sample's data are not included in the imputation for the knn samples neighbors methods.}
 }
 \value{
 An SPE with an 'imputed' data frame with the appropriate imputation called
@@ -43,16 +36,17 @@ An SPE with an 'imputed' data frame with the appropriate imputation called
 \code{impute_spe()} carries out imputation for missing data in a data frame (df) using a specified method from a range of methods. Accepts input dataset as a data frame (df).
 }
 \details{
-Methods options and descriptions
-zero: replace missing values with 0
-median_a : replace missing values with global median per protein
-median_b : replace missing values with 1/2 global median per protein
-global_mean: replace missing values with global mean per protein
-mean_perSpatialUnit: replace msising values with mean per spatial unit (example: ROI) for each protein
-knn_proteins_global: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all ROIs
-knn_proteins_perSpatialUnit: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified spatial unit (here: ROI)
-knn_samples_global_proteinData: imputation based on k-nearest neighbors, with samples as neighbors, based on protein data from all samples.
-knn_samples_global_spatialCoords: imputation based on knn, with samples as neighbors, based on spatial coordinates of all samples.
+Methods options and descriptions:
+\itemize{
+\item zero: replace missing values with 0
+\item median : replace missing values with global median per protein
+\item median_half : replace missing values with 1/2 global median per protein
+\item mean: replace missing values with global mean per protein
+\item group_mean: replace msising values with mean per group, e.g. group (example: ROI) for each protein
+\item knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all groups
+\item group_knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified group (e.g. ROI, tissue)
+\item spatial_knn: imputation based on k-nearest neighors in space
+}
 }
 \examples{
 
@@ -66,5 +60,5 @@ pooled.panc.spe <- convert_to_spe(pooledData,
                 protMeta,
                 feature_meta_colname = 'pancProts',
                 sample_id='')
-res <- impute_spe(pooled.panc.spe, method='global_mean')
+res <- impute_spe(pooled.panc.spe, method='mean')
 }

@@ -39,7 +39,6 @@ Once the package is installed you load the library, including the test data.
 ```{r load package, message=FALSE,warning=FALSE}
 ##load spammR
 library(spammR)
-library(tibble)
 ```
 
 # Collecting data to analyze
@@ -397,13 +396,13 @@ library(leapR)
 data("krbpaths")
 enriched.paths<-do.call(rbind,lapply(names(rank.imgs),function(x){
   spe=rank.imgs[[x]]
-  enrich_gradient(spe,
+  es <- enrich_gradient(spe,
                       geneset=krbpaths,
                       feature_column='PrimaryGeneName', #primary gene name to be mapped to enrichment data
-                      ranking_column='IsletDistancespearmanCor')|>
-    tibble::rownames_to_column('krbpaths')|>
-    dplyr::mutate(comp=x)
-
+                      ranking_column='IsletDistancespearmanCor')
+  es[,'comp'] <- rep(x,nrow(es))
+  es[,'krbpaths'] <- rownames(es)
+  es
 }))
 
 enriched.paths|>

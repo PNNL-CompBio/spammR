@@ -24,7 +24,7 @@ calc_centers <- function(spe){
   ##get relevant column data - x,y coords and spot height/width
   spatial_coords <- spatialCoords(spe)
   
-  if(ncol(spatial_coords)==0)
+  if(ncol(spatial_coords) == 0)
       stop("No spatial coordinates were set in image object")
   spatial_sizes <- colData(spe)[,c('spot_width','spot_height')]
 
