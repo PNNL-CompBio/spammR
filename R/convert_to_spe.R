@@ -54,36 +54,44 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
 
   ##first clean up samples: make sure rowanmes of metadata file are samples
   # Separate sample columns and feature meta data columns in dat
-  if(!is.null(sample_colname)){
-    rownames(sample_meta) <- sample_meta[[sample_colname]]
-  }
+  #if(!is.null(sample_colname)){
+  #  rownames(sample_meta) <- sample_meta[[sample_colname]]
+  #}
 
   if(is.null(spatial_coords_colnames))
       message("Spatial object created without spatial coordinate column names provided. Distance based analysis will not be enabled.")
 
-  sample_colnames <- intersect(colnames(dat),rownames(sample_meta))
-  if(length(sample_colnames)==0){
-    print("ERROR: rownames of sample metadata must match column names of data")
-    exit()
+
+  
+  if(!is.null(sample_colname)){
+    sample_colnames <- intersect(colnames(dat),sample_meta[[sample_colname]])#rownames(sample_meta))
+    sample_meta <- sample_meta[which(sample_meta[,sample_colname]%in%sample_colnames),]
+  }else{
+    sample_colnames <- intersect(colnames(dat),rownames(sample_meta))
+    sample_meta = sample_meta[sample_colnames,] # To be specified as colData for SPE
+  }
+  
+  if(length(sample_colnames)<2){
+    print("ERROR: rownames of sample metadata must match at least two column names of data")
+    return(NULL)
   }
 
   dat_samples_only = dat[,sample_colnames]
 
-  # Keep rows in meta data that have a corresponding sample ID in the omics measurements file
-  sample_meta = sample_meta[sample_colnames,] # To be specified as colData for SPE
-
+ 
   ##try to collect additional data
-  other_dat<-setdiff(colnames(dat),rownames(sample_meta))#sample_colnums)] # to be specified as rowData for SPE
+#  other_dat<-setdiff(colnames(dat),sample_meta[[sample_colname]])#ownames(sample_meta))#sample_colnums)] # to be specified as rowData for SPE
   
   ##second clean up the protein metadata and make sure we have proper rowData for the spatial object
-  feature_supp <- NULL
-  if(length(other_dat)>0){ ##first check to see if there is other data in `dat`
-    feature_supp = unique(dat[,other_dat])|>
-      dplyr::mutate(proteins=rownames(dat))
-  }
-
+#  feature_supp <- NULL
+#  print(head(other_dat))
+#  if(length(other_dat)>0){ ##first check to see if there is other data in `dat`
+#    feature_supp = unique(dat[,other_dat])|>
+#      dplyr::mutate(proteins=rownames(dat))
+#  }
   if(missing(feature_meta))
-    feature_meta<-feature_supp
+    feature_meta <- data.frame()
+#    feature_meta<-feature_supp
 
   ##if there is a feature_meta table
   if(!is.null(feature_meta_colname) && !missing(feature_meta)){
@@ -91,9 +99,9 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
     rownames(feature_meta)<-feature_meta[[feature_meta_colname]]
   }
 
-  if(!is.null(feature_supp)){
-    feature_meta<-merge(feature_meta,feature_supp)
-  }
+  # if(!is.null(feature_supp)){
+  #  feature_meta<-merge(feature_meta,feature_supp)
+  #}
 
   features <-intersect(rownames(feature_meta),rownames(dat))
   if(length(features)<nrow(dat)){
@@ -109,6 +117,14 @@ convert_to_spe <-function(dat, ##expression data frame - rows are feature,s colu
     colnames(spatial_coords_dat)<- spatial_coords_colnames
   }else{
       spatial_coords_dat <- NULL
+  }
+  
+  ##if we have more sample metadata than we have samples, we need to replicate samples
+  if(ncol(dat_samples_only)!=nrow(sample_meta) && !is.null(sample_colname)){
+    newdat <- do.call(cbind,lapply(sample_meta[[sample_colname]], function(x) return(dat_samples_only[,x])))
+    rownames(newdat)<-rownames(dat_samples_only)
+    colnames(newdat)<-rownames(sample_meta)
+    dat_samples_only<-newdat
   }
   spe.out <-SpatialExperiment::SpatialExperiment(assays=list(as.matrix(dat_samples_only)),
                               colData=sample_meta,

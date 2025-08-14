@@ -12,10 +12,8 @@ spatial_heatmap(
   plotBackground_img = TRUE,
   sample_id,
   image_id,
-  image_boundaries,
   spatial_coord_type = "",
-  spatial_coord_names = c("Xcoord", "Ycoord"),
-  spot_size = c(1, 1),
+  spot_size_name = c("spot_width", "spot_height"),
   metric_display = "Protein abundance measure",
   label_column = NA,
   sample_label_color = "white",
@@ -39,13 +37,9 @@ spatial_heatmap(
 
 \item{image_id}{The name of the background image image_id. Together with the \code{sample_id} this provides a unique imge to plot.}
 
-\item{image_boundaries}{Background image's corners'coordinates. These are need to make sure that the background image lines up withe samples' coordinates correctly. Must specify in the following format: c(xmin_image, ymin_image, xmax_image, ymax_image). For example: c(0,0,21,25). These must be in the same coordinate system as the spatial coordinates for the samples in the SPE object (spatialCoords(spe)).}
-
 \item{spatial_coord_type}{Position type for the given spatial coordinates of samples in spe. Current options are: "topleft_corner", "topright_corner". Default is blank, which assumes coordinates are bottom right.}
 
-\item{spatial_coord_names}{Names of x and y spatial coordinates respectively in the spe. Example: c("Xcoord","Ycoord") or c("X","Y").}
-
-\item{spot_size}{Is a vector of length 2 describing the width and height of each spot.}
+\item{spot_size_name}{Is a vector of length 2 describing the columns to find width and height of each spot.}
 
 \item{metric_display}{Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"}
 
@@ -93,9 +87,6 @@ res = spatial_heatmap(img0.spe,
         sample_id='Image0', 
         image_id='with_grid', 
         feature_type='PrimaryGeneName',
-        spatial_coord_names=c('x_pixels','y_pixels'), 
-        spot_size=unlist(colData(img0.spe)[1,c('spot_width','spot_height')]), 
-        image_boundaries=unlist(colData(img0.spe)[1,c('x_origin','y_origin','x_max','y_max')]),
         label_column='IsletOrNot', interactive=FALSE)
 
 }
