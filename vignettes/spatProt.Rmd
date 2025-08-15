@@ -161,6 +161,7 @@ allimgs = lapply(imglist,function(x){
   res = spatial_heatmap(spe, feature = 'INS',
                         feature_type = 'PrimaryGeneName',
                         sample_id = x, 
+                        image_id = 'with_grid',
                         label_column = 'IsletOrNot', 
                         interactive = FALSE)
   return(res)
