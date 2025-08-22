@@ -343,24 +343,6 @@ spatial_heatmap(
     assay_name = 'KO',
     sample_id = '1000 Soils', 
     image_id = '0',
-    spatial_coord_names = c('x_pixels','y_pixels'), 
-    # spatial_coord_type = 'topleft_corner',
-    spot_size = unlist(
-        colData(microbiome.spe)[
-            1,
-            c('spot_width','spot_height')
-            ]
-        ), 
-    image_boundaries = unlist(
-        colData(microbiome.spe)[
-            1,
-            c(
-              'x_origin',
-              'y_origin',
-              'x_max',
-              'y_max')
-            ]
-        ),
     label_column = 'Desert', 
     interactive = FALSE
     )
