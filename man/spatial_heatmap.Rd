@@ -14,7 +14,8 @@ spatial_heatmap(
   image_id,
   spatial_coord_type = "",
   spot_size_name = c("spot_width", "spot_height"),
-  metric_display = "Protein abundance measure",
+  metric_display = "Protein expression",
+  plot_log = FALSE,
   label_column = NA,
   sample_label_color = "white",
   sample_label_size = 1.75,
@@ -41,7 +42,9 @@ spatial_heatmap(
 
 \item{spot_size_name}{Is a vector of length 2 describing the columns to find width and height of each spot.}
 
-\item{metric_display}{Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"}
+\item{metric_display}{Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein expression"}
+
+\item{plot_log}{Boolean to indicate if data should be log-transformed before plotting. Defaults to FALSE}
 
 \item{label_column}{Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.}
 
