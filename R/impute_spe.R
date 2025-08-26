@@ -117,7 +117,7 @@ impute_spe <- function(spe,
           message("impute.knn function uses mean imputation for rows with more than the specified missingness. spammR's imputation function reverts these missing values back to NA.")
       }
 #      data_imputed = knn_imputed_proteins_global$dat]
-  }else if (method == "group_mean" | method == "group_knn") {
+  }else if (method == "group_mean" || method == "group_knn") {
     # extract column with spatial unit specification in the metadata
     spatUnits = unique(metadata[,group_colname]) ##whats is the spatial unit?
     imputed_data = dat

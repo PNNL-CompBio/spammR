@@ -179,7 +179,7 @@ This process does come with slight differences in lat/long. Most likely due to t
 
 ```{r}
 cells <- terra::extract(coords_rast, coords, xy=TRUE, cells=TRUE)
-cells
+print(head(cells))
 ```
 
 ```{r}
@@ -317,6 +317,25 @@ print(ups)
 
 ```
 
+## Spatial heatmap showing abundance of significant KO
+K00005 (glycerol dehydrogenase) being one of the "upregulated KOs" we can visualize the abundances across the different sampling locations with `spammr::spatial_heatmap()`
+
+```{r}
+spatial_heatmap(
+    microbiome.spe,
+    feature = 'K00005',
+    # feature_type = 'KO',
+    assay_name = 'KO',
+    sample_id = '1000 Soils', 
+    image_id = '0',
+    label_column = 'Desert',
+    metric_display = 'KO association abundance',
+    plot_title = "Abundance of glycerol dehydrogenase (K00005)", 
+    interactive = FALSE
+    )
+```
+
+## Pathway enrichment
 For the pathway enrichment part of the anaysis we first need to load "genesets" in the required format for leapR that will be called internally. The geneset is effectively a list of KOs that are associated with individual KEGG pathways.
 
 ```{r}
@@ -328,26 +347,33 @@ file.remove('kegg.rda')
 Next we are performing the enrichment analysis, again with the less stringet p-value cut-off of p-value < 0.1
 ```{r}
 
-ora.res <- spammR::enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO', pval_thres = 0.1)
-print(ora.res)
+ora.res <- spammR::enrich_ora(diff_ex, geneset=keggPathwayToKo, geneset_name = 'KEGG pathways', feature_column = 'KO', pval_thresh = 0.1)
+print(head(ora.res))
 ```
 
 
-## Spatial heatmap showing abundance of significant KO
+
+```{r}
+ora.res <- tibble::rownames_to_column(ora.res, "pathways")
+pathway_prots<-subset(ora.res,pathways=='map00561')|>
+  dplyr::select(ingroupnames)
+pathway_prots <- unlist(strsplit(pathway_prots[1,],split=', '))
+
+```
 
 ```{r}
 spatial_heatmap(
     microbiome.spe,
-    feature = 'K00003',
-    # feature_type = 'KO',
+    feature = pathway_prots,
     assay_name = 'KO',
     sample_id = '1000 Soils', 
     image_id = '0',
-    label_column = 'Desert', 
+    label_column = 'Desert',
+    metric_display = 'Enriched KO Groups',
+    plot_title = "Glycerolipid metabolism expression", 
     interactive = FALSE
     )
 ```
-
 
 ## Session Information
 ```{r session}

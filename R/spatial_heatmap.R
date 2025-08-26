@@ -23,7 +23,8 @@
 #' @details Future versions of spatialPlot_feature() to include additional options for spatial_coord_type: "center", bottomleft_corner", "bottomright_corner"
 #' @param feature_type Example: "GeneName". Default is whatever identifier is used in rownames. The name of feature_type must be present as a column in rowData(spe)
 #' @param feature Name of the feature in the spe object whose values are to plotted in the spatial heat map. This should be a row name in rowData(spe)
-#' @param metric_display Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein abundance measure"
+#' @param metric_display Legend title for spatial heatmap. If this parameter is not specified, legend title defaults to "Protein expression"
+#' @param plot_log Boolean to indicate if data should be log-transformed before plotting. Defaults to FALSE 
 #' @param label_column Column in colData(spe) to be used for labeling grid squares. If not specified, default is no labels.
 #' @param sample_label_color Color to be used for labels of samples/grid squares. Default is white.
 #' @param sample_label_size Font size for sample labels. Default is 1.75.
@@ -61,7 +62,8 @@ spatial_heatmap <- function(spe,
                           #image_boundaries,
                           spatial_coord_type='',
                           spot_size_name = c('spot_width','spot_height'),
-                          metric_display = "Protein abundance measure",
+                          metric_display = "Protein expression",
+                          plot_log = FALSE,
                           label_column=NA,
                           sample_label_color="white",
                           sample_label_size=1.75,
@@ -167,16 +169,20 @@ spatial_heatmap <- function(spe,
   ymax_image = dim(imgData(spe)$data[[1]])[1]#image_boundaries[4]
 
   # Scale feature_values_toplot to show relative values. Scale from 0 to 1. This scale is useful when comparing spatial plots of different proteins
-  rescaled_feature_values = scales::rescale(feature_values_toplot,to = c(0,1))
-
+  if(plot_log){
+    rescaled_feature_values = log10(0.0001+feature_values_toplot)#fscales::rescale(feature_values_toplot,to = c(0,1))
+    metric_display = paste('Log10',metric_display)
+  }else{
+    rescaled_feature_values = feature_values_toplot
+  }
   spatial = cbind(spatial,feature_values_toplot,rescaled_feature_values,
                   x_left,x_right,y_bottom,y_top,midpoint_x,midpoint_y) |>
     as.data.frame()
  # print(spatial)
   p <- ggplot2::ggplot(spatial, ggplot2::aes(xmin = x_left, xmax = x_right, 
                                              ymin = y_bottom, ymax = y_top, 
-                                             alpha = 0.8, 
-                                             fill = feature_values_toplot, label = lab)) +
+                                             alpha = 0.95, 
+                                             fill = rescaled_feature_values, label = lab)) +
     ggpubr::background_image(background_img) +
     ggplot2::geom_rect() +
     #ggplot2::scale_fill_viridis_c() +
@@ -189,8 +195,8 @@ spatial_heatmap <- function(spe,
   #  ggnewscale::new_scale_fill()+
   #  ggplot2::geom_rect(ggplot2::aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
   #  ggplot2:: geom_label(ggplot2::aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
-    ggplot2::scale_fill_viridis_c()+#limits=c(0,1))+
-  #  ggplot2::scale_fill_gradient2(high="goldenrod",mid='darkgrey',low='darkblue')+
+   # ggplot2::scale_fill_viridis_c()+#limits=c(0,1))+
+    ggplot2::scale_fill_gradientn(colors=c('slateblue','darkgreen',"goldenrod"))+
    # ggplot2::labs(fill = "Scaled values (min=0, max=1)")+
     ggplot2::theme_bw() +
     ggplot2::xlim(xmin_image,xmax_image) +
