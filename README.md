@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of spammR is to provide tools for generic analysis of omics data that is measured in spatial context. 
+The goal of spammR is to provide tools for generic analysis of omics data that is measured in spatial context. For more details and examples please explore our [recent publication on BioRxiv](https://www.biorxiv.org/content/10.1101/2025.08.26.672472v1). 
 
 ## Installation
 
