@@ -103,6 +103,5 @@ If the differential expression results are stored in an SPE object, then use vol
 ``` r
 volcanoPlot_DiffExSpe(diffex_spe, logFC_colname, pval_colname, pval_corrected, title, thresh, sigLabel_colname)
 ```
-## basic example code
-```
+
 
