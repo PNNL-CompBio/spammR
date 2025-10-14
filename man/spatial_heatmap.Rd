@@ -78,17 +78,18 @@ data(pancMeta)
 data(smallPancData)
 data(protMeta)
 img0.spe <- convert_to_spe(smallPancData$Image_0,
-                        pancMeta,
-                        protMeta,
-                        feature_meta_colname='pancProts',
-                        image_files=system.file("extdata",'Image_0.png',package='spammR'),
-                        spatial_coords_colnames=c('x_pixels','y_pixels'),
-                        sample_id = 'Image0',
-                        image_ids = 'with_grid')
-res = spatial_heatmap(img0.spe, 
-        feature='INS', 
-        sample_id='Image0', 
-        image_id='with_grid', 
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+  spatial_coords_colnames = c("x_pixels", "y_pixels"),
+  sample_id = "Image0",
+  image_ids = "with_grid"
+)
+res = spatial_heatmap(img0.spe,
+        feature='INS',
+        sample_id='Image0',
+        image_id='with_grid',
         feature_type='PrimaryGeneName',
         label_column='IsletOrNot', interactive=FALSE)
 

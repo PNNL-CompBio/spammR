@@ -8,5 +8,10 @@
 
 library(testthat)
 library(spammR)
+data(smallPancData)
+data(pancMeta)
+data(protMeta)
+pooledData <- dplyr::bind_cols(smallPancData)
+
 
 test_check("spammR")

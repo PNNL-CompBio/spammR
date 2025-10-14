@@ -51,21 +51,23 @@ distance_based_analysis: Identifies proteins/features that show a strong correla
 protein/feature abundance differences between samples.
 }
 \examples{
-  data(pancMeta)
-  data(protMeta)
-  data(smallPancData)
-img0.spe<-convert_to_spe(smallPancData$Image_0,
-    pancMeta,
-    protMeta,
-    sample_id = 'Image0',
-    spatial_coords_colnames = c("x_pixels","y_pixels"),
-    feature_meta_colname = 'pancProts',
-    image_files = system.file("extdata",'Image_0.png',package = 'spammR'),
-    image_ids = 'Image0')
-    
-img0.spe<-distance_based_analysis(img0.spe,
-    'proteomics',
-    sampleCategoryCol = 'IsletOrNot',
-    sampleCategoryValue = 'Islet')
-    
+data(pancMeta)
+data(protMeta)
+data(smallPancData)
+img0.spe <- convert_to_spe(smallPancData$Image_0,
+  pancMeta,
+  protMeta,
+  sample_id = "Image0",
+  spatial_coords_colnames = c("x_pixels", "y_pixels"),
+  feature_meta_colname = "pancProts",
+  image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+  image_ids = "Image0"
+)
+
+img0.spe <- distance_based_analysis(img0.spe,
+  "proteomics",
+  sampleCategoryCol = "IsletOrNot",
+  sampleCategoryValue = "Islet"
+)
+
 }

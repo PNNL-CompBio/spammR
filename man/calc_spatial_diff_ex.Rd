@@ -34,12 +34,14 @@ A Spatial Experiment object containing differential expression results, stored i
 data(smallPancData)
 data(pancMeta)
 data(protMeta)
-pooledData<-dplyr::bind_cols(smallPancData)
+pooledData <- dplyr::bind_cols(smallPancData)
 pooled.panc.spe <- convert_to_spe(pooledData,
-                pancMeta,
-                protMeta,
-                feature_meta_colname = 'pancProts')
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts"
+)
 diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
-                category_col='IsletOrNot')
+  category_col = "IsletOrNot"
+)
 
 }
