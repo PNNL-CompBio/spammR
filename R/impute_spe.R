@@ -54,12 +54,13 @@ impute_spe <- function(spe,
 
   ## check for args
   if (!method %in% .methods) {
-    msg = paste("Method", method, "must be one of", paste(.methods, collapse = ","))
+    msg <- paste("Method", method, "must be one of", paste(.methods, collapse = ","))
     stop(msg)
   }
   ## check for K in knn
   if (method %in% c("knn", "group_knn", "spatial_knn") && is.null(k)) {
-    stop(paste("Method", method, "requires parameter k to be set"))
+    msg <- paste("Method", method, "requires parameter k to be set")
+    stop(msg)
   }
 
   if (is.null(assay_name)) {

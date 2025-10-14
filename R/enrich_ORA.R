@@ -54,7 +54,7 @@ enrich_ora <- function(spe,
   } else if (pval_type_forThresh == "pval") {
     pval_col_text <- "P.Value"
   } else {
-    # Throw error "Invalid value for pval_type_forThresh"
+    stop("Invalid value for pval_type_forThresh")
   }
 
   fvals <- colnames(rowData(spe))
@@ -70,7 +70,6 @@ enrich_ora <- function(spe,
       stop("No values below `logFC_lowerThresh")
     }
     spe <- spe[low_vals, ]
-    # int_list = int_list[int_list[,colnum_logfc] > logFC_lowerThresh,]
   }
   if (!is.na(logFC_upperThresh)) {
     high_vals <- which(rowData(spe)[, logfc_column] > logFC_upperThresh)

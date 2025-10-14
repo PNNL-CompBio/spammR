@@ -17,7 +17,8 @@ test_that("gradient enrichment works", {
                                       sampleCategoryValue = "Islet"
   )
   
-  
+  library(leapR)
+  data('krbpaths')
   rank.res <- enrich_gradient(img0.spe,
      geneset = krbpaths,
      feature_column = "PrimaryGeneName",

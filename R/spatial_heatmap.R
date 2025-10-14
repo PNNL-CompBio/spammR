@@ -80,8 +80,6 @@ spatial_heatmap <- function(spe,
   x <- spatial[, 1]
   y <- spatial[, 2]
 
-
-
   ## then get spot sizes
   if (is.null(spot_size_name)) {
     spot_width <- 1
@@ -160,8 +158,6 @@ spatial_heatmap <- function(spe,
     SpatialExperiment::imgData(spe)$image_id == img_image_id)
   background_img <- SpatialExperiment::imgData(spe)$data[[imgData_rowNum]]
 
-  #  img_png = png::readPNG(background_img)
-
   # Background image boundaries
   xmin_image <- 0 # mage_boundaries[1]
   ymin_image <- 0 # image_boundaries[2]
@@ -189,18 +185,12 @@ spatial_heatmap <- function(spe,
   )) +
     ggpubr::background_image(background_img) +
     ggplot2::geom_rect() +
-    # ggplot2::scale_fill_viridis_c() +
-
     ggplot2::geom_label(ggplot2::aes(x = midpoint_x, y = midpoint_y),
       label.size = NA,
       fill = NA, colour = sample_label_color,
       size = sample_label_size
     ) +
     ggplot2::labs(fill = metric_display) +
-    #  ggnewscale::new_scale_fill()+
-    #  ggplot2::geom_rect(ggplot2::aes(xmin = x_left, xmax = x_right, ymin = y_bottom, ymax = y_top, fill=rescaled_feature_values))+
-    #  ggplot2:: geom_label(ggplot2::aes(x=midpoint_x,y=midpoint_y),label.size = NA, fill=NA, colour = sample_label_color, size=sample_label_size)+
-    # ggplot2::scale_fill_viridis_c()+#limits=c(0,1))+
     ggplot2::scale_fill_gradientn(colors = c("slateblue", "darkgreen", "goldenrod")) +
     # ggplot2::labs(fill = "Scaled values (min=0, max=1)")+
     ggplot2::theme_bw() +
