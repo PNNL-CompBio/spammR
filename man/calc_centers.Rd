@@ -20,12 +20,13 @@ data(pancMeta)
 data(protMeta)
 data(smallPancData)
 img0.spe <- convert_to_spe(smallPancData$Image_0,
-            pancMeta,
-            protMeta,
-            feature_meta_colname = 'pancProts',
-            image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
-            sample_id = 'Image0',
-            spatial_coords_colnames = c('x_pixels','y_pixels'),
-            image_sample_ids = 'Image0',image_ids='Image0')
-##can't actually call internal functuon
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+  sample_id = "Image0",
+  spatial_coords_colnames = c("x_pixels", "y_pixels"),
+  image_sample_ids = "Image0", image_ids = "Image0"
+)
+## can't actually call internal functuon
 }

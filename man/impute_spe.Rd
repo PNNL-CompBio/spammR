@@ -52,16 +52,17 @@ Methods options and descriptions:
 data(pancMeta)
 data(protMeta)
 data(smallPancData)
-#We can put all samples into the same object (for statistical power)
-pooledData<-dplyr::bind_cols(smallPancData)
+# We can put all samples into the same object (for statistical power)
+pooledData <- dplyr::bind_cols(smallPancData)
 pooled.panc.spe <- convert_to_spe(pooledData,
-                pancMeta,
-                protMeta,
-                feature_meta_colname = 'pancProts',
-                sample_id='')
-#we can try two imputation methods and compare the difference                 
-res <- impute_spe(pooled.panc.spe, method='mean')
-res2 <- impute_spe(pooled.panc.spe,method='group_mean',group_colname='Image')
-mean(assay(res,'imputed')-assay(res2,'imputed'),na.rm=TRUE)
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  sample_id = ""
+)
+# we can try two imputation methods and compare the difference
+res <- impute_spe(pooled.panc.spe, method = "mean")
+res2 <- impute_spe(pooled.panc.spe, method = "group_mean", group_colname = "Image")
+mean(assay(res, "imputed") - assay(res2, "imputed"), na.rm = TRUE)
 
 }

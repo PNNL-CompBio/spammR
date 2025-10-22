@@ -25,8 +25,7 @@ data(smallPancData)
 data(pancMeta)
 data(protMeta)
 pooledPanc <- dplyr::bind_cols(smallPancData)
-panc.spe <- convert_to_spe(pooledPanc,pancMeta,protMeta,feature_meta_colname='pancProts')
-split_list <- split_spe(panc.spe,split_colname='Image')
-
+panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, feature_meta_colname = "pancProts")
+split_list <- split_spe(panc.spe, split_colname = "Image")
 
 }

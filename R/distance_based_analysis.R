@@ -21,88 +21,89 @@
 #' b.) corr_pval_all and c.) corr_pval_thresholded which are data frames containing the correlation value, p-value and number of sample points used for the correlation calculation for each feature. corr_pval_thresholded only contains results with correlation > corr_thresh.
 #' dist_based_results is also saved as .RData object under results_dir.
 #' @examples
-#'   data(pancMeta)
-#'   data(protMeta)
-#'   data(smallPancData)
-#' img0.spe<-convert_to_spe(smallPancData$Image_0,
-#'     pancMeta,
-#'     protMeta,
-#'     sample_id = 'Image0',
-#'     spatial_coords_colnames = c("x_pixels","y_pixels"),
-#'     feature_meta_colname = 'pancProts',
-#'     image_files = system.file("extdata",'Image_0.png',package = 'spammR'),
-#'     image_ids = 'Image0')
-#'     
-#' img0.spe<-distance_based_analysis(img0.spe,
-#'     'proteomics',
-#'     sampleCategoryCol = 'IsletOrNot',
-#'     sampleCategoryValue = 'Islet')
-#'     
-
+#' data(pancMeta)
+#' data(protMeta)
+#' data(smallPancData)
+#' img0.spe <- convert_to_spe(smallPancData$Image_0,
+#'   pancMeta,
+#'   protMeta,
+#'   sample_id = "Image0",
+#'   spatial_coords_colnames = c("x_pixels", "y_pixels"),
+#'   feature_meta_colname = "pancProts",
+#'   image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+#'   image_ids = "Image0"
+#' )
+#'
+#' img0.spe <- distance_based_analysis(img0.spe,
+#'   "proteomics",
+#'   sampleCategoryCol = "IsletOrNot",
+#'   sampleCategoryValue = "Islet"
+#' )
+#'
 distance_based_analysis <- function(spe,
                                     assay_name,
-                                    spotHeightCol = 'spot_height',
-                                    spotWidthCol = 'spot_width',
+                                    spotHeightCol = "spot_height",
+                                    spotWidthCol = "spot_width",
                                     sampleCategoryCol,
                                     sampleCategoryValue,
                                     featuresNameCol,
                                     corr_type = "spearman",
-                                    corr_thresh  =  0.5,
+                                    corr_thresh = 0.5,
                                     min_samples = 5,
-                                    allowOverlaps = TRUE){
-
-
-
+                                    allowOverlaps = TRUE) {
   # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates (SG: should be bottom!?!)
 
-  spatial_coords = data.frame(spatialCoords(spe))
+  spatial_coords <- data.frame(spatialCoords(spe))
 
-  ##first we use Iranges to check to see if there are overlapping areas (in x-space)
-  ##SG: Maybe remove this...
+  ## first we use Iranges to check to see if there are overlapping areas (in x-space)
+  ## SG: Maybe remove this...
   if (!allowOverlaps) {
-    xranges = IRanges::IRanges(start = spatial_coords[,1],width = colData(spe)[[spotWidthCol]]) |>
-        unique()
-    yranges = IRanges::IRanges(start = spatial_coords[,2],width = colData(spe)[[spotHeightCol]]) |>
+    xranges <- IRanges::IRanges(start = spatial_coords[, 1], width = colData(spe)[[spotWidthCol]]) |>
       unique()
-    allovers = c(IRanges::countOverlaps(xranges),IRanges::countOverlaps(yranges))
+    yranges <- IRanges::IRanges(start = spatial_coords[, 2], width = colData(spe)[[spotHeightCol]]) |>
+      unique()
+    allovers <- c(IRanges::countOverlaps(xranges), IRanges::countOverlaps(yranges))
     if (any(allovers) > 1) {
-      message(print(paste(length(allovers),"overlapping regions found, consider setting allowOverlaps to TRUE")))
-      exit()
+      stop("overlapping regions found, consider setting allowOverlaps to TRUE")
     }
   }
 
-  ##get centers of points
-  centroid_x = as.numeric(spatial_coords[,1] + colData(spe)[[spotWidthCol]]/2)#sample_dim_x/2)
-  centroid_y = as.numeric(spatial_coords[,2] + colData(spe)[[spotHeightCol]]/2)#- sample_dim_y/2)
-  centroid_coords = data.frame(cbind(centroid_x,centroid_y))
-  rownames(centroid_coords) = rownames(spatial_coords)
+  ## get centers of points
+  centroid_x <- as.numeric(spatial_coords[, 1] + colData(spe)[[spotWidthCol]] / 2) # sample_dim_x/2)
+  centroid_y <- as.numeric(spatial_coords[, 2] + colData(spe)[[spotHeightCol]] / 2) #- sample_dim_y/2)
+  centroid_coords <- data.frame(cbind(centroid_x, centroid_y))
+  rownames(centroid_coords) <- rownames(spatial_coords)
+  
   # Compute distance between samples
-  dist_between_samples = as.matrix(stats::dist(centroid_coords, 
-                                               method = "euclidean", 
-                                               diag = TRUE))
+  dist_between_samples <- as.matrix(stats::dist(centroid_coords,
+    method = "euclidean",
+    diag = TRUE
+  ))
 
-  assay_data = SummarizedExperiment::assays(spe)[[assay_name]]
-  #rownames(assay_data) = SummarizedExperiment::rowData(spe)[,featuresNameCol]
-  source_samples_indices = which(SummarizedExperiment::colData(spe)[,sampleCategoryCol] == sampleCategoryValue)
+  assay_data <- SummarizedExperiment::assays(spe)[[assay_name]]
+  source_samples_indices <- which(SummarizedExperiment::colData(spe)[, sampleCategoryCol] == sampleCategoryValue)
   if (length(source_samples_indices) > 1) {
-    message('More than one feature to measure distance from, not supported yet')
+    message("More than one feature to measure distance from, not supported yet")
     exit()
   }
 
-  ##get the distances
-  samp_dists <- dist_between_samples[source_samples_indices,]
+  ## get the distances
+  samp_dists <- dist_between_samples[source_samples_indices, ]
 
- ##correlate the distances
-  cor_dist <- cor(t(assay(spe)),samp_dists,method=corr_type,use='pairwise.complete.obs')
-  cor_test <- apply(assay(spe),1,function(x){
-    pval=1.0
-    try(pval <- stats::cor.test(x,samp_dists,method=corr_type,exact=FALSE)$p.val,silent=TRUE)
-    return(pval)})
+  ## correlate the distances
+  cor_dist <- cor(t(assay(spe)), samp_dists, method = corr_type, use = "pairwise.complete.obs")
+  cor_test <- apply(assay(spe), 1, function(x) {
+    pval <- 1.0
+    try(pval <- stats::cor.test(x, samp_dists, method = corr_type, exact = FALSE)$p.val, silent = TRUE)
+    return(pval)
+  })
 
-  mdata <- data.frame(cv = cor_dist,cp = cor_test)
-  colnames(mdata) <- c(paste0(sampleCategoryValue,'Distance',corr_type,'Cor'),
-                        paste0(sampleCategoryValue,'Distance',corr_type,'Pval'))
+  mdata <- data.frame(cv = cor_dist, cp = cor_test)
+  colnames(mdata) <- c(
+    paste0(sampleCategoryValue, "Distance", corr_type, "Cor"),
+    paste0(sampleCategoryValue, "Distance", corr_type, "Pval")
+  )
 
-  rowData(spe) <- cbind(rowData(spe),mdata)
+  rowData(spe) <- cbind(rowData(spe), mdata)
   return(spe)
 }

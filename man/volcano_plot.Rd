@@ -45,17 +45,19 @@ Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if diff
 data(smallPancData)
 data(pancMeta)
 data(protMeta)
-pooledData<-dplyr::bind_cols(smallPancData)
+pooledData <- dplyr::bind_cols(smallPancData)
 pooled.panc.spe <- convert_to_spe(pooledData,
-                pancMeta,
-                protMeta,
-                feature_meta_colname = 'pancProts',
-                sample_id='')
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  sample_id = ""
+)
 diffex.spe <- calc_spatial_diff_ex(pooled.panc.spe,
-                category_col='IsletOrNot')
+  category_col = "IsletOrNot"
+)
 volcano_plot(diffex.spe,
-        sigLabel_colname = 'PrimaryGeneName',
-        title='Islet vs nonIslet')
-
+  sigLabel_colname = "PrimaryGeneName",
+  title = "Islet vs nonIslet"
+)
 
 }

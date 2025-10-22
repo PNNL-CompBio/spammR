@@ -16,42 +16,45 @@
 #' data(pancMeta)
 #' data(protMeta)
 #' img0.spe <- convert_to_spe(smallPancData$Image_0,
-#'             pancMeta,
-#'             protMeta,
-#'             feature_meta_colname = 'pancProts',
-#'             image_files=system.file("extdata",'Image_0.png',package = 'spammR'),
-#'             image_sample_ids = 'Image0',
-#'             spatial_coords_colnames = c('x_pixels','y_pixels'),
-#'             sample_id = 'Image0',
-#'             image_ids='Image0')
-#' img0.spe<-distance_based_analysis(img0.spe,
-#'             'proteomics',
-#'             sampleCategoryCol = 'IsletOrNot',
-#'             sampleCategoryValue = 'Islet')
+#'   pancMeta,
+#'   protMeta,
+#'   feature_meta_colname = "pancProts",
+#'   image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+#'   image_sample_ids = "Image0",
+#'   spatial_coords_colnames = c("x_pixels", "y_pixels"),
+#'   sample_id = "Image0",
+#'   image_ids = "Image0"
+#' )
+#' img0.spe <- distance_based_analysis(img0.spe,
+#'   "proteomics",
+#'   sampleCategoryCol = "IsletOrNot",
+#'   sampleCategoryValue = "Islet"
+#' )
 #' library(leapR)
-#' data('krbpaths')
-#' rank.res <- enrich_gradient(img0.spe, 
-#'                 geneset = krbpaths,
-#'                 feature_column = 'PrimaryGeneName',
-#'                 ranking_column = 'IsletDistancespearmanCor')
+#' data("krbpaths")
+#' rank.res <- enrich_gradient(img0.spe,
+#'   geneset = krbpaths,
+#'   feature_column = "PrimaryGeneName",
+#'   ranking_column = "IsletDistancespearmanCor"
+#' )
 #' head(rank.res)
-
 enrich_gradient <- function(spe,
-                            assay_name, 
-                      geneset,
-                      feature_column, #primary gene name to be mapped to enrichment data
-                      ranking_column){
+                            assay_name,
+                            geneset,
+                            feature_column, # primary gene name to be mapped to enrichment data
+                            ranking_column) {
+  ## first we get the ranking of the values
+  #  rvals <- SummarizedExperiment::rowData(spe) |>
+  #    as.data.frame() |>
+  #    dplyr::rename(feature = feature_column,rank = ranking_column) |>
+  #    dplyr::select(feature,rank)
 
-    ##first we get the ranking of the values
-#  rvals <- SummarizedExperiment::rowData(spe) |>
-#    as.data.frame() |>
-#    dplyr::rename(feature = feature_column,rank = ranking_column) |>
-#    dplyr::select(feature,rank)
-
-  #here we use the leapR package for the rank enrichment
-  es <- leapR::leapR(eset = spe, assay_name = assay_name, geneset = geneset,
-            enrichment_method = 'enrichment_in_order',
-            id_column = feature_column, primary_columns = ranking_column) |>
+  # here we use the leapR package for the rank enrichment
+  es <- leapR::leapR(
+    eset = spe, assay_name = assay_name, geneset = geneset,
+    enrichment_method = "enrichment_in_order",
+    id_column = feature_column, primary_columns = ranking_column
+  ) |>
     subset(!is.na(pvalue)) |>
     dplyr::arrange(pvalue)
 
