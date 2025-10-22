@@ -51,59 +51,65 @@ distance_based_analysis <- function(spe,
                                     corr_thresh = 0.5,
                                     min_samples = 5,
                                     allowOverlaps = TRUE) {
-  # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates (SG: should be bottom!?!)
-
-  spatial_coords <- data.frame(spatialCoords(spe))
-
-  ## first we use Iranges to check to see if there are overlapping areas (in x-space)
-  ## SG: Maybe remove this...
-  if (!allowOverlaps) {
-    xranges <- IRanges::IRanges(start = spatial_coords[, 1], width = colData(spe)[[spotWidthCol]]) |>
-      unique()
-    yranges <- IRanges::IRanges(start = spatial_coords[, 2], width = colData(spe)[[spotHeightCol]]) |>
-      unique()
-    allovers <- c(IRanges::countOverlaps(xranges), IRanges::countOverlaps(yranges))
-    if (any(allovers) > 1) {
-      stop("overlapping regions found, consider setting allowOverlaps to TRUE")
-    }
+    # Compute centroids for each sample based on top-left corner (Xcoord, Ycoord) coordinates (SG: should be bottom!?!)
+      spatial_coords <- data.frame(spatialCoords(spe))
+    
+      ## first we use Iranges to check to see if there are overlapping areas (in x-space)
+      ## SG: Maybe remove this...
+      if (!allowOverlaps) {
+        xranges <- IRanges::IRanges(start = spatial_coords[, 1], 
+                                    width = colData(spe)[[spotWidthCol]]) |>
+          unique()
+        yranges <- IRanges::IRanges(start = spatial_coords[, 2], 
+                                    width = colData(spe)[[spotHeightCol]]) |>
+          unique()
+        allovers <- c(IRanges::countOverlaps(xranges), 
+                      IRanges::countOverlaps(yranges))
+        if (any(allovers) > 1) {
+          stop("overlapping regions found, consider setting allowOverlaps to TRUE")
+        }
+      }
+    
+      ## get centers of points
+      centroid_x <- as.numeric(spatial_coords[, 1] + colData(spe)[[spotWidthCol]] / 2) # sample_dim_x/2)
+      centroid_y <- as.numeric(spatial_coords[, 2] + colData(spe)[[spotHeightCol]] / 2) #- sample_dim_y/2)
+      centroid_coords <- data.frame(cbind(centroid_x, centroid_y))
+      rownames(centroid_coords) <- rownames(spatial_coords)
+      
+      # Compute distance between samples
+      dist_between_samples <- as.matrix(stats::dist(centroid_coords,
+        method = "euclidean",
+        diag = TRUE
+      ))
+    
+      assay_data <- SummarizedExperiment::assays(spe)[[assay_name]]
+      source_samples_indices <- which(SummarizedExperiment::colData(spe)[, sampleCategoryCol] == sampleCategoryValue)
+      if (length(source_samples_indices) > 1) {
+        message("More than one feature to measure distance from, not supported yet")
+        exit()
+      }
+    
+      ## get the distances
+      samp_dists <- dist_between_samples[source_samples_indices, ]
+    
+      ## correlate the distances
+      cor_dist <- cor(t(assay(spe)), samp_dists, 
+                      method = corr_type, use = "pairwise.complete.obs")
+      cor_test <- apply(assay(spe), 1, function(x) {
+        pval <- 1.0
+        try(pval <- stats::cor.test(x, samp_dists, 
+                                    method = corr_type, 
+                                    exact = FALSE)$p.val, 
+            silent = TRUE)
+        return(pval)
+      })
+    
+      mdata <- data.frame(cv = cor_dist, cp = cor_test)
+      colnames(mdata) <- c(
+        paste0(sampleCategoryValue, "Distance", corr_type, "Cor"),
+        paste0(sampleCategoryValue, "Distance", corr_type, "Pval")
+      )
+    
+      rowData(spe) <- cbind(rowData(spe), mdata)
+      return(spe)
   }
-
-  ## get centers of points
-  centroid_x <- as.numeric(spatial_coords[, 1] + colData(spe)[[spotWidthCol]] / 2) # sample_dim_x/2)
-  centroid_y <- as.numeric(spatial_coords[, 2] + colData(spe)[[spotHeightCol]] / 2) #- sample_dim_y/2)
-  centroid_coords <- data.frame(cbind(centroid_x, centroid_y))
-  rownames(centroid_coords) <- rownames(spatial_coords)
-  
-  # Compute distance between samples
-  dist_between_samples <- as.matrix(stats::dist(centroid_coords,
-    method = "euclidean",
-    diag = TRUE
-  ))
-
-  assay_data <- SummarizedExperiment::assays(spe)[[assay_name]]
-  source_samples_indices <- which(SummarizedExperiment::colData(spe)[, sampleCategoryCol] == sampleCategoryValue)
-  if (length(source_samples_indices) > 1) {
-    message("More than one feature to measure distance from, not supported yet")
-    exit()
-  }
-
-  ## get the distances
-  samp_dists <- dist_between_samples[source_samples_indices, ]
-
-  ## correlate the distances
-  cor_dist <- cor(t(assay(spe)), samp_dists, method = corr_type, use = "pairwise.complete.obs")
-  cor_test <- apply(assay(spe), 1, function(x) {
-    pval <- 1.0
-    try(pval <- stats::cor.test(x, samp_dists, method = corr_type, exact = FALSE)$p.val, silent = TRUE)
-    return(pval)
-  })
-
-  mdata <- data.frame(cv = cor_dist, cp = cor_test)
-  colnames(mdata) <- c(
-    paste0(sampleCategoryValue, "Distance", corr_type, "Cor"),
-    paste0(sampleCategoryValue, "Distance", corr_type, "Pval")
-  )
-
-  rowData(spe) <- cbind(rowData(spe), mdata)
-  return(spe)
-}

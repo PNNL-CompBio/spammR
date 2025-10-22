@@ -43,11 +43,6 @@ enrich_gradient <- function(spe,
                             geneset,
                             feature_column, # primary gene name to be mapped to enrichment data
                             ranking_column) {
-  ## first we get the ranking of the values
-  #  rvals <- SummarizedExperiment::rowData(spe) |>
-  #    as.data.frame() |>
-  #    dplyr::rename(feature = feature_column,rank = ranking_column) |>
-  #    dplyr::select(feature,rank)
 
   # here we use the leapR package for the rank enrichment
   es <- leapR::leapR(

@@ -45,7 +45,8 @@ calc_spatial_diff_ex <- function(spe,
 
   ## now select the samples for each category
   samp1 <- which(SummarizedExperiment::colData(spe)[[category_col]] == factors[1])
-  samp2 <- which(SummarizedExperiment::colData(spe)[[category_col]] == factors[2]) # Later, limma call does samp2 vs. samp1 analysis
+  samp2 <- which(SummarizedExperiment::colData(spe)[[category_col]] == factors[2]) 
+  # Later, limma call does samp2 vs. samp1 analysis
   comparison_name <- paste(factors[1], "_vs_", factors[2], sep = "")
 
   ## create design matrix with two factors
@@ -62,8 +63,12 @@ calc_spatial_diff_ex <- function(spe,
 
   diffex.spe <- spe # initialize
   SummarizedExperiment::assays(diffex.spe) <- list()
-  SummarizedExperiment::assays(diffex.spe, withDimnames = FALSE)[[assay_name]] <- dat # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
-  # withDimnames=FALSE drops rownames from dat while saving into the assay. We want this because rownames(spe.out) may not necessarily have rownames, depending on how the spe was defined.
+  SummarizedExperiment::assays(diffex.spe, 
+                               withDimnames = FALSE)[[assay_name]] <- dat 
+  # Output spe will only have one entry in assays, which will be the dataset used for the differential expression analysis
+  # withDimnames=FALSE drops rownames from dat while saving into the assay. 
+  # We want this because rownames(spe.out) may not necessarily have rownames, 
+  # depending on how the spe was defined.
   # Differential expression results will be stored in rowData(diffex.spe)
   res <- limma::topTable(fit, coef = 2, number = Inf) # Sorting by P-value not needed here because later we are returning all results in the order of the genes in the input SPE, to be consistent.
 
@@ -71,9 +76,11 @@ calc_spatial_diff_ex <- function(spe,
   nd <- subset(res, adj.P.Val < 0.05) |>
     subset(abs(logFC) > 1) |>
     nrow()
-  message(paste("We found", nd, "features with a logFC greater than 1 and an ajusted p-value less than 0.05"))
+  msg <- paste("We found", nd, "features with a logFC greater than 1 and an ajusted p-value less than 0.05")
+  message(msg)
 
-  colnames_res <- paste(paste(comparison_name, colnames(res), "limma", sep = "."))
+  colnames_res <- paste(paste(comparison_name, 
+                              colnames(res), "limma", sep = "."))
 
   colnames(res) <- colnames_res # c(feature_colname,colnames_res)
   # Make sure the results are in the same order of the features in the input SPE object

@@ -87,7 +87,8 @@ convert_to_spe <- function(dat, ## expression data frame - rows are feature,s co
 
   features <- intersect(rownames(feature_meta), rownames(dat))
   if (length(features) < nrow(dat)) {
-    msg <- paste("Note: Only mapping metadata for", length(features), "features out of", nrow(dat), "data points")
+    msg <- paste("Note: Only mapping metadata for", 
+                 length(features), "features out of", nrow(dat), "data points")
     message(msg)
   }
 
@@ -95,7 +96,8 @@ convert_to_spe <- function(dat, ## expression data frame - rows are feature,s co
   dat_samples_only <- dat_samples_only[features, ]
 
   if (!is.null(spatial_coords_colnames)) {
-    spatial_coords_dat <- as.matrix(apply(sample_meta[, spatial_coords_colnames], 2, as.numeric))
+    spatial_coords_dat <- as.matrix(apply(sample_meta[, spatial_coords_colnames], 
+                                          2, as.numeric))
     rownames(spatial_coords_dat) <- rownames(sample_meta)
     colnames(spatial_coords_dat) <- spatial_coords_colnames
   } else {
