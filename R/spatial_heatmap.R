@@ -111,53 +111,55 @@ spatial_heatmap <- function(spe,
 
     ## then get spot sizes
     if (is.null(spot_size_name)) {
-      spot_width <- 1
-      spot_height <- 1
+        spot_width <- 1
+        spot_height <- 1
     } else {
-      spot_width <- SummarizedExperiment::colData(spe)[, spot_size_name[1], 
+        spot_width <- SummarizedExperiment::colData(spe)[, spot_size_name[1], 
                                                      drop = TRUE]
-      spot_height <- SummarizedExperiment::colData(spe)[, spot_size_name[2], 
+        spot_height <- SummarizedExperiment::colData(spe)[, spot_size_name[2], 
                                                       drop = TRUE]
     }
 
      ## now we can get the feature data
     f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
-    feature_values_toplot <- c()
+    fval_plot <- c()
   
-    if (is.na(feature_type)) { # default is whatever is used for rownames of f
-      rowNum_toplot <- which(rownames(f) %in% feature)
+    ft <- feature_type
+    if (is.na(ft)) { # default is whatever is used for rownames of f
+        rowNum_toplot <- which(rownames(f) %in% feature)
     } else {
-      rowNum_toplot <- which(SummarizedExperiment::rowData(spe)[, feature_type, 
+        rowNum_toplot <- which(SummarizedExperiment::rowData(spe)[, ft, 
                                                     drop = TRUE] %in% feature)
     }
 
     if (length(feature) == 1) { ## we are just plotting a single row
-      feature_values_toplot <- f[rowNum_toplot, ]
+        fval_plot <- f[rowNum_toplot, ]
     } else { ## we are plotting more than one value and need to average
-      feature_values_toplot <- colMeans(f[rowNum_toplot, ], na.rm = TRUE)
-      feature_values_toplot <- feature_values_toplot[is.finite(feature_values_toplot)]
+        fval_plot <- colMeans(f[rowNum_toplot, ], na.rm = TRUE)
+        fval_plot <- fval_plot[is.finite(fval_plot)]
     }
-    if (length(feature_values_toplot) == 0) {
-      msg <- paste("Cannot plot heatmap:", paste(feature, collapse = ","), 
+    if (length(fval_plot) == 0) {
+        msg <- paste("Cannot plot heatmap:", paste(feature, collapse = ","), 
                    "not in dataset")
-      stop(msg)
+        stop(msg)
     }
     # create a title of the plot
     spatial_meta <- SummarizedExperiment::colData(spe)
     if (is.null(plot_title)) {
       if (length(feature) == 1) {
-        title <- paste("Expression of", feature, "in", sample_id)
+          title <- paste("Expression of", feature, "in", sample_id)
       } else {
-        title <- paste("Expression of", length(feature), "features in", sample_id)
+          title <- paste("Expression of", length(feature), "features in", 
+                       sample_id)
       }
     } else {
-      title <- plot_title
+        title <- plot_title
     }
     lab <- ""
     if (is.na(label_column)) {
-      lab <- NA
+        lab <- NA
     } else {
-      lab <- spatial_meta[, label_column, drop = TRUE]
+        lab <- spatial_meta[, label_column, drop = TRUE]
     }
     # Switched to using geom_rect instead of goem_raster because geom_raster
     # positioning gets distorted when the plot is made interactive.
@@ -168,20 +170,20 @@ spatial_heatmap <- function(spe,
     y_botton <- c()
     y_top <- c()
     if (spatial_coord_type == "topright_corner") {
-      x_left <- x - spot_width
-      x_right <- x
-      y_bottom <- y - spot_height
-      y_top <- y
+        x_left <- x - spot_width
+        x_right <- x
+        y_bottom <- y - spot_height
+        y_top <- y
     } else if (spatial_coord_type == "topleft_corner") {
-      x_left <- x
-      x_right <- x + spot_width
-      y_bottom <- y - spot_height
-      y_top <- y
+        x_left <- x
+        x_right <- x + spot_width
+        y_bottom <- y - spot_height
+        y_top <- y
     } else { ## default to bottom left corner
-      x_left <- x
-      x_right <- x + spot_width
-      y_bottom <- y
-      y_top <- y + spot_height
+        x_left <- x
+        x_right <- x + spot_width
+        y_bottom <- y
+        y_top <- y + spot_height
     }
     midpoint_x <- (x_left + x_right) / 2
     midpoint_y <- (y_bottom + y_top) / 2
@@ -189,9 +191,12 @@ spatial_heatmap <- function(spe,
     img_sample_id <- sample_id
     img_image_id <- image_id
   
-    # Row corresponding to the background image of interest, to be used for plotting
-    imgData_rowNum <- which(SpatialExperiment::imgData(spe)$sample_id == img_sample_id &
-      SpatialExperiment::imgData(spe)$image_id == img_image_id)
+    # Row corresponding to the background image of interest, for plotting
+    sam <-  which(SpatialExperiment::imgData(spe)$sample_id == img_sample_id)
+    im <- which(SpatialExperiment::imgData(spe)$image_id == img_image_id)
+                  
+    imgData_rowNum <- intersect(sam, im)
+      
     background_img <- SpatialExperiment::imgData(spe)$data[[imgData_rowNum]]
   
     # Background image boundaries
@@ -200,17 +205,17 @@ spatial_heatmap <- function(spe,
     xmax_image <- dim(imgData(spe)$data[[1]])[2] # image_boundaries[3]
     ymax_image <- dim(imgData(spe)$data[[1]])[1] # image_boundaries[4]
   
-    # Scale feature_values_toplot to show relative values. Scale from 0 to 1. 
+    # Scale fval_plot to show relative values. Scale from 0 to 1. 
     # This scale is useful when comparing spatial plots of different proteins
     if (plot_log) {
-      rescaled_feature_values <- log10(0.0001 + feature_values_toplot)
-      metric_display <- paste("Log10", metric_display)
+        rescaled_feature_values <- log10(0.0001 + fval_plot)
+        metric_display <- paste("Log10", metric_display)
     } else {
-      rescaled_feature_values <- feature_values_toplot
+        rescaled_feature_values <- fval_plot
     }
     spatial <- cbind(
-      spatial, feature_values_toplot, rescaled_feature_values,
-      x_left, x_right, y_bottom, y_top, midpoint_x, midpoint_y
+        spatial, fval_plot, rescaled_feature_values,
+        x_left, x_right, y_bottom, y_top, midpoint_x, midpoint_y
     ) |>
       as.data.frame()
     # print(spatial)

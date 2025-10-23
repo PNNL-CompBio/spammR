@@ -20,19 +20,29 @@ impute_spe(
 
 \item{method}{Method of imputation to be used. See details.}
 
-\item{group_colname}{Column name in metadata that specifies the group information to use for group_mean or knn_group. Example: ROI_abbreviation.}
+\item{group_colname}{Column name in metadata that specifies the group
+information to use for group_mean or knn_group. Example: ROI_abbreviation.}
 
 \item{k}{K value to be used for k-nearest neighbor imputation}
 
-\item{protein_missingness}{Proportion of samples allowed to have missing data for a protein in the given imputation method. Example: When method="global_mean," an protein_missingness of 0.5 indicates that
-any protein missing data for more than 50\% of samples across the entire spatial tissue covered by all samples will be excluded from the imputation method algorithm, and that protein's missing values will not be imputed.
-When method="group_mean," then protein_missingness of 0.5 indicates that a protein must have data for at least 50\% of samples in the specified group to be used in the imputation algorithm and to be imputed.}
+\item{protein_missingness}{Proportion of samples allowed to have missing
+data for a protein in the given imputation method. Example: When
+method="global_mean," an protein_missingness of 0.5 indicates that
+any protein missing data for more than 50\% of samples across the entire
+spatial tissue covered by all samples will be excluded from the imputation
+method algorithm, and that protein's missing values will not be imputed.
+When method="group_mean," then protein_missingness of 0.5 indicates that
+a protein must have data for at least 50\% of samples in the specified group
+to be used in the imputation algorithm and to be imputed.}
 }
 \value{
-An SPE with an 'imputed' assay with the appropriate imputation called
+An SPE with an 'imputed' assay with the appropriate imputation
+called
 }
 \description{
-\code{impute_spe()} carries out imputation for missing data in the primary assay using a specified method from a range of methods. Returns additional assay in the same SPE
+\code{impute_spe()} carries out imputation for missing data in the
+primary assay using a specified method from a range of methods.
+Returns additional assay in the same SPE
 }
 \details{
 Methods options and descriptions:
@@ -41,9 +51,14 @@ Methods options and descriptions:
 \item median : replace missing values with global median per protein
 \item median_half : replace missing values with 1/2 global median per protein
 \item mean: replace missing values with global mean per protein
-\item group_mean: replace missing values with mean per group, e.g. group (example: ROI) for each protein
-\item knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from all samples across all groups. NOTE: There will still be NA values if the protein is not expressed in this group.
-\item group_knn: imputation based on k-nearest neighbors, with proteins as neighbors, based on data from specified group (e.g. ROI, tissue). NOTE: There will still be NA values if the protein is not expressed in this group.
+\item group_mean: replace missing values with mean per group, e.g. group
+(example: ROI) for each protein
+\item knn: imputation based on k-nearest neighbors, with proteins as neighbors,
+based on data from all samples across all groups. NOTE: There will still
+be NA values if the protein is not expressed in this group.
+\item group_knn: imputation based on k-nearest neighbors, with proteins as
+neighbors, based on data from specified group (e.g. ROI, tissue). NOTE:
+There will still be NA values if the protein is not expressed in this group.
 \item spatial_knn: imputation based on k-nearest neighors in space
 }
 }
@@ -62,7 +77,8 @@ pooled.panc.spe <- convert_to_spe(pooledData,
 )
 # we can try two imputation methods and compare the difference
 res <- impute_spe(pooled.panc.spe, method = "mean")
-res2 <- impute_spe(pooled.panc.spe, method = "group_mean", group_colname = "Image")
+res2 <- impute_spe(pooled.panc.spe, method = "group_mean", 
+                  group_colname = "Image")
 mean(assay(res, "imputed") - assay(res2, "imputed"), na.rm = TRUE)
 
 }

@@ -1,18 +1,28 @@
 #' Create a volcano plot from differential expression data
-#' @description `volcano_plot()` generates a volcano plot to visualize results from differential expression analysis stored in a data frame.
-#' Use this function directly if differential expression results are in a separate data frame and not an spe object
-#' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
+#' @description `volcano_plot()` generates a volcano plot to visualize results
+#'  from differential expression analysis stored in a data frame.
+#' Use this function directly if differential expression results are in a 
+#' separate data frame and not an spe object
+#' Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R
+#'  if differential expression results are in an spe object.
 #' -log10(p-value) vs. log2(fold change)
 #' @import ggplot2
 #' @importFrom ggrepel geom_text_repel
-#' @param diffex.spe A `SpatialExperiment` object containing differentail expression results in rowData
-#' @param logFC_colname column name in differenital expression results that represents log10 fold change
-#' @param pval_colname column name in differential epxression results that represents the p-value to be plotted
-#' @param pval_corrected Boolean indicating whether pval_colname represents the corrected p-value or not
+#' @param diffex.spe A `SpatialExperiment` object containing differentail
+#'  expression results in rowData
+#' @param logFC_colname column name in differenital expression results that
+#'  represents log10 fold change
+#' @param pval_colname column name in differential epxression results that 
+#' represents the p-value to be plotted
+#' @param pval_corrected Boolean indicating whether pval_colname represents 
+#' the corrected p-value or not
 #' @param log_transformed set to TRUE if data is log transformed
 #' @param title title for the plot
-#' @param thresh Threshold for p-value to be used to annotate significant results on the plot
-#' @param sigLabel_colname Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.
+#' @param thresh Threshold for p-value to be used to annotate significant 
+#' results on the plot
+#' @param sigLabel_colname Either a a vector with labels or a string 
+#' (Example: "Gene") that is the column name in differential expression results 
+#' that should be used for labeling significant results on the plot.
 #' @return ggplot Volcano plot
 #' @export
 #'
@@ -62,8 +72,9 @@ volcano_plot <- function(diffex.spe,
     yaxis_lbl <- paste("-log10 (", pval_type_lbl, ")", sep = "")
     xdat <- diffEx_df[, logFC_colname]
     ydat <- -log10(diffEx_df[, pval_colname])
-    # Plot -log10(p-value) vs. log2(fold change) and the significance level line
-    sig_line_x <- seq(min(xdat, na.rm = TRUE), max(xdat, na.rm = TRUE), by = 0.1)
+    # Plot -log10(p-value) vs. log2(fold change) and the significance line
+    sig_line_x <- seq(min(xdat, na.rm = TRUE),
+                      max(xdat, na.rm = TRUE), by = 0.1)
     sig_line_y <- rep(-log10(thresh), length(sig_line_x))
     ymin <- min(-log10(thresh), ydat)
     ymax <- max(-log10(thresh), ydat)
@@ -82,7 +93,8 @@ volcano_plot <- function(diffex.spe,
     # midpoint of x-axis
     p2 <- ggplot2::ggplot(diffEx_df, 
                           ggplot2::aes(get(logFC_colname), 
-                                       -log10(get(pval_colname)), label = pt_lbls)) +
+                                       -log10(get(pval_colname)),
+                                       label = pt_lbls)) +
       ggplot2::geom_point(color = pt_colors) +
       ggplot2::geom_hline(yintercept = -log10(thresh), color = "blue") +
       ggplot2::annotate("text", 

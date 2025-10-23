@@ -7,7 +7,8 @@
 enrich_gradient(spe, assay_name, geneset, feature_column, ranking_column)
 }
 \arguments{
-\item{spe}{SpatialExperiment object containing spatial omics data and spatial diffex results}
+\item{spe}{SpatialExperiment object containing spatial omics data and
+spatial diffex results}
 
 \item{assay_name}{name of assay}
 
@@ -18,11 +19,15 @@ enrich_gradient(spe, assay_name, geneset, feature_column, ranking_column)
 \item{ranking_column}{Column of rowData that maps to ranks}
 }
 \value{
-A dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
+A dataframe containing results from over-representation analysis
+of members of gene sets in the interest list of genes based on filtering
+criteria above.
 }
 \description{
-\code{enrich_gradient()} calculates over-representation statistics (ORA) using a ranking of genes from \code{distance_based_analysis()}
-For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
+\code{enrich_gradient()} calculates over-representation statistics
+(ORA) using a ranking of genes from \code{distance_based_analysis()}
+For ORA using an external or already defined interest list of genes and
+gene sets, use leapR functions directly
 }
 \examples{
 data(smallPancData)

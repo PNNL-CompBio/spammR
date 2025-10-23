@@ -11,7 +11,8 @@ output:
         toc_float:
             collapsed: true
 description: |
-  A basic walkthrough of how to use and analyze spatial proteomics measurements in the spammR package. 
+  A basic walkthrough of how to use and analyze spatial proteomics 
+  measurements in the spammR package. 
   
 vignette: |
   %\VignetteIndexEntry{spammR}
@@ -22,9 +23,12 @@ vignette: |
 
 # Getting started
 
-To install the package currently you must install directly from `GitHub` along with the leapR dependency as shown below. Before release we hope to move to Bioconductor.
+To install the package currently you must install directly from `GitHub` 
+along with the leapR dependency as shown below. Before release we hope to move
+to Bioconductor.
 
-The `leapR` package is designed for flexible pathway enrichment and currently must be installed before spammR. 
+The `leapR` package is designed for flexible pathway enrichment and currently
+must be installed before spammR. 
 
 ```  
   ##install if not already installed
@@ -43,26 +47,43 @@ library(spammR)
 
 # Collecting data to analyze
 
-`spammR` enables the analysis of disparate sets of multiomic data: image-based data and numerical measurements of omics data. It is incredibly flexible as to the _type_ of multiomic data. We assume each omics measurement is collected in a single sample, and that there are specific spatial coordinates for that sample in the image. We leverage the [SpatialExperiment](https://www.bioconductor.org/packages/release/bioc/html/SpatialExperiment.html) object to store the data for each image/measurement pair. 
+`spammR` enables the analysis of disparate sets of multiomic data: image-based 
+data and numerical measurements of omics data. It is incredibly flexible as to 
+the _type_ of multiomic data. We assume each omics measurement is collected in 
+a single sample, and that there are specific spatial coordinates for that 
+sample in the image. We leverage the `SpatialExperiment` object to store the 
+data for each image/measurement pair. 
 
 ## Data overview and examples
 
-The `spammR` package requires omics data with spatial coordinates for the functions to run successfully. Here we describe the data required and show examples.
+The `spammR` package requires omics data with spatial coordinates for the 
+functions to run successfully. Here we describe the data required and show 
+examples.
 
 ### Omics Measurement Data
 
-`SpatialExperiment` can hold multiple omics measurements mapping to the same sample identifier in different 'slots'. This data can be a tabular data frame or matrix with rownames referencing measurements in a particular sample (e.g. gene, species) and column names representing sample identifiers. An example of this can be found by loading `pancDataList.rda` file from Figshare.
+`SpatialExperiment` can hold multiple omics measurements mapping to the same 
+sample identifier in different 'slots'. This data can be a tabular data frame 
+or matrix with rownames referencing measurements in a particular sample 
+(e.g. gene, species) and column names representing sample identifiers. An 
+example of this can be found by loading `pancDataList.rda` file from Figshare.
 
-To evaluate the features of this package we are using pancreatic data from [Gosline et al.]() that is captured using mass spectrometry measured from 7 independent regions of a single human pancreas. Each image is segmented into nine 'voxels', with one voxel per image representing a cluster of islet cells.
+To evaluate the features of this package we are using pancreatic data from 
+[Gosline et al.]() that is captured using mass spectrometry measured from 7 
+independent regions of a single human pancreas. Each image is segmented into
+nine 'voxels', with one voxel per image representing a cluster of islet cells.
 
 ```{r omics data}
-download.file("https://api.figshare.com/v2/file/download/55158821", mode = "wb", quiet = TRUE, dest = "pdl.rda")
+download.file("https://api.figshare.com/v2/file/download/55158821",
+              mode = "wb", quiet = TRUE, dest = "pdl.rda")
 load("pdl.rda")
 utils::head(pancDataList$Image_0[, 1:8])
 file.remove("pdl.rda")
 ```
 
-Here the rownames represent protein identifiers and the column names represent individual samples. Each element of the list contains the measurements from a different sample:
+Here the rownames represent protein identifiers and the column names represent 
+individual samples. Each element of the list contains the measurements from a 
+different sample:
 
 ```{r data list}
 print(length(pancDataList))
@@ -72,8 +93,14 @@ head(pancDataList[[2]][, 1:8])
 This list is used below in our analysis examples.
 
 ### Sample metadata
-The samples metadata table contains mappings between samples and metadata. An example can be found in `data(pancMeta)`. Most importantly we require the image mapping information, which includes:
-    -   _Image coordinates:_ to map the image to a coordinate space we need to know the `x_origin`, and `y_origin` (assumed to be zero) as well as `x_max` and `y_max`, which is the top right of the image. The package plost the *entire* image so specifying these coordinates ensures that all other points are properly mapped.
+The samples metadata table contains mappings between samples and metadata. 
+An example can be found in `data(pancMeta)`. Most importantly we require the 
+image mapping information, which includes:
+    -  _Image coordinates:_ to map the image to a coordinate space we need to 
+    know the `x_origin`, and `y_origin` (assumed to be zero) as well as 
+    `x_max` and `y_max`, which is the top right of the image. 
+    The package plots the *entire* image so specifying these coordinates 
+    ensures that all other points are properly mapped.
     -   _Sample coordinates:_ Each sample has its own `x_coord` and `y_coord`.
     -   _Spot size:_ `spot_height` and `spot_width`.
   
@@ -82,21 +109,36 @@ data(pancMeta)
 head(pancMeta)
 ```
 
-This metadata contains information for all 7 images, so we do not need a separate metadata file for each image, the `convert_to_spe` function will simply take the metadata relevant to the data file.
+This metadata contains information for all 7 images, so we do not need a 
+separate metadata file for each image, the `convert_to_spe` function will 
+simply take the metadata relevant to
+the data file.
 
 ### Image files
-There can be multiple image files associated with a single set of omics measurements. Currently we have tested working with files in `png` format. Each image we have is stained so that we can identify the Islet cells. Each image also has a grid superimposed to show where the sample measurements came from. The grid is not necessary, of course, but can help calibrate the coordinates.
+There can be multiple image files associated with a single set of omics 
+measurements. Currently we have tested working with files in `png` format. 
+Each image we have is stained so that we can identify the Islet cells. Each 
+image also has a grid superimposed to show where the sample 
+measurements came from. The grid is not necessary, of course, but can help 
+alibrate the coordinates.
 
 ```{r img, eval=FALSE}
 library(cowplot)
 
-cowplot::ggdraw() + cowplot::draw_image(system.file("extdata", "Image_1.png", package = "spammR"))
+cowplot::ggdraw() + cowplot::draw_image(system.file("extdata",
+                                                    "Image_1.png",
+                                                    package = "spammR"))
 ```
 
 Now we can use this image and others to visualize omics data.
 
 ### Omics metadata
-The last set of metadata relates to the `rows` of the omics measurement data. When using gene-based data, this will be the genes or proteins in the dataset. When using metagenomics, this will refer to the species. One column of this table must uniquely map to the rownames of the omics data. 
+The last set of metadata relates to the `rows` of the omics measurement data.
+When using gene-based data, this will be the genes or proteins in the dataset. 
+When using metagenomics,
+this will refer to the species. One column of this table must uniquely map 
+to the rownames of the 
+omics data. 
 
 ```{r omics meta}
 data(protMeta)
@@ -107,7 +149,10 @@ This data helps us find better gene identifiers.
 
 ## Loading data into spatial experiment object.
 
-Now that we have all the data loaded we can build a `SpatialExperiment` object either using ALL samples or just the samples in a single image. We can pool all the data for more statistical power.
+Now that we have all the data loaded we can build a `SpatialExperiment` 
+object either using ALL samples or just the samples in a single image. We can
+pool all the data for more 
+statistical power.
 
 ```{r spe combined}
 pooledData <- dplyr::bind_cols(pancDataList)
@@ -119,49 +164,56 @@ pooled.panc.spe <- convert_to_spe(pooledData, ## pooled data table
 print(pooled.panc.spe)
 ```
 
-We can also create a list of `SpatialExperiment` objects, one for each of the 7 images we have.
+We can also create a list of `SpatialExperiment` objects, one for each of
+the 7 images we have.
 
 ```{r spe list, echo=FALSE, warning=FALSE, message=FALSE}
 ## list of image names
-imglist <- c("Image_0", "Image_1", "Image_2", "Image_3", "Image_4", "Image_7", "Image_10")
+imglist <- c("Image_0", "Image_1", "Image_2",
+             "Image_3", "Image_4", "Image_7", "Image_10")
 
 img.spes <- lapply(
-  imglist,
-  function(x) {
-    convert_to_spe(pancDataList[[x]],
-      pancMeta,
-      protMeta,
-      sample_id = x,
-      feature_meta_colname = "pancProts",
-      spatial_coords_colnames = c("x_pixels", "y_pixels"),
-      image_files = system.file("extdata",
-        paste0(x, ".png"),
-        package = "spammR"
-      ),
-      image_sample_ids = x,
-      image_ids = "with_grid"
-    )
-  }
+    imglist,
+    function(x) {
+        convert_to_spe(pancDataList[[x]],
+          pancMeta,
+          protMeta,
+          sample_id = x,
+          feature_meta_colname = "pancProts",
+          spatial_coords_colnames = c("x_pixels", "y_pixels"),
+          image_files = system.file("extdata",
+            paste0(x, ".png"),
+            package = "spammR"
+          ),
+          image_sample_ids = x,
+          image_ids = "with_grid"
+        )
+    }
 )
 names(img.spes) <- imglist
 ```
 
-Now we can use these individual image objects or the combined 'pooled' object for analysis. 
+Now we can use these individual image objects or the combined 'pooled' 
+object for analysis. 
 
 ## Spatial data with image
 
-Here we loop over all of the images in `imglist` to plot the expression of the insulin protein in each image. We expect insulin (or INS) to be highest in voxels containing islet cells, which we label using the `label_column` 'IsletOrNot' which was loaded into the metadata for us. 
+Here we loop over all of the images in `imglist` to plot the expression of
+the insulin protein in each image. We expect insulin (or INS) to be highest 
+in voxels containing islet
+cells, which we label using the `label_column` 'IsletOrNot' which was loaded
+into the metadata for us. 
 
 ```{r spatial data}
 allimgs <- lapply(imglist, function(x) {
-  spe <- img.spes[[x]]
-  res <- spatial_heatmap(spe,
-    feature = "INS",
-    feature_type = "PrimaryGeneName",
-    sample_id = x,
-    image_id = "with_grid",
-    label_column = "IsletOrNot",
-    interactive = FALSE
+    spe <- img.spes[[x]]
+    res <- spatial_heatmap(spe,
+      feature = "INS",
+      feature_type = "PrimaryGeneName",
+      sample_id = x,
+      image_id = "with_grid",
+      label_column = "IsletOrNot",
+      interactive = FALSE
   )
   return(res)
 })
@@ -169,31 +221,39 @@ allimgs <- lapply(imglist, function(x) {
 cowplot::plot_grid(allimgs[[2]], allimgs[[3]], nrow = 2)
 ```
 
-To go further and visualize entire pathways we need to first identify which groups of proteins are of interest using a more unsupervised approach.
+To go further and visualize entire pathways we need to first identify which 
+groups of proteins are of interest using a more unsupervised approach.
 
 # Expression and pathway analysis
 
-Now that we have the ability to overlay omic measurements with image ones, we can identify new features to plot and visualize them. First we can employ standard differential expression approaches using the voxel labels and the `limma` pathway.
+Now that we have the ability to overlay omic measurements with image ones, 
+we can identify new features to plot and visualize them. First we can employ
+standard differential 
+expression approaches using the voxel labels and the `limma` pathway.
 
 ## Differential expression
-First we want to identify specific proteins that are up-regulated in the islet cells (or regions labeled 'islet') compared to other regions. We can then plot the set of proteins.
+First we want to identify specific proteins that are up-regulated in 
+the islet cells (or regions labeled 'islet') compared to other regions.
+We can then plot the set of proteins.
 
 
 ```{r diffex, warning=FALSE, error=FALSE, message=FALSE}
 islet_res <- calc_spatial_diff_ex(pooled.panc.spe,
-  assay_name = "proteomics",
-  log_transformed = FALSE,
-  category_col = "IsletOrNot"
+    assay_name = "proteomics",
+    log_transformed = FALSE,
+    category_col = "IsletOrNot"
 )
 
 # we filter the significant proteins first
-sig_prots <- subset(rowData(islet_res), NonIslet_vs_Islet.adj.P.Val.limma < 0.01)
+sig_prots <- subset(rowData(islet_res), 
+                    NonIslet_vs_Islet.adj.P.Val.limma < 0.01)
 # then separate into up-regulated and down-regulated based on fold chnage
 ups <- subset(sig_prots, NonIslet_vs_Islet.logFC.limma > 0)
 downs <- subset(sig_prots, NonIslet_vs_Islet.logFC.limma < 0)
 
 print(paste(
-  "We found", nrow(sig_prots), "significantly differentally expressed proteins including",
+  "We found", nrow(sig_prots), "significantly differentally \
+  expressed proteins including",
   nrow(ups), "upregulated proteins and", nrow(downs), "downregulated"
 ))
 ```
@@ -202,31 +262,32 @@ Now we can plot those differentially expressed proteins across images.
 
 ## Plot differentially expressed proteins
 
-If we are interested in the combined expression of proteins we can also visualize those.
+If we are interested in the combined expression of proteins we
+can also visualize those.
 
 ```{r plot pathway, message=FALSE, warning=FALSE, error=FALSE}
 spe.plot <- img.spes[[2]]
 ## we need the image boundaries based on the x/y coordinates. The image will
 ## be stretched between the origin and max in both directions
 bounds <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-  "x_origin",
-  "y_origin",
-  "x_max",
-  "y_max"
+    "x_origin",
+    "y_origin",
+    "x_max",
+    "y_max"
 )])
 # the spot size can vary between every sample, but for now
 # we assume a square spot (with a width and a height)
 sizes <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-  "spot_width",
-  "spot_height"
+    "spot_width",
+    "spot_height"
 )])
 
 hup <- spatial_heatmap(spe.plot,
-  feature = rownames(ups),
-  sample_id = "Image_1",
-  image_id = "with_grid",
-  label_column = "IsletOrNot",
-  interactive = FALSE
+    feature = rownames(ups),
+    sample_id = "Image_1",
+    image_id = "with_grid",
+    label_column = "IsletOrNot",
+    interactive = FALSE
 )
 
 hup
@@ -236,24 +297,24 @@ spe.plot <- img.spes[[3]]
 ## we need the image boundaries based on the x/y coordinates. The image will
 ## be stretched between the origin and max in both directions
 bounds <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-  "x_origin",
-  "y_origin",
-  "x_max",
-  "y_max"
+    "x_origin",
+    "y_origin",
+    "x_max",
+    "y_max"
 )])
 # the spot size can vary between every sample, but for now
 # we assume a square spot (with a width and a height)
 sizes <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-  "spot_width",
-  "spot_height"
+    "spot_width",
+    "spot_height"
 )])
 
 hup <- spatial_heatmap(spe.plot,
-  feature = rownames(ups),
-  sample_id = "Image_2",
-  image_id = "with_grid",
-  label_column = "IsletOrNot",
-  interactive = FALSE
+    feature = rownames(ups),
+    sample_id = "Image_2",
+    image_id = "with_grid",
+    label_column = "IsletOrNot",
+    interactive = FALSE
 )
 ```
 
@@ -264,30 +325,34 @@ Now we can calculate the enriched pathways in the islets.
 ```{r ora analysis}
 library(leapR)
 data("krbpaths")
-ora.res <- enrich_ora(islet_res, geneset = krbpaths, geneset_name = "krbpaths", feature_column = "PrimaryGeneName")
-print(ora.res[grep("INSULIN", rownames(ora.res)), c("ingroup_n", "pvalue", "BH_pvalue")])
+ora.res <- enrich_ora(islet_res, geneset = krbpaths, 
+                      geneset_name = "krbpaths", 
+                      feature_column = "PrimaryGeneName")
+print(ora.res[grep("INSULIN", rownames(ora.res)), 
+              c("ingroup_n", "pvalue", "BH_pvalue")])
 ```
 
 
 ## Pathway plotting
 
-We know that there are significantly enriched pathways in insulin secretion, so let's plot those.
+We know that there are significantly enriched pathways in insulin secretion,
+so let's plot those.
 
 ```{r pathway plotting,warning=FALSE}
 secprots <- ora.res["REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION", ] |>
-  dplyr::select(ingroupnames) |>
-  unlist() |>
-  strsplit(split = ", ") |>
-  unlist()
+    dplyr::select(ingroupnames) |>
+    unlist() |>
+    strsplit(split = ", ") |>
+    unlist()
 
 spe.plot <- img.spes[[2]]
 ## we need the image boundaries based on the x/y coordinates. The image will
 ## be stretched between the origin and max in both directions
 bounds <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-  "x_origin",
-  "y_origin",
-  "x_max",
-  "y_max"
+    "x_origin",
+    "y_origin",
+    "x_max",
+    "y_max"
 )])
 # the spot size can vary between every sample, but for now
 # we assume a square spot (with a width and a height)
@@ -297,26 +362,33 @@ sizes <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
 )])
 
 hup <- spatial_heatmap(spe.plot,
-  feature = secprots,
-  sample_id = "Image_1",
-  image_id = "with_grid",
-  feature_type = "PrimaryGeneName",
-  label_column = "IsletOrNot",
-  plot_title = "Glucose regulation proteins",
-  interactive = FALSE
+    feature = secprots,
+    sample_id = "Image_1",
+    image_id = "with_grid",
+    feature_type = "PrimaryGeneName",
+    label_column = "IsletOrNot",
+    plot_title = "Glucose regulation proteins",
+    interactive = FALSE
 )
 ```
 
-The average expression of the 20 proteins selected is shown to be higher in islet cells than adjacent cells.
+The average expression of the 20 proteins selected is shown to be higher in 
+islet cells than adjacent cells.
 
 # Distance based measurements
-We can also identify features that are correlated with distance to a feature or a gradient in the sample. This will provide input to rank-based statistical tools that can help identify pathways.
+We can also identify features that are correlated with distance to a feature 
+or a gradient in the sample. This will provide input to rank-based statistical 
+tools that can help identify pathways.
 
 ## Distance based measurements
-First we identify a specific feature, the Islet cell, and use that to identify proteins correlated with distance from the islet in each image. Proteins with a negative correlation are decreasing in expression as they are farther from the islet cells. 
+First we identify a specific feature, the Islet cell, and use that to identify
+proteins correlated with distance from the islet in each image. Proteins with
+a negative correlation are decreasing in expression as they are farther from 
+the islet cells. 
 
 ```{r distance, warning=FALSE, error=FALSE, message=FALSE}
-## for each image, let's compute the distance of each voxel to the one labeled 'Islet'
+## for each image, let's compute the distance of each voxel to 
+## the one labeled 'Islet'
 rank.imgs <- lapply(
   img.spes,
   function(x) {
@@ -329,19 +401,20 @@ rank.imgs <- lapply(
 
 ## now we have the distances, let's plot some interesting proteins
 negProts <- do.call(rbind, lapply(names(rank.imgs), function(x) {
-  subset(as.data.frame(rowData(rank.imgs[[x]])), IsletDistancespearmanPval < 0.01) |>
-    subset(IsletDistancespearmanCor < (-.75)) |>
-    dplyr::select(PrimaryGeneName, IsletDistancespearmanCor) |>
-    dplyr::mutate(image = x)
+    subset(as.data.frame(rowData(rank.imgs[[x]])), 
+           IsletDistancespearmanPval < 0.01) |>
+      subset(IsletDistancespearmanCor < (-.75)) |>
+      dplyr::select(PrimaryGeneName, IsletDistancespearmanCor) |>
+      dplyr::mutate(image = x)
 }))
 
 print(head(negProts))
 
 ## do any proteins show up more than once?
 icounts <- negProts |>
-  dplyr::group_by(PrimaryGeneName) |>
-  dplyr::summarize(numImgs = dplyr::n()) |>
-  dplyr::arrange(desc(numImgs))
+    dplyr::group_by(PrimaryGeneName) |>
+    dplyr::summarize(numImgs = dplyr::n()) |>
+    dplyr::arrange(desc(numImgs))
 
 
 print(icounts)
@@ -351,32 +424,36 @@ It looks like SH3GL1 is correlated with distance to Islet in a few images.
 
 ## Plot protein gradient
 
-Now we can plot the expression of a protein suspected to have decreasing expression farther from the islet cells.We start with SH3GL1 and SP3S2.
+Now we can plot the expression of a protein suspected to have decreasing 
+expression farther from the islet cells.We start with SH3GL1 and SP3S2.
 
 ```{r plot correlated proteins, message=FALSE}
 spatial_heatmap(img.spes[[3]],
-  feature = "SH3GL1",
-  feature_type = "PrimaryGeneName",
-  sample_id = names(img.spes)[3],
-  image_id = "with_grid",
-  label_column = "IsletOrNot", interactive = FALSE
+    feature = "SH3GL1",
+    feature_type = "PrimaryGeneName",
+    sample_id = names(img.spes)[3],
+    image_id = "with_grid",
+    label_column = "IsletOrNot", interactive = FALSE
 )
 
 spatial_heatmap(img.spes[[5]],
-  feature = "AP3S2",
-  feature_type = "PrimaryGeneName",
-  sample_id = names(img.spes)[5],
-  image_id = "with_grid",
-  label_column = "IsletOrNot", interactive = FALSE
+    feature = "AP3S2",
+    feature_type = "PrimaryGeneName",
+    sample_id = names(img.spes)[5],
+    image_id = "with_grid",
+    label_column = "IsletOrNot", interactive = FALSE
 )
 ```
 
 
-The expression of this protein is lower farther from the Islet. Can we identify trends in the proteins?
+The expression of this protein is lower farther from the Islet. Can we identify 
+trends in the proteins?
 
 ## Gradient-based enrichment
 
-Rank-based pathway enrichment is a way to evaluate trends pathways that are over-represented in a ranked list of genes. The `leapR` pathway has such functionality and we can use the rankings as input.
+Rank-based pathway enrichment is a way to evaluate trends pathways that are 
+over-represented in a ranked list of genes. The `leapR` pathway has such 
+functionality and we can use the rankings as input.
 
 ```{r rank based enrichment,warning=FALSE,error=FALSE}
 library(leapR)
@@ -385,7 +462,7 @@ enriched.paths <- do.call(rbind, lapply(names(rank.imgs), function(x) {
   spe <- rank.imgs[[x]]
   es <- enrich_gradient(spe,
     geneset = krbpaths,
-    feature_column = "PrimaryGeneName", # primary gene name to be mapped to enrichment data
+    feature_column = "PrimaryGeneName", # mapped to enrichment data
     ranking_column = "IsletDistancespearmanCor"
   )
   es[, "comp"] <- rep(x, nrow(es))
@@ -399,22 +476,24 @@ enriched.paths |>
   dplyr::summarize(numImgs = dplyr::n()) |>
   dplyr::arrange(desc(numImgs))
 ```
-We can see that numerous pathways are coming up as enriched across images, including ribosomal and translation related pathways. Now we can select proteins from a particular pathway and visualize those as well. 
+We can see that numerous pathways are coming up as enriched across images, 
+including ribosomal and translation related pathways. Now we can select
+proteins from a particular pathway and visualize those as well. 
 
 ## Plotting pathways from gradient
 
 ```{r gradient plotting}
 rprots <- subset(enriched.paths, krbpaths == "KEGG_RIBOSOME") |>
-  dplyr::select(comp, ingroupnames)
+    dplyr::select(comp, ingroupnames)
 
 rprots <- unlist(strsplit(rprots[1, 2], split = ", "))
 
 spatial_heatmap(img.spes[[5]],
-  feature = rprots,
-  feature_type = "PrimaryGeneName",
-  sample_id = names(img.spes)[5],
-  image_id = "with_grid",
-  label_column = "IsletOrNot", interactive = FALSE
+    feature = rprots,
+    feature_type = "PrimaryGeneName",
+    sample_id = names(img.spes)[5],
+    image_id = "with_grid",
+    label_column = "IsletOrNot", interactive = FALSE
 )
 ```
 
@@ -422,7 +501,8 @@ This shows the ribosomal protein expression across the image.
 
 # Summary
 
-This vignette shows various functions to apply in managing spatial proteomics data in spammR.
+This vignette shows various functions to apply in managing 
+spatial proteomics data in spammR.
 
 
 # References {.unnumbered}

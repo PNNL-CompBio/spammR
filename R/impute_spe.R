@@ -70,20 +70,20 @@ impute_spe <- function(spe,
   
     ## check for args
     if (!method %in% .methods) {
-      msg <- paste("Method", method, "must be one of", paste(.methods, 
+       msg <- paste("Method", method, "must be one of", paste(.methods, 
                                                              collapse = ","))
-      stop(msg)
+        stop(msg)
     }
     ## check for K in knn
     if (method %in% c("knn", "group_knn", "spatial_knn") && is.null(k)) {
-      msg <- paste("Method", method, "requires parameter k to be set")
-      stop(msg)
+        msg <- paste("Method", method, "requires parameter k to be set")
+        stop(msg)
     }
   
     if (is.null(assay_name)) {
-      dat <- SummarizedExperiment::assay(spe)
+        dat <- SummarizedExperiment::assay(spe)
     } else {
-      dat <- SummarizedExperiment::assay(spe, assay_name)
+        dat <- SummarizedExperiment::assay(spe, assay_name)
     }
   
     metadata <- SummarizedExperiment::colData(spe)
@@ -92,52 +92,59 @@ impute_spe <- function(spe,
     imputed_data <- c()
     replace_vals <- c()
   
-    ## first lets see if there are proteins that we dont impute for global methods
+    #first lets see if there are proteins that we dont impute for global methods
     fix_prots <- which((rowSums(is.na(dat)) / ncol(dat)) > protein_missingness)
   
     ### first iterate through the global methods
     if (method %in% c("zero", "mean", "median", "median_half")) {
-      ## row-wise values first
-      if (method == "zero") {
-        replace_vals <- rep(0, nrow(dat))
-      } else if (method == "mean") {
-        replace_vals <- rowMeans(dat, na.rm = TRUE)
-      } else if (method == "median") {
-        replace_vals <- matrixStats::rowMedians(as.matrix(dat), na.rm = TRUE)
-      } else if (method == "median_half") {
-        replace_vals <- 0.5 * matrixStats::rowMedians(as.matrix(dat), 
-                                                      na.rm = TRUE)
-      }
-      imputed_data <- dat
-      ### now do the imputation
-      for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
-        ## for all of the values we WANT to fix
-        imputed_data[i, which(is.na(dat[i, ]))] <- replace_vals[i]
-      }
-  
+        ## row-wise values first
+        if (method == "zero") {
+            replace_vals <- rep(0, nrow(dat))
+        } else if (method == "mean") {
+            replace_vals <- rowMeans(dat, na.rm = TRUE)
+        } else if (method == "median") {
+            replace_vals <- matrixStats::rowMedians(as.matrix(dat), 
+                                                    na.rm = TRUE)
+        } else if (method == "median_half") {
+           replace_vals <- 0.5 * matrixStats::rowMedians(as.matrix(dat), 
+                                                        na.rm = TRUE)
+        }
+        imputed_data <- dat
+        ### now do the imputation
+        for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
+            ## for all of the values we WANT to fix
+            imputed_data[i, which(is.na(dat[i, ]))] <- replace_vals[i]
+        }
+    
       ## if we were mising things
     } else if (method == "knn") {
       kres <- impute::impute.knn(as.matrix(dat), k = k, 
                                  rowmax = protein_missingness, 
                                  colmax = 1, maxp = dim(dat)[1], 
                                  rng.seed = 12345)
-      # Fix immputed values for rows (proteins) that are missing more than rowmax proportion of samples.
-      # By default, impute.knn uses the mean of all proteins in a sample for this case, which is not that meaningful.
-      # Instead, we replace the missing values (for the case when missingness in a row is greater than rowmax) with global_mean or na for that row
+      # Fix immputed values for rows (proteins) that are missing more than
+      # rowmax proportion of samples.
+      # By default, impute.knn uses the mean of all proteins in a sample
+      # for this case, which is not that meaningful.
+      # Instead, we replace the missing values (for the case when 
+      # missingness in a row is greater than rowmax) with global_mean or 
+      # na for that row
       imputed_data <- kres$dat
       # now we go back and uninfer values for which we have poor coverage
       for (f in fix_prots) {
         na_indices <- which(is.na(dat[f, ]))
-        # knn_imputed_proteins_global$dat[f,na_indices] = mean(dat[f,],na.rm=TRUE)
-        imputed_data[f, na_indices] <- NA # Keep those missing values as NA since there is not enough dat to impute reliably.
+        imputed_data[f, na_indices] <- NA # Keep those missing values as 
+        #NA since there is not enough dat to impute reliably.
       }
       if (length(fix_prots) > 0) {
-        message("impute.knn function uses mean imputation for rows with more than the specified missingness. spammR's imputation function reverts these missing values back to NA.")
+        message("impute.knn function uses mean imputation for rows with \
+                more than the specified missingness. spammR's imputation \
+                function reverts these missing values back to NA.")
       }
       #      data_imputed = knn_imputed_proteins_global$dat]
     } else if (method == "group_mean" || method == "group_knn") {
       # extract column with spatial unit specification in the metadata
-      spatUnits <- unique(metadata[, group_colname]) ## whats is the spatial unit?
+      spatUnits <- unique(metadata[, group_colname]) ## whats the spatial unit?
       imputed_data <- dat
       ## iterate through each group, identify means, and replace those values
       for (s in spatUnits) {
@@ -148,53 +155,59 @@ impute_spe <- function(spe,
                               length(ROI_indices)) > protein_missingness)
   
         if (method == "group_mean") {
-          replace_vals <- rowMeans(dat[, ROI_indices], na.rm = TRUE)
-          ## for all of the values we WANT to fix
-          for (i in setdiff(seq_along(1:nrow(imputed_data)), fix_prots)) { 
-            if (any(is.na(dat[i, ROI_indices]))) {
-              imputed_data[i, which(is.na(dat[i, ROI_indices]))] <- replace_vals[i]
-            } ## replace the values WITHIN THIS GROUP
-          }
+            replace_vals <- rowMeans(dat[, ROI_indices], na.rm = TRUE)
+            ## for all of the values we WANT to fix
+            for (i in setdiff(seq_along(1:nrow(imputed_data)), fix_prots)) { 
+              if (any(is.na(dat[i, ROI_indices]))) {
+                imputed_data[i, which(is.na(dat[i, ROI_indices]))] <- 
+                  replace_vals[i]
+              } ## replace the values WITHIN THIS GROUP
+            }
         } else if (method == "group_knn") {
-          gdat <- dat[, ROI_indices]
-          imputed_gdata <- impute::impute.knn(as.matrix(gdat),
-                                              k = k, rowmax = protein_missingness, 
-                                              colmax = 1, maxp = dim(gdat)[1], 
-                                              rng.seed = 12345)
-          imputed_data[, ROI_indices] <- imputed_gdata$dat
-          # now we go back and uninfer values for which we have poor coverage
-          for (f in fix_prots) {
-            na_indices <- which(is.na(gdat[f, ]))
-            if (length(na_indices) > 0) {
-              imputed_data[f, na_indices] <- NA
-            } # Keep those missing values as NA since there is 
-            #not enough dat to impute reliably.
+            gdat <- dat[, ROI_indices]
+            imputed_gdata <- impute::impute.knn(as.matrix(gdat),
+                                                k = k, 
+                                                rowmax = protein_missingness, 
+                                                colmax = 1, 
+                                                maxp = dim(gdat)[1], 
+                                                rng.seed = 12345)
+            imputed_data[, ROI_indices] <- imputed_gdata$dat
+            # now we go back and uninfer values for which we have poor coverage
+            for (f in fix_prots) {
+              na_indices <- which(is.na(gdat[f, ]))
+              if (length(na_indices) > 0) {
+                imputed_data[f, na_indices] <- NA
+              } # Keep those missing values as NA since there is 
+              #not enough dat to impute reliably.
+            }
           }
-        }
-        # Make sure the imputed data appears in the same order as the original data
-        imputed_data <- imputed_data[, colnames(dat)]
+          # Make sure the imputed data appears in the same order as the 
+        #original data
+          imputed_data <- imputed_data[, colnames(dat)]
       }
     } else if (method == "spatial_knn") {
-      if (ncol(spcoords) == 0) {
-        stop("Need spatial coordinates for spatial_knn method")
+        if (ncol(spcoords) == 0) {
+            stop("Need spatial coordinates for spatial_knn method")
       }
-      d_for_nearestNeighb <- as.matrix(spcoords)
-      # Find k-nearest neighbors based on spatial distance (x,y coordinates)
-      knn <- spdep::knearneigh(d_for_nearestNeighb, k = k)
-      # nearest neighbor indices are in knn$nn
-      nn <- knn$nn
-      imputed_data <- vapply(seq_along(1:nrow(dat)), function(prot){
-      #for (prot in seq_along(1:dim(dat)[1])) {
-        this.prot <- dat[prot, ]
-        na_indices <- which(is.na(this.prot))
-        for (n in na_indices) {
-          n.knn <- nn[n, ] # nearest neighbors for sample corresponding to nth index
-          this.prot[n] <- mean(as.numeric(this.prot[n.knn]), na.rm = TRUE)
-        }
-        #imputed_data <- rbind(imputed_data, this.prot)
-        return(this.prot)
-      }, numeric(ncol(dat)))
-      imputed_data <- t(imputed_data)
+      
+        d_for_nearestNeighb <- as.matrix(spcoords)
+        # Find k-nearest neighbors based on spatial distance (x,y coordinates)
+        knn <- spdep::knearneigh(d_for_nearestNeighb, k = k)
+        # nearest neighbor indices are in knn$nn
+        nn <- knn$nn
+        imputed_data <- vapply(seq_along(1:nrow(dat)), function(prot){
+        #for (prot in seq_along(1:dim(dat)[1])) {
+          this.prot <- dat[prot, ]
+          na_indices <- which(is.na(this.prot))
+          for (n in na_indices) {
+            n.knn <- nn[n, ] # nearest neighbors for sample corresponding to 
+            #nth index
+            this.prot[n] <- mean(as.numeric(this.prot[n.knn]), na.rm = TRUE)
+          }
+          #imputed_data <- rbind(imputed_data, this.prot)
+          return(this.prot)
+        }, numeric(ncol(dat)))
+        imputed_data <- t(imputed_data)
     }
   
     assays(spe, withDimnames = FALSE) <- c(assays(spe), 

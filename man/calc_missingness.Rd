@@ -12,10 +12,13 @@ calc_missingness(spe, group_name = NULL)
 \item{group_name}{Name of group to use as denominator}
 }
 \value{
-SpatialExperiment object with missingFeature column added to colData and missingSample added to rowData
+SpatialExperiment object with missingFeature column added to colData
+and missingSample added to rowData
 }
 \description{
-calc_missingness() calculates the fraction of samples that are missing data for each feature, and fraction of each feature that are missing for each sample.
+calc_missingness() calculates the fraction of samples that are
+missing data for each feature, and fraction of each feature that are missing
+for each sample.
 }
 \examples{
 library(spammR)
@@ -23,7 +26,8 @@ data(smallPancData)
 data(pancMeta)
 data(protMeta)
 pooledPanc <- dplyr::bind_cols(smallPancData)
-panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, feature_meta_colname = "pancProts")
+panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, 
+          feature_meta_colname = "pancProts")
 calc_missingness(panc.spe)
 
 }

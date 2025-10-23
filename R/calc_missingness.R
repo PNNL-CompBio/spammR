@@ -1,6 +1,7 @@
 #' Calculate degree of missingness for each featurea and sample
 #' @description calc_missingness() calculates the fraction of samples that are 
-#' missing data for each feature, and fraction of each feature that are missing for each sample.
+#' missing data for each feature, and fraction of each feature that are missing 
+#' for each sample.
 #' @param spe SpatialExperiment object
 #' @param group_name Name of group to use as denominator
 #' @return SpatialExperiment object with missingFeature column added to colData 
@@ -22,11 +23,13 @@ calc_missingness <- function(spe, group_name = NULL) {
   
     ## column data used to calculate missing features
     cd <- as.data.frame(colData(spe))
-    mfeat <- apply(assay(spe), 2, function(x) length(which(is.na(x))) / length(x))
+    mfeat <- apply(assay(spe), 2, 
+                   function(x) length(which(is.na(x))) / length(x))
     cd <- cbind(cd, missingFeature = mfeat)
   
     if (is.null(group_name)) {
-      msamp <- apply(assay(spe), 1, function(x) length(which(is.na(x))) / length(x))
+      msamp <- apply(assay(spe), 1, 
+                     function(x) length(which(is.na(x))) / length(x))
   
       rd <- cbind(rd, missingSample = msamp)
     } else if (group_name %in% names(cd)) {
@@ -38,7 +41,8 @@ calc_missingness <- function(spe, group_name = NULL) {
         rd[, paste0("missingSample_", g)] <- msamp
       }
     } else {
-      stop(paste("group_name", group_name, "not in colData"))
+      msg <- paste("group_name", group_name, "not in colData")
+      stop(msg)
     }
   
     colData(spe) <- DataFrame(cd)
