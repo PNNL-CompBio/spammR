@@ -1,11 +1,12 @@
-#' Create a `SpatialExperiment` object from data
-#' @description `convert_to_spe()` Puts omics data (omics measurements,
+#' Create a `SpatialFeatureExperiment` object from data
+#' @description `convert_to_sfe()` Puts omics data (omics measurements,
 #'  metadata and image(s) corresponding to samples' tissue) into a 
-#'  SpatialExperiment (SPE) object. Most spammR functions require the input 
-#'  data to be an SPE object.
+#'  SpatialFeatureExperiment (SFE) object. Most spammR functions require the input 
+#'  data to be an SPE or SFE objects.
 #' @export
 #' @import SummarizedExperiment
-#' @import SpatialExperiment
+#' @import sf
+#' @import SpatialFeatureExperiment
 #' @param dat Matrix or data frame with omics measurements. Rows are features,
 #'  columns are samples
 #' @param sample_meta Data frame of metadata with either `sample_colname` or
@@ -31,7 +32,7 @@
 #'  provided in image_files
 #' @param image_sample_ids A list of sample identifiers for each of the images
 #'  provided in image_files, defaults to the value from sample_id
-#' @returns spe.out a SpatialExperiment (SPE) object that contains all 
+#' @returns spe.out a SpatialFeatureExperiment (SFE) object that contains all 
 #' data and image(s). Ready to be used as input in spammR functions that 
 #' require SPE object as input.
 #' @examples
@@ -57,14 +58,15 @@
 #'   spatial_coords_colnames = c("x_pixels", "y_pixels"),
 #'   image_ids = "Image0"
 #' )
-convert_to_spe <- function(dat, 
-                           sample_meta,
-                           feature_meta, 
+convert_to_sfe <- function(dat, 
+                           spatial_features,##this is an SF object
+                           sample_meta = NULL,
+                           feature_meta = NULL, 
                            assay_name = "proteomics",
                            sample_id = "sample",
                            sample_colname = NULL,
                            feature_meta_colname = NULL, 
-                           spatial_coords_colnames = NULL,
+                           #spatial_coords_colnames = NULL,
                            image_files = NULL, # image file paths
                            image_ids = NULL, # image identifiers
                            image_sample_ids = rep(sample_id, 
@@ -72,11 +74,7 @@ convert_to_spe <- function(dat,
 ) {
   ## first clean up samples: make sure rowanmes of metadata file are samples
   # Separate sample columns and feature meta data columns in dat
-    if (is.null(spatial_coords_colnames)) {
-      message("Spatial object created without spatial coordinate \
-         column names provided. Distance based analysis will not be enabled.")
-    }
-  
+
     sc <- sample_colname #shortened for line length
     if (!is.null(sc)) {
       samps <- intersect(colnames(dat), sample_meta[[sc]]) 
