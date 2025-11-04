@@ -1,0 +1,129 @@
+---
+title: "spammR multiomic integration"
+author: "Sara Gosline"
+package: spammR
+date: "`r format(Sys.Date(), '%b %d, %Y')`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        number_sections: true
+        toc_depth: 3
+        toc_float:
+            collapsed: true
+description: |
+  A basic walkthrough of how to use the spammR package to perform a 
+  spatial omics analysis for microbiome data. 
+  
+vignette: |
+  %\VignetteIndexEntry{spammRMicrobiomeEval}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(spammR)
+```
+
+## Dataset
+There is limited data that contains both metabolomic and proteomics in the same 
+sample. For the purposes of this example we use sections of rat brain measured
+via MSI to identify metabolomic measurements alongside proteomics from regions 
+of interest from 
+[Vandergrift et al](https://pubs.acs.org/doi/10.1021/acs.analchem.4c04462). 
+
+The proteomics data can be found on 
+[zenodo](https://zenodo.org/records/13345212). 
+
+
+Also the [MIPI analysis](https://www.nature.com/articles/s41467-025-57107-y)
+
+Or the [fungal garden data](https://www.nature.com/articles/s41589-023-01536-7)
+
+
+
+```{r get data}
+
+#brain data
+fi <- download.file('https://zenodo.org/records/13345212/files/DESI+spatial%20proteomics%20rat%20brain%20proteomics%20result.xlsx?download=1',
+                    dest = 'dat.xlsx')
+
+#read in data, convert to matrix 
+dat <- readxl::read_xlsx('dat.xlsx') 
+
+feature_data <- select(dat, c(Protein,`Protein ID`,`Entry Name`,Gene)) |>
+  dplyr::distinct() |>
+  tibble::column_to_rownames('Protein')
+
+dat <- select(dat, c(Protein, starts_with('ROI'))) |>
+  tibble::column_to_rownames('Protein')
+
+#drop duplicates: get gene with highest expression
+
+##load of ROI coordinates
+library(sf)
+roi_coords <- st_read("data/brain_roi.geojson") |>
+  subset(!is.na(name))
+##the output to QuPath does not contain the 'diameter' feature
+
+##read in image
+img <- "inst/extdata/brain_img_2.png"
+
+#remove this once we can include it in spammR
+library(SpatialFeatureExperiment)
+sf::sf_use_s2(FALSE)
+
+##fix up the ROI as exported from QuPath
+fixed_coords <- st_make_valid(roi_coords)
+
+#create an SFE
+sfe3 <- SpatialFeatureExperiment(sample_id = 'mouse brain',
+                                 list(counts = dat), 
+                                 rowData = feature_data,
+                                 colGeometries = list(foo = fixed_coords),
+                                 spotDiameter = 10)
+
+# add an image
+sfe3 <- addImg(sfe3,imageSource = img, 
+               sample_id = 'mouse brain',
+               image_id = 'sections')
+
+##now this is the code we'd want to put into the heatmap functionality
+#first, we need to rasterize the polygons
+template <- terra::rast(fixed_coords)f
+coords_rast <- terra::rasterize(fixed_coords, template)
+cells <- terra::extract(coords_rast, 
+                        fixed_coords, xy = TRUE, cells = TRUE)
+
+cells_tmp <- terra::extract(coords_rast, fixed_coords, xy = TRUE, cells = TRUE)
+xy_rast <- lapply(cells["cell"], function(x) terra::rowColFromCell(coords_rast, x))
+cells <- cells_tmp %>%
+  cbind(., oneKSoilsMeta, xy_rast) %>%
+  dplyr::rename(., y_pixels = "cell.1", x_pixels = "cell.2") %>%
+  subset(., select = -c(x, y, ID, last))
+cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
+
+library(cowplot)
+
+cowplot::ggdraw() + cowplot::draw_image(img)+plot(st_make_valid(roi_coords))
+##create SFE with appropriate data
+
+##get lipid data from metaspace
+
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
