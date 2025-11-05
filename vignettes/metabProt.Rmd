@@ -66,19 +66,20 @@ dat <- select(dat, c(Protein, starts_with('ROI'))) |>
 
 ##load of ROI coordinates
 library(sf)
-roi_coords <- st_read("data/brain_roi.geojson") |>
+roi_coords <- st_read("../data/brain_roi.geojson") |>
   subset(!is.na(name))
 ##the output to QuPath does not contain the 'diameter' feature
 
 ##read in image
-img <- "inst/extdata/brain_img_2.png"
+img <- "../inst/extdata/brain_img_0.png"
 
 #remove this once we can include it in spammR
 library(SpatialFeatureExperiment)
 sf::sf_use_s2(FALSE)
 
 ##fix up the ROI as exported from QuPath
-fixed_coords <- st_make_valid(roi_coords)
+fixed_coords <- st_make_valid(roi_coords) |>
+  dplyr::select(name,geometry)
 
 #create an SFE
 sfe3 <- SpatialFeatureExperiment(sample_id = 'mouse brain',
@@ -92,24 +93,28 @@ sfe3 <- addImg(sfe3,imageSource = img,
                sample_id = 'mouse brain',
                image_id = 'sections')
 
+
+background_img <- SpatialExperiment::imgData(sfe3)$data[[1]]
+
+
 ##now this is the code we'd want to put into the heatmap functionality
 #first, we need to rasterize the polygons
-template <- terra::rast(fixed_coords)f
-coords_rast <- terra::rasterize(fixed_coords, template)
-cells <- terra::extract(coords_rast, 
-                        fixed_coords, xy = TRUE, cells = TRUE)
-
-cells_tmp <- terra::extract(coords_rast, fixed_coords, xy = TRUE, cells = TRUE)
-xy_rast <- lapply(cells["cell"], function(x) terra::rowColFromCell(coords_rast, x))
-cells <- cells_tmp %>%
-  cbind(., oneKSoilsMeta, xy_rast) %>%
-  dplyr::rename(., y_pixels = "cell.1", x_pixels = "cell.2") %>%
-  subset(., select = -c(x, y, ID, last))
-cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
+# template <- terra::rast(fixed_coords)
+# coords_rast <- terra::rasterize(fixed_coords, template)
+# cells <- terra::extract(coords_rast, 
+#                         fixed_coords, xy = TRUE, cells = TRUE)
+# 
+# cells_tmp <- terra::extract(coords_rast, fixed_coords, xy = TRUE, cells = TRUE)
+# rownames(cells_tmp) <- fixed_coords$name
+# xy_rast <- lapply(cells["cell"], function(x) terra::rowColFromCell(coords_rast, x))
+# cells <- cells_tmp %>%
+#   cbind(., oneKSoilsMeta, xy_rast) %>%
+#   dplyr::rename(., y_pixels = "cell.1", x_pixels = "cell.2") %>%
+#   subset(., select = -c(x, y, ID, last))
+# cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
 
 library(cowplot)
 
-cowplot::ggdraw() + cowplot::draw_image(img)+plot(st_make_valid(roi_coords))
 ##create SFE with appropriate data
 
 ##get lipid data from metaspace
