@@ -3,6 +3,7 @@
 #' analysis using annotations in a SpatialExperiment object
 #' @importFrom limma lmFit
 #' @importFrom limma eBayes
+#' @importFrom limma voom
 #' @import SpatialExperiment
 #' @export
 #' @param spe Spatial Experiment object containing data to be used for 
@@ -10,6 +11,7 @@
 #' @param assay_name Name of the dataset stored in the spe object, that is 
 #' to be used for the differential expression analysis.
 #'  Example: znormalized_log2
+#' @param count_based Set to TRUE of the data are count based, e.g. RNA-Seq
 #' @param log_transformed Is the data given in spe log2 transformed TRUE 
 #' or FALSE
 #' @param category_col Name of the column that specifies category of each 
@@ -40,6 +42,7 @@
 #'
 calc_spatial_diff_ex <- function(spe,
                                  assay_name = "proteomics",
+                                 count_based = FALSE,
                                  log_transformed = FALSE,
                                  category_col,
                                  compare_vals) {
@@ -75,6 +78,11 @@ calc_spatial_diff_ex <- function(spe,
     if (!log_transformed) {
       ldat <- log2(dat)
     }
+    
+    if (count_based) {#call voom here
+      ldat <- limma::voom(ldat, design)
+    }
+    
     fit <- limma::lmFit(ldat[, c(samp2, samp1)], design)
     fit <- limma::eBayes(fit)
   
