@@ -67,6 +67,7 @@ impute_spe <- function(spe,
   
     .methods <- c("zero", "median", "median_half", "mean", 
                   "group_mean", "knn", "group_knn", "spatial_knn")
+    
   
     ## check for args
     if (!method %in% .methods) {

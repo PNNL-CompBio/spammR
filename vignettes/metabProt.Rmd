@@ -1,5 +1,5 @@
 ---
-title: "spammR multiomic integration"
+title: "spammR lipidomic and proteomic integration"
 author: "Sara Gosline"
 package: spammR
 date: "`r format(Sys.Date(), '%b %d, %Y')`"
@@ -12,7 +12,7 @@ output:
             collapsed: true
 description: |
   A basic walkthrough of how to use the spammR package to perform a 
-  spatial omics analysis for microbiome data. 
+  spatial omics analysis for lipidomic and proteomic data. 
   
 vignette: |
   %\VignetteIndexEntry{spammRMicrobiomeEval}
@@ -40,13 +40,7 @@ The proteomics data can be found on
 [zenodo](https://zenodo.org/records/13345212). 
 
 
-Also the [MIPI analysis](https://www.nature.com/articles/s41467-025-57107-y)
-
-Or the [fungal garden data](https://www.nature.com/articles/s41589-023-01536-7)
-
-
-
-```{r get data}
+```{r get proteomics data}
 
 #brain data
 fi <- download.file('https://zenodo.org/records/13345212/files/DESI+spatial%20proteomics%20rat%20brain%20proteomics%20result.xlsx?download=1',
