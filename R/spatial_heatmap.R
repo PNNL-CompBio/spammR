@@ -115,9 +115,11 @@ spatial_heatmap <- function(spe,
         spot_height <- 1
     } else {
         spot_width <- SummarizedExperiment::colData(spe)[, spot_size_name[1], 
-                                                     drop = TRUE]
+                                                     drop = TRUE] |>
+          as.numeric()
         spot_height <- SummarizedExperiment::colData(spe)[, spot_size_name[2], 
-                                                      drop = TRUE]
+                                                      drop = TRUE] |>
+          as.numeric()
     }
 
      ## now we can get the feature data
@@ -228,7 +230,6 @@ spatial_heatmap <- function(spe,
       ggpubr::background_image(background_img) +
       ggplot2::geom_rect() +
       ggplot2::geom_label(ggplot2::aes(x = midpoint_x, y = midpoint_y),
-        label.size = NA,
         fill = NA, colour = sample_label_color,
         size = sample_label_size
       ) +

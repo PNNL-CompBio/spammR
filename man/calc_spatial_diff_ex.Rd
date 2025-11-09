@@ -7,6 +7,7 @@
 calc_spatial_diff_ex(
   spe,
   assay_name = "proteomics",
+  count_based = FALSE,
   log_transformed = FALSE,
   category_col,
   compare_vals
@@ -19,6 +20,8 @@ differential expression analysis}
 \item{assay_name}{Name of the dataset stored in the spe object, that is
 to be used for the differential expression analysis.
 Example: znormalized_log2}
+
+\item{count_based}{Set to TRUE of the data are count based, e.g. RNA-Seq}
 
 \item{log_transformed}{Is the data given in spe log2 transformed TRUE
 or FALSE}

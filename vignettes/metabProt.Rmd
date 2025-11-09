@@ -27,6 +27,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 library(spammR)
+library(geojsonR)
+
 ```
 
 ## Dataset
@@ -58,71 +60,102 @@ dat <- select(dat, c(Protein, starts_with('ROI'))) |>
 
 #drop duplicates: get gene with highest expression
 
-##load of ROI coordinates
-library(sf)
-roi_coords <- st_read("../data/brain_roi.geojson") |>
-  subset(!is.na(name))
-##the output to QuPath does not contain the 'diameter' feature
-
 ##read in image
 img <- "../inst/extdata/brain_img_0.png"
 
+cowplot::ggdraw() + cowplot::draw_image(img)
+
+
+```
+
+
+```{r format coordinates}
 #remove this once we can include it in spammR
-library(SpatialFeatureExperiment)
-sf::sf_use_s2(FALSE)
+ 
+  library(geojsonR)
+  jsondat <- FROM_GeoJson('../data/brain_roi.geojson')
+ 
+  coords <- do.call(rbind, lapply(jsondat$features,function(x){
+     roi <- x$properties$name
+     xv <- x$geometry$coordinates[,1]
+     yv <- x$geometry$coordinates[,2]
+     if (is.null(roi))
+        roi = ""
+     return(list(ID = roi, x_pixels = min(xv), y_pixels = min(yv),
+                  spot_height = max(yv) - min(yv),
+                 spot_width = max(xv) - min(xv)))
+     })) |>
+     as.data.frame() |>
+     subset(ID != "") |>
+     tidyr::separate(ID,into = c('ROI','Replicate'), 
+                     sep = '_', 
+                     remove = FALSE) |>
+     tibble::remove_rownames() |>
+     tibble::column_to_rownames('ID')
+ 
+ ##now for each ROI we want an x, y, cell height and cell_width
+ #y-coordinates are from top, so need to udpate
+  coords$y_pixels = 300 - unlist(coords$y_pixels) - unlist(coords$spot_height)
+ 
+   #create an SFE
+  spe <- convert_to_spe(dat = dat, 
+                      feature_meta = feature_data,
+                      sample_meta = coords,
+                      spatial_coords_colnames = c('x_pixels','y_pixels'),
+                      assay_name = 'proteomics',
+                      sample_id = 'mouse_brain', 
+                      image_files = img,
+                      image_id = 'mouse_brain')
 
-##fix up the ROI as exported from QuPath
-fixed_coords <- st_make_valid(roi_coords) |>
-  dplyr::select(name,geometry)
+  # myelin
+  spatial_heatmap(spe, feature = 'sp|P02688|MBP_RAT', 
+                sample_id = 'mouse_brain', 
+                image_id = 'mouse_brain')
 
-#create an SFE
-sfe3 <- SpatialFeatureExperiment(sample_id = 'mouse brain',
-                                 list(counts = dat), 
-                                 rowData = feature_data,
-                                 colGeometries = list(foo = fixed_coords),
-                                 spotDiameter = 10)
+  #protein in myelin
+  spatial_heatmap(spe, feature = 'sp|P13233|CN37_RAT',
+                sample_id = 'mouse_brain',
+                image_id = 'mouse_brain')
 
-# add an image
-sfe3 <- addImg(sfe3,imageSource = img, 
-               sample_id = 'mouse brain',
-               image_id = 'sections')
+```
 
+Now that we have the image and protein data loaded, we can
+begin to ingest the lipid data from metaspace
 
-background_img <- SpatialExperiment::imgData(sfe3)$data[[1]]
+```{r metaspace}
+##get lipid data from metaspace 
+mspe <- retrieve_metaspace_data("2024-02-15_20h37m13s", 
+                                fdr = 0.2, 
+                                assay_name = 'lipids',
+                                sample_id = 'mouse_brain',
+                                rotate = TRUE)
+## add in image to check 
+mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
+                                  sample_id = 'mouse_brain',
+                                  image_id = 'mouse_brain')
 
-
-##now this is the code we'd want to put into the heatmap functionality
-#first, we need to rasterize the polygons
-# template <- terra::rast(fixed_coords)
-# coords_rast <- terra::rasterize(fixed_coords, template)
-# cells <- terra::extract(coords_rast, 
-#                         fixed_coords, xy = TRUE, cells = TRUE)
-# 
-# cells_tmp <- terra::extract(coords_rast, fixed_coords, xy = TRUE, cells = TRUE)
-# rownames(cells_tmp) <- fixed_coords$name
-# xy_rast <- lapply(cells["cell"], function(x) terra::rowColFromCell(coords_rast, x))
-# cells <- cells_tmp %>%
-#   cbind(., oneKSoilsMeta, xy_rast) %>%
-#   dplyr::rename(., y_pixels = "cell.1", x_pixels = "cell.2") %>%
-#   subset(., select = -c(x, y, ID, last))
-# cells$y_pixels <- nrow(coords_rast) - cells$y_pixels
-
-library(cowplot)
-
-##create SFE with appropriate data
-
-##get lipid data from metaspace
-
+##test with a plot
+ spatial_heatmap(mspe, feature = 'C46H78NO10P-H-',
+                 assay = 'lipids',
+                sample_id = 'mouse_brain',
+                image_id = 'mouse_brain')#plot with an ion
 
 
 ```
 
-## Including Plots
+## Merging images to single coordinate system
 
-You can also embed plots, for example:
+Since the proteomics is measured in discrete ROI and the lipids are measured
+on a per-pixel basis, to carry out pure multiomic comparisons we need to map
+them to the same coordinate space.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+To do this we use the `spat_reduce` function to reduce the lipidomics data
+to the same regions as the metabolomics. 
+
+```{r reduce, echo=FALSE}
+
+reduced <- spat_reduce(spe, mspe, red_assay = 'lipids')
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
