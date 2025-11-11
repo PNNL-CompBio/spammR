@@ -164,8 +164,25 @@ to the same regions as the metabolomics.
 
 ```{r reduce, echo=FALSE}
 
-reduced <- spat_reduce(spe, mspe, red_assay = 'lipids')
+reduced <- spat_reduce(spe_target = spe, 
+                       spe_origin = mspe, 
+                       origin_assay = 'lipids')
+
+reduced
 
 ```
+
+# Correlation analysis
+
+## Protein correlation enrichment
+First we identify protein pathways that are enriched across the different
+regions. 
+
+## Protein-lipid correlation
+Then we can calculate protein-lipid correlations and look at the related lipid
+networks
+
+Now we can carry out correlation and correlation enrichment analysis across
+the different modalities. 
 
 
