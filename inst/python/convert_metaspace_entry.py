@@ -45,7 +45,7 @@ def download_ion_data(project_id, fdr_val = 0.2, database=('SwissLipids','2018-0
         y_coord = df.index
         df['y_coord'] = y_coord
         long_tab = df.melt(value_name = 'intensity',value_vars=x_coord, id_vars='y_coord',var_name = 'x_coord')
-        long_tab['sample_id'] = ""+long_tab['x_coord'].map(str)+"_"+long_tab['y_coord']
+        long_tab['sample_id'] = ""+long_tab['x_coord'].map(str)+"_"+long_tab['y_coord'].map(str)
         long_tab['ion'] = row.ion
         all_rows.append(long_tab)
 

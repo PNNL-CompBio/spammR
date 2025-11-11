@@ -140,6 +140,7 @@ spatial_heatmap <- function(spe,
         fval_plot <- colMeans(f[rowNum_toplot, ], na.rm = TRUE)
         fval_plot <- fval_plot[is.finite(fval_plot)]
     }
+    fval_plot[which(fval_plot==0)] <- NA
     if (length(fval_plot) == 0) {
         msg <- paste("Cannot plot heatmap:", paste(feature, collapse = ","), 
                    "not in dataset")

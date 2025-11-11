@@ -24,6 +24,9 @@
 #' @param spatial_coords_colnames A list containing names of columns in
 #'  `meta_dat` that are spatial coordinates. Default value is NULL in which 
 #'  case no spatial coordinates are entered
+#' @param rescale_image A boolean set to true if you need to rescale image. 
+#' Recommended when coordinates are pulled from metaspace and are known to fully
+#' cover the image
 #' @param image_files A list containing paths of image files to be stored in
 #'  the SpatialExperiment object. More images can be added later, without
 #'   using this function.
@@ -65,6 +68,7 @@ convert_to_spe <- function(dat,
                            sample_colname = NULL,
                            feature_meta_colname = NULL, 
                            spatial_coords_colnames = NULL,
+                           rescale_image = FALSE, 
                            image_files = NULL, # image file paths
                            image_ids = NULL, # image identifiers
                            image_sample_ids = rep(sample_id, 

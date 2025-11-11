@@ -122,7 +122,7 @@ cowplot::ggdraw() + cowplot::draw_image(img)
 Now that we have the image and protein data loaded, we can
 begin to ingest the lipid data from metaspace
 
-```{r metaspace}
+```{r metaspace import and plotting}
 ##get lipid data from metaspace 
 mspe <- retrieve_metaspace_data("2024-02-15_20h37m13s", 
                                 fdr = 0.2, 
@@ -137,6 +137,16 @@ mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
 ##test with a plot
  spatial_heatmap(mspe, feature = 'C46H78NO10P-H-',
                  assay = 'lipids',
+                 plot_log = TRUE,
+                 metric_display = 'Lipid expression',
+                sample_id = 'mouse_brain',
+                image_id = 'mouse_brain')#plot with an ion
+ 
+ 
+ spatial_heatmap(mspe, feature = 'C25H49O11P-H-',
+                 assay = 'lipids',
+                 plot_log = TRUE,
+                   metric_display = 'Lipid expression',
                 sample_id = 'mouse_brain',
                 image_id = 'mouse_brain')#plot with an ion
 
