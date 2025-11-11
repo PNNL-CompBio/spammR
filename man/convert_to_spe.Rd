@@ -13,6 +13,7 @@ convert_to_spe(
   sample_colname = NULL,
   feature_meta_colname = NULL,
   spatial_coords_colnames = NULL,
+  rescale_image = FALSE,
   image_files = NULL,
   image_ids = NULL,
   image_sample_ids = rep(sample_id, length(image_files))
@@ -44,6 +45,10 @@ should match rownames of \code{dat}}
 \item{spatial_coords_colnames}{A list containing names of columns in
 \code{meta_dat} that are spatial coordinates. Default value is NULL in which
 case no spatial coordinates are entered}
+
+\item{rescale_image}{A boolean set to true if you need to rescale image.
+Recommended when coordinates are pulled from metaspace and are known to fully
+cover the image}
 
 \item{image_files}{A list containing paths of image files to be stored in
 the SpatialExperiment object. More images can be added later, without

@@ -8,7 +8,8 @@ retrieve_metaspace_data(
   project_id = "2024-02-15_20h37m13s",
   fdr = 0.2,
   assay_name = "metabolites",
-  sample_id = "sample"
+  sample_id = "sample",
+  rotate = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ retrieve_metaspace_data(
 \item{assay_name}{Name of assay to include in object}
 
 \item{sample_id}{Name of sample}
+
+\item{rotate}{Set to TRUE if x and y coordinates need to be swapped}
 }
 \description{
 \code{retrieve_metaspace_data()}Collects data from
