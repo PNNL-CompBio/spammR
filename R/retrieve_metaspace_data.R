@@ -12,20 +12,40 @@
 #' @param assay_name Name of assay to include in object
 #' @param sample_id Name of sample
 #' @param rotate Set to TRUE if x and y coordinates need to be swapped
+#' @param y_offset Number of pixels to adjust y based on image
+#' @param x_offset Number of pixels to adjust x based on image
 #' @export
 #' @examples
 #' mspe <- retrieve_metaspace_data()
 #' 
 #' name
+#' 
+#' 
+
+.onLoad <- function(libname, pkgname){
+  library(reticulate)
+  if (!py_available('pandas'))
+    py_install('pandas')
+  if (!py_available('numpy'))
+    py_install('numpy')
+  if (!py_available('metaspace'))
+    py_install('metaspace')
+  py_require(python_version = ">=3.11")
+  
+}
+
 retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s", 
                                     fdr = 0.2, 
                                     assay_name = 'metabolites', 
                                     sample_id = 'sample', 
-                                    rotate = FALSE){
+                                    rotate = FALSE,
+                                    y_offset = 0,
+                                    x_offset=0){
+
     #load function
-    ms <- reticulate::import_from_path(path = '../inst/python/',
-                                       module = 'convert_metaspace_entry')    
-  
+    path <- system.file('spammR','inst/python')
+    ms <- reticulate::import_from_path(path = path,
+                                      module = 'convert_metaspace_entry')
     #convert database to tuple
     db <- reticulate::tuple('SwissLipids','2018-02-02')
     
@@ -59,6 +79,11 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
       sdata <- sdata |>
         dplyr::rename(x_pixels = 'x_coord', y_pixels = 'y_coord')
     }    
+    
+    #can't always get the images to align...
+    sdata$x_pixels <- unlist(sdata$x_pixels) + x_offset
+    sdata$y_pixels <- unlist(sdata$y_pixels) + y_offset
+    
     #convert to spatial object
     mspe <- spammR::convert_to_spe(dat = dat, 
                            sample_meta = sdata,

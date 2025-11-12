@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -51,9 +50,7 @@ def download_ion_data(project_id, fdr_val = 0.2, database=('SwissLipids','2018-0
 
     newtab = pd.concat(all_rows) ##full long table here
     # Save the DataFrame to a CSV file
-    newtab.to_csv("metaspace_data.csv", index = False)
-    fmeta.to_csv('metaspace_feature_data.tsv', index = False)
+    #newtab.to_csv("metaspace_data.csv", index = False)
+    #fmeta.to_csv('metaspace_feature_data.tsv', index = False)
     return(newtab,fmeta)
-
-    print("Data downloaded and saved to 'metaspace_data.csv'.")
     

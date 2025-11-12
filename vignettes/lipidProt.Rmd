@@ -128,7 +128,9 @@ mspe <- retrieve_metaspace_data("2024-02-15_20h37m13s",
                                 fdr = 0.2, 
                                 assay_name = 'lipids',
                                 sample_id = 'mouse_brain',
-                                rotate = TRUE)
+                                rotate = TRUE,
+                                y_offset = -20,
+                                x_offset = 0)
 ## add in image to check 
 mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
                                   sample_id = 'mouse_brain',

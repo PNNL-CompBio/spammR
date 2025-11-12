@@ -9,7 +9,6 @@
 #' @param spe_target Low resolution image measurements
 #' @param spe_origin High-resolution image measreuements to be mapped to target
 #' @param target_dims Names of width and height of target spots, respectively
-#' @param origin_dims Names of width and height of origin spots, respectively
 #' @param stat Statistic used to summarize regions, choices are currently
 #' 'mean' and 'median'
 #' @return A copy of the spe_target object with the altExperiment slot containing
@@ -20,7 +19,6 @@ spat_reduce <- function(spe_target,
                         spe_origin,
                         origin_assay = 'metabolomics',
                         target_dims = c('spot_width','spot_height'),
-                        origin_dims = c('spot_width','spot_height')
                         stat = 'mean'
                         ){
   
