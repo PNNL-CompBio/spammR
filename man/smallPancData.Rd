@@ -4,10 +4,12 @@
 \name{smallPancData}
 \alias{smallPancData}
 \title{Pancreatic proteomics measurements from Gosline et al. proteomics study.
-Row names indicate individual proteins, columns indicate sample identifiers described in
-\code{pancMeta}. Individual values show un-transformed abundance values for each protein.
-List of proteomic measurements in a list sorted from individual regions of the pancreas.
-A subset of the data at https://figshare.com/articles/dataset/spammR_Files/29250962}
+Row names indicate individual proteins, columns indicate sample identifiers
+described in \code{pancMeta}. Individual values show un-transformed abundance
+values for  each protein. List of proteomic measurements in a list sorted
+from individual regions of the pancreas.
+A subset of the data at
+https://figshare.com/articles/dataset/spammR_Files/29250962}
 \format{
 An object of class \code{list} of length 3.
 }
@@ -19,9 +21,11 @@ smallPancData
 }
 \description{
 Pancreatic proteomics measurements from Gosline et al. proteomics study.
-Row names indicate individual proteins, columns indicate sample identifiers described in
-\code{pancMeta}. Individual values show un-transformed abundance values for each protein.
-List of proteomic measurements in a list sorted from individual regions of the pancreas.
-A subset of the data at https://figshare.com/articles/dataset/spammR_Files/29250962
+Row names indicate individual proteins, columns indicate sample identifiers
+described in \code{pancMeta}. Individual values show un-transformed abundance
+values for  each protein. List of proteomic measurements in a list sorted
+from individual regions of the pancreas.
+A subset of the data at
+https://figshare.com/articles/dataset/spammR_Files/29250962
 }
 \keyword{datasets}

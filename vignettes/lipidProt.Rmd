@@ -1,0 +1,202 @@
+---
+title: "spammR lipidomic and proteomic integration"
+author: "Sara Gosline"
+package: spammR
+date: "`r format(Sys.Date(), '%b %d, %Y')`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        number_sections: true
+        toc_depth: 3
+        toc_float:
+            collapsed: true
+description: |
+  A basic walkthrough of how to use the spammR package to perform a 
+  spatial omics analysis for lipidomic and proteomic data. 
+  
+vignette: |
+  %\VignetteIndexEntry{spammRMicrobiomeEval}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(spammR)
+library(geojsonR)
+
+```
+
+## Dataset
+There is limited data that contains both metabolomic and proteomics in the same 
+sample. For the purposes of this example we use sections of rat brain measured
+via MSI to identify lipidomic measurements alongside proteomics from regions 
+of interest from 
+[Vandergrift et al](https://pubs.acs.org/doi/10.1021/acs.analchem.4c04462). 
+
+The proteomics data can be found on 
+[zenodo](https://zenodo.org/records/13345212) and downloaded directly.
+
+
+```{r get proteomics data}
+
+#brain data
+finame <- paste0('https://zenodo.org/records/13345212/files/DESI+spatial',
+                 '%20proteomics%20rat%20brain%20proteomics%20',
+                 'result.xlsx?download=1')
+fi <- download.file(finame,
+                    dest = 'dat.xlsx')
+
+#read in data, convert to matrix 
+dat <- readxl::read_xlsx('dat.xlsx') 
+
+feature_data <- select(dat, c(Protein,`Protein ID`,`Entry Name`,Gene)) |>
+  dplyr::distinct() |>
+  tibble::column_to_rownames('Protein')
+
+dat <- select(dat, c(Protein, starts_with('ROI'))) |>
+  tibble::column_to_rownames('Protein')
+
+#drop duplicates: get gene with highest expression
+
+##read in image
+img <- system.file("extdata","brain_img_0.png",package = 'spammR')
+
+```
+
+Now that the image is loaded we can visualize it (not done here
+to save space). 
+
+```{r plot image, eval=FALSE}
+
+cowplot::ggdraw() + cowplot::draw_image(system.file("extdata",
+                                                    "brain_img_0.png",
+                                                    package = "spammR"))
+```
+
+We used the program QuPath to collect the ROI coordiantes on the image. 
+This program allowed us to highlight the regions of interest and export
+them in GEOJson format, which can then be used as input into spammR. 
+
+```{r format coordinates}
+#remove this once we can include it in spammR
+ 
+  library(geojsonR)
+  jsondat <- FROM_GeoJson(system.file('extdata','brain_roi.geojson',
+                                      package = 'spammR'))
+ 
+  ##herr er hry yhr
+  coords <- do.call(rbind, lapply(jsondat$features,function(x){
+     roi <- x$properties$name
+     xv <- x$geometry$coordinates[,1]
+     yv <- x$geometry$coordinates[,2]
+     if (is.null(roi))
+        roi = ""
+     return(list(ID = roi, x_pixels = min(xv), y_pixels = min(yv),
+                  spot_height = max(yv) - min(yv),
+                 spot_width = max(xv) - min(xv)))
+     })) |>
+     as.data.frame() |>
+     subset(ID != "") |>
+     tidyr::separate(ID,into = c('ROI','Replicate'), 
+                     sep = '_', 
+                     remove = FALSE) |>
+     tibble::remove_rownames() |>
+     tibble::column_to_rownames('ID')
+ 
+ ##now for each ROI we want an x, y, cell height and cell_width
+ #y-coordinates are from top, so need to udpate
+  coords$y_pixels = 263 - unlist(coords$y_pixels) - unlist(coords$spot_height)
+ 
+   #create an SFE
+  spe <- convert_to_spe(dat = dat, 
+                      feature_meta = feature_data,
+                      sample_meta = coords,
+                      spatial_coords_colnames = c('x_pixels','y_pixels'),
+                      assay_name = 'proteomics',
+                      sample_id = 'mouse_brain', 
+                      image_files = img,
+                      image_id = 'mouse_brain')
+
+  # myelin
+  spatial_heatmap(spe, feature = 'sp|P02688|MBP_RAT', 
+                sample_id = 'mouse_brain', 
+                image_id = 'mouse_brain')
+
+```
+
+Now that we have the image and protein data loaded, we can
+begin to ingest the lipid data from metaspace. This 
+requires an additional command to pull the information directly.
+
+```{r metaspace import and plotting}
+##get lipid data from metaspace 
+mspe <- spammR::retrieve_metaspace_data("2024-02-15_20h37m13s", 
+                                fdr = 0.2, 
+                                assay_name = 'lipids',
+                                sample_id = 'mouse_brain',
+                                rotate = TRUE)
+## add in image to check 
+mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
+                                  sample_id = 'mouse_brain',
+                                  image_id = 'mouse_brain')
+
+##test with a plot
+ spatial_heatmap(mspe, feature = 'C46H78NO10P-H-',
+                 assay = 'lipids',
+                 plot_log = TRUE,
+                 metric_display = 'Lipid expression',
+                sample_id = 'mouse_brain',
+                image_id = 'mouse_brain')#plot with an ion
+ 
+ 
+ spatial_heatmap(mspe, feature = 'C41H78NO7P-H-',
+                 assay = 'lipids',
+                 plot_log = TRUE,
+                   metric_display = 'Lipid expression',
+                sample_id = 'mouse_brain',
+                image_id = 'mouse_brain')#plot with an ion
+
+
+```
+
+## Merging images to single coordinate system
+
+Since the proteomics is measured in discrete ROI and the lipids are measured
+on a per-pixel basis, to carry out pure multiomic comparisons we need to map
+them to the same coordinate space.
+
+To do this we use the `spat_reduce` function to reduce the lipidomics data
+to the same regions as the proteomics. 
+
+```{r reduce, echo=FALSE}
+
+reduced <- spat_reduce(spe_target = spe, 
+                       spe_origin = mspe, 
+                       origin_assay = 'lipids')
+
+reduced
+
+```
+
+# Correlation analysis
+
+One of the innovative analyses we can do with the spatial data is to evaluate
+correlations within molecules across space. 
+
+## Protein correlation enrichment
+First we identify protein pathways that are enriched across the different
+regions. 
+
+## Protein-lipid correlation
+Then we can calculate protein-lipid correlations and look at the related lipid
+networks
+
+Now we can carry out correlation and correlation enrichment analysis across
+the different modalities. 
+
+

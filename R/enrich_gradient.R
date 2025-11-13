@@ -1,15 +1,20 @@
 #' Calculate functional or pathway enrichment from a gradient
-#' @description `enrich_gradient()` calculates over-representation statistics (ORA) using a ranking of genes from `distance_based_analysis()`
-#' For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
+#' @description `enrich_gradient()` calculates over-representation statistics 
+#' (ORA) using a ranking of genes from `distance_based_analysis()`
+#' For ORA using an external or already defined interest list of genes and 
+#' gene sets, use leapR functions directly
 #' @export
 #' @import leapR
 #' @import SummarizedExperiment
-#' @param spe SpatialExperiment object containing spatial omics data and spatial diffex results
+#' @param spe SpatialExperiment object containing spatial omics data and 
+#' spatial diffex results
 #' @param geneset in GMT format
 #' @param assay_name name of assay
 #' @param feature_column Column of rowData that maps to gene set
 #' @param ranking_column Column of rowData that maps to ranks
-#' @returns A dataframe containing results from over-representation analysis of members of gene sets in the interest list of genes based on filtering criteria above.
+#' @returns A dataframe containing results from over-representation analysis 
+#' of members of gene sets in the interest list of genes based on filtering 
+#' criteria above.
 #'
 #' @examples
 #' data(smallPancData)
@@ -41,22 +46,17 @@
 enrich_gradient <- function(spe,
                             assay_name,
                             geneset,
-                            feature_column, # primary gene name to be mapped to enrichment data
+                            feature_column, # name to be mapped to gene set
                             ranking_column) {
-  ## first we get the ranking of the values
-  #  rvals <- SummarizedExperiment::rowData(spe) |>
-  #    as.data.frame() |>
-  #    dplyr::rename(feature = feature_column,rank = ranking_column) |>
-  #    dplyr::select(feature,rank)
 
-  # here we use the leapR package for the rank enrichment
-  es <- leapR::leapR(
-    eset = spe, assay_name = assay_name, geneset = geneset,
-    enrichment_method = "enrichment_in_order",
-    id_column = feature_column, primary_columns = ranking_column
-  ) |>
-    subset(!is.na(pvalue)) |>
-    dplyr::arrange(pvalue)
-
-  return(es)
+    # here we use the leapR package for the rank enrichment
+    es <- leapR::leapR(
+      eset = spe, assay_name = assay_name, geneset = geneset,
+      enrichment_method = "enrichment_in_order",
+      id_column = feature_column, primary_columns = ranking_column
+    ) |>
+      subset(!is.na(pvalue)) |>
+      dplyr::arrange(pvalue)
+  
+    return(es)
 }

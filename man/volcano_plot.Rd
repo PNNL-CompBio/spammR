@@ -16,29 +16,39 @@ volcano_plot(
 )
 }
 \arguments{
-\item{diffex.spe}{A \code{SpatialExperiment} object containing differentail expression results in rowData}
+\item{diffex.spe}{A \code{SpatialExperiment} object containing differentail
+expression results in rowData}
 
-\item{logFC_colname}{column name in differenital expression results that represents log10 fold change}
+\item{logFC_colname}{column name in differenital expression results that
+represents log10 fold change}
 
-\item{pval_colname}{column name in differential epxression results that represents the p-value to be plotted}
+\item{pval_colname}{column name in differential epxression results that
+represents the p-value to be plotted}
 
-\item{pval_corrected}{Boolean indicating whether pval_colname represents the corrected p-value or not}
+\item{pval_corrected}{Boolean indicating whether pval_colname represents
+the corrected p-value or not}
 
 \item{log_transformed}{set to TRUE if data is log transformed}
 
 \item{title}{title for the plot}
 
-\item{thresh}{Threshold for p-value to be used to annotate significant results on the plot}
+\item{thresh}{Threshold for p-value to be used to annotate significant
+results on the plot}
 
-\item{sigLabel_colname}{Either a a vector with labels or a string (Example: "Gene") that is the column name in differential expression results that should be used for labeling significant results on the plot.}
+\item{sigLabel_colname}{Either a a vector with labels or a string
+(Example: "Gene") that is the column name in differential expression results
+that should be used for labeling significant results on the plot.}
 }
 \value{
 ggplot Volcano plot
 }
 \description{
-\code{volcano_plot()} generates a volcano plot to visualize results from differential expression analysis stored in a data frame.
-Use this function directly if differential expression results are in a separate data frame and not an spe object
-Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R if differential expression results are in an spe object.
+\code{volcano_plot()} generates a volcano plot to visualize results
+from differential expression analysis stored in a data frame.
+Use this function directly if differential expression results are in a
+separate data frame and not an spe object
+Helper function for volcanoPlot_DiffExSpe.R; use volcanoPlot_DiffExSpe.R
+if differential expression results are in an spe object.
 -log10(p-value) vs. log2(fold change)
 }
 \examples{

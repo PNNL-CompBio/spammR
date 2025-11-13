@@ -1,5 +1,6 @@
 #' Calculate centers of spots/samples for distance based analysis
-#' @description calc_centers calculates the centers of spots for numerical analysis. Currently not used.
+#' @description calc_centers calculates the centers of spots for numerical
+#' analysis.Currently not used.
 #' @import SpatialExperiment
 #'
 #' @param spe SpatialExperiment object containing omics data
@@ -20,15 +21,16 @@
 #' )
 #' ## can't actually call internal functuon
 calc_centers <- function(spe) {
-  ## get relevant column data - x,y coords and spot height/width
-  spatial_coords <- spatialCoords(spe)
+    ## get relevant column data - x,y coords and spot height/width
+    spatial_coords <- spatialCoords(spe)
+        
+    if (ncol(spatial_coords) == 0) {
+        stop("No spatial coordinates were set in image object")
+    }
+    spatial_sizes <- colData(spe)[, c("spot_width", "spot_height")]
 
-  if (ncol(spatial_coords) == 0) {
-    stop("No spatial coordinates were set in image object")
-  }
-  spatial_sizes <- colData(spe)[, c("spot_width", "spot_height")]
-
-  new_coords <- data.frame(spatial_coords[, 1] + spatial_sizes[, 1] / 2, spatial_coords[, 2] + spatial_sizes[, 2] / 2)
-  colnames(new_coords) <- c("x_center", "y_center")
-  return(new_coords)
+    new_coords <- data.frame(spatial_coords[, 1] + spatial_sizes[, 1] / 2, 
+                             spatial_coords[, 2] + spatial_sizes[, 2] / 2)
+    colnames(new_coords) <- c("x_center", "y_center")
+    return(new_coords)
 }

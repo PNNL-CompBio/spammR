@@ -7,28 +7,43 @@
 calc_spatial_diff_ex(
   spe,
   assay_name = "proteomics",
+  count_based = FALSE,
   log_transformed = FALSE,
   category_col,
   compare_vals
 )
 }
 \arguments{
-\item{spe}{Spatial Experiment object containing data to be used for differential expression analysis}
+\item{spe}{Spatial Experiment object containing data to be used for
+differential expression analysis}
 
-\item{assay_name}{Name of the dataset stored in the spe object, that is to be used for the differential expression analysis. Example: znormalized_log2}
+\item{assay_name}{Name of the dataset stored in the spe object, that is
+to be used for the differential expression analysis.
+Example: znormalized_log2}
 
-\item{log_transformed}{Is the data given in spe log2 transformed TRUE or FALSE}
+\item{count_based}{Set to TRUE of the data are count based, e.g. RNA-Seq}
 
-\item{category_col}{Name of the column that specifies category of each sample. Example: "IsletOrNot"
-#Categories from \code{category_col} will be compared in the differential expression analysis}
+\item{log_transformed}{Is the data given in spe log2 transformed TRUE
+or FALSE}
 
-\item{compare_vals}{A vector containing names of categories from category_col to be compared. Only required if there are more than two values in \code{category_col}}
+\item{category_col}{Name of the column that specifies category of each
+sample. Example: "IsletOrNot"
+#Categories from \code{category_col} will be compared in the differential
+expression analysis}
+
+\item{compare_vals}{A vector containing names of categories from
+category_col to be compared. Only required if there are more than two
+values in \code{category_col}}
 }
 \value{
-A Spatial Experiment object containing differential expression results, stored in rowData(diffEx.spe)
+A Spatial Experiment object containing differential expression
+results, stored in \code{rowData(diffEx.spe)}
+and \code{assays(diffEx.spe)} which contains the dataset on which differential
+expresssion analysis was carried out
 }
 \description{
-\code{calc_spatial_diff_ex()} Calculates differential expression analysis using annotations in a SpatialExperiment object
+\code{calc_spatial_diff_ex()} Calculates differential expression
+analysis using annotations in a SpatialExperiment object
 }
 \examples{
 data(smallPancData)

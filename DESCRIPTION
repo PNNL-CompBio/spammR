@@ -1,11 +1,24 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
-Version: 0.99.1
+Version: 0.99.2
 Authors@R:
-    person("Harkirat", "Sohi", email="harkirat.sohi@pnnl.gov", role = c("cre"), comment = c(ORCID = "0009-0000-9935-1641"))
-    person("Yannick", "Mahlich", email="yannick.mahlich@pnnl.gov", role = c("aut"), comment = c(ORCID = "0000-0002-0717-2927"))
-    person("Sara", "Gosline", email="sara.gosline@pnnl.gov", role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774"))
-Description: SpammR provides a suite of tools and a data structure to analyze diverse multiomics measurements in a spatial context. It enables the analysis and visualization of omics measurements paired with a specific image, each with spatial coordinates. 
+    person("Harkirat", "Sohi", email="harkirat.sohi@pnnl.gov", role = c("cre"), 
+    comment = c(ORCID = "0009-0000-9935-1641"))
+    person("Yannick", "Mahlich", email="yannick.mahlich@pnnl.gov", 
+    role = c("aut"), comment = c(ORCID = "0000-0002-0717-2927"))
+    person("Sara", "Gosline", email="sara.gosline@pnnl.gov", 
+    role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774"))
+Description: SpammR provides a suite of tools and a data structure to 
+    analyze diverse multiomics measurements in a spatial context. 
+    It enables the analysis and visualization of omics measurements 
+    paired with a specific image, each with spatial coordinates. 
+Config/reticulate: list(
+  packages = list(
+    list(package = "numpy"),
+    list(package = "pandas"), 
+    list(package = "metaspace")
+  ),
+  python_version = "3.11")
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -13,10 +26,11 @@ RoxygenNote: 7.3.3
 Suggests: testthat (>= 3.0.0), BiocStyle, knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-biocViews: Spatial, Pathways, Proteomics, DifferentialExpression, Metabolomics, SystemsBiology, GeneExpression, GeneSetEnrichment
+biocViews: Spatial, Pathways, Proteomics, DifferentialExpression, 
+    Metabolomics, SystemsBiology, GeneExpression, GeneSetEnrichment
 Depends: SummarizedExperiment, SpatialExperiment, limma, R (>= 4.5.0)
-Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, impute,
-        matrixStats, scales, spdep, ggrepel, IRanges, leapR
+Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, reticulate, impute,
+        matrixStats, scales, spdep, ggrepel, IRanges, tibble, tidyr, leapR
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
 

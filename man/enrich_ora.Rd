@@ -18,49 +18,65 @@ enrich_ora(
 )
 }
 \arguments{
-\item{spe}{SpatialExperiment object containing spatial omics data and spatial diffex results}
+\item{spe}{SpatialExperiment object containing spatial omics data and
+spatial diffex results}
 
 \item{geneset}{in GMT format}
 
 \item{feature_column}{Column of rowData that maps to gene set}
 
-\item{pval_type_forThresh}{Choose from "adjusted_pval" or "pval". Type of p-value that should be used for
-filtering statistically significant results. Default is adjusted p-value for multiple hypotheses correction.}
+\item{pval_type_forThresh}{Choose from "adjusted_pval" or "pval". Type of
+p-value that should be used for
+filtering statistically significant results. Default is adjusted p-value
+for multiple hypotheses correction.}
 
-\item{pval_thresh}{value to use for filtering based on pval_type_forThreshold. Default is 0.05.
+\item{pval_thresh}{value to use for filtering based on
+pval_type_forThreshold. Default is 0.05.
 Values less than pval_thresh will be kept.}
 
-\item{logFC_lowerThresh}{Lower threshold for log Fold Change, to be used for filtering spatialDiffEx results. Default is NA}
+\item{logFC_lowerThresh}{Lower threshold for log Fold Change, to be used
+for filtering spatialDiffEx results. Default is NA}
 
-\item{logFC_upperThresh}{Upper threshold for log Fold Change, to be used for filtering spatialDiffEx results. Default is NA}
+\item{logFC_upperThresh}{Upper threshold for log Fold Change, to be used
+for filtering spatialDiffEx results. Default is NA}
 
 \item{geneset_name}{Name of geneset provided}
 
-\item{sortResultsBy}{For sorting ORA results, choose from the following column names: "BH_pvalue" (default)}
+\item{sortResultsBy}{For sorting ORA results, choose from the following
+column names: "BH_pvalue" (default)}
 
-\item{comparison_name}{Example: "RSPv_vs_others" Text to indicate in results data frame, which spatial groups were
+\item{comparison_name}{Example: "RSPv_vs_others" Text to indicate in
+results data frame, which spatial groups were
 compared for the interest list of genes}
 }
 \value{
-A dataframe containing results from over-representation analysis of members of gene sets in the
+A dataframe containing results from over-representation
+analysis of members of gene sets in the
 interest list of genes based on filtering criteria above.
 }
 \description{
-\code{enrich_ora()} calculates over-representation statistics (ORA) using an interest list of genes from differential
-expression results in spammR and gene sets (either the ones provided in spammR or user supplied)
-This function uses results from \code{calc_spatial_diff_ex}. Interest list of genes for ORA is obtained from spatialDiffEx results
-based on the criteria specified in this function.It is a wrapper for the \code{leapR} package which is required
-For ORA using an external or already defined interest list of genes and gene sets, use leapR functions directly
+\code{enrich_ora()} calculates over-representation statistics
+(ORA) using an interest list of genes from differential
+expression results in spammR and gene sets (either the ones provided in
+spammR or user supplied)
+This function uses results from \code{calc_spatial_diff_ex}. Interest list of
+genes for ORA is obtained from spatialDiffEx results
+based on the criteria specified in this function.It is a wrapper for the
+\code{leapR} package which is required
+For ORA using an external or already defined interest list of genes and
+gene sets, use leapR functions directly
 }
 \examples{
 data(smallPancData)
 data(pancMeta)
 data(protMeta)
 pooledPanc <- dplyr::bind_cols(smallPancData)
-panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, feature_meta_colname = "pancProts")
+panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, 
+feature_meta_colname = "pancProts")
 diffex.spe <- calc_spatial_diff_ex(panc.spe, category_col = "IsletOrNot")
 library(leapR)
 data("krbpaths")
-ora.res <- enrich_ora(diffex.spe, geneset = krbpaths, geneset_name = "krbpaths", feature_column = "PrimaryGeneName")
+ora.res <- enrich_ora(diffex.spe, geneset = krbpaths, 
+         geneset_name = "krbpaths", feature_column = "PrimaryGeneName")
 
 }

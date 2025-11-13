@@ -7,7 +7,8 @@
 split_spe(spe, split_colname, assay_name = NULL)
 }
 \arguments{
-\item{spe}{SpatialExperiment object containing spatial omics data and spatial diffex results}
+\item{spe}{SpatialExperiment object containing spatial omics data
+and spatial diffex results}
 
 \item{split_colname}{Column of rowData that maps to gene set}
 
@@ -17,7 +18,8 @@ split_spe(spe, split_colname, assay_name = NULL)
 A list of SpatialExperiment objects containing a subset of the data
 }
 \description{
-\code{split_spe()} splits an SPE object into smaller objects by a column feature. Ideally this should be in the SpatialExperiment
+\code{split_spe()} splits an SPE object into smaller objects
+by a column feature. Ideally this should be in the SpatialExperiment
 class or some utility package.
 }
 \examples{
@@ -25,7 +27,8 @@ data(smallPancData)
 data(pancMeta)
 data(protMeta)
 pooledPanc <- dplyr::bind_cols(smallPancData)
-panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, feature_meta_colname = "pancProts")
+panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, 
+          feature_meta_colname = "pancProts")
 split_list <- split_spe(panc.spe, split_colname = "Image")
 
 }
