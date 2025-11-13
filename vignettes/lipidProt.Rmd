@@ -34,18 +34,21 @@ library(geojsonR)
 ## Dataset
 There is limited data that contains both metabolomic and proteomics in the same 
 sample. For the purposes of this example we use sections of rat brain measured
-via MSI to identify metabolomic measurements alongside proteomics from regions 
+via MSI to identify lipidomic measurements alongside proteomics from regions 
 of interest from 
 [Vandergrift et al](https://pubs.acs.org/doi/10.1021/acs.analchem.4c04462). 
 
 The proteomics data can be found on 
-[zenodo](https://zenodo.org/records/13345212). 
+[zenodo](https://zenodo.org/records/13345212) and downloaded directly.
 
 
 ```{r get proteomics data}
 
 #brain data
-fi <- download.file('https://zenodo.org/records/13345212/files/DESI+spatial%20proteomics%20rat%20brain%20proteomics%20result.xlsx?download=1',
+finame <- paste0('https://zenodo.org/records/13345212/files/DESI+spatial',
+                 '%20proteomics%20rat%20brain%20proteomics%20',
+                 'result.xlsx?download=1')
+fi <- download.file(finame,
                     dest = 'dat.xlsx')
 
 #read in data, convert to matrix 
@@ -61,20 +64,32 @@ dat <- select(dat, c(Protein, starts_with('ROI'))) |>
 #drop duplicates: get gene with highest expression
 
 ##read in image
-img <- "../inst/extdata/brain_img_0.png"
-
-cowplot::ggdraw() + cowplot::draw_image(img)
-
+img <- system.file("extdata","brain_img_0.png",package = 'spammR')
 
 ```
 
+Now that the image is loaded we can visualize it (not done here
+to save space). 
+
+```{r plot image, eval=FALSE}
+
+cowplot::ggdraw() + cowplot::draw_image(system.file("extdata",
+                                                    "brain_img_0.png",
+                                                    package = "spammR"))
+```
+
+We used the program QuPath to collect the ROI coordiantes on the image. 
+This program allowed us to highlight the regions of interest and export
+them in GEOJson format, which can then be used as input into spammR. 
 
 ```{r format coordinates}
 #remove this once we can include it in spammR
  
   library(geojsonR)
-  jsondat <- FROM_GeoJson('../data/brain_roi.geojson')
+  jsondat <- FROM_GeoJson(system.file('extdata','brain_roi.geojson',
+                                      package = 'spammR'))
  
+  ##herr er hry yhr
   coords <- do.call(rbind, lapply(jsondat$features,function(x){
      roi <- x$properties$name
      xv <- x$geometry$coordinates[,1]
@@ -95,7 +110,7 @@ cowplot::ggdraw() + cowplot::draw_image(img)
  
  ##now for each ROI we want an x, y, cell height and cell_width
  #y-coordinates are from top, so need to udpate
-  coords$y_pixels = 300 - unlist(coords$y_pixels) - unlist(coords$spot_height)
+  coords$y_pixels = 263 - unlist(coords$y_pixels) - unlist(coords$spot_height)
  
    #create an SFE
   spe <- convert_to_spe(dat = dat, 
@@ -112,25 +127,19 @@ cowplot::ggdraw() + cowplot::draw_image(img)
                 sample_id = 'mouse_brain', 
                 image_id = 'mouse_brain')
 
-  #protein in myelin
-  spatial_heatmap(spe, feature = 'sp|P13233|CN37_RAT',
-                sample_id = 'mouse_brain',
-                image_id = 'mouse_brain')
-
 ```
 
 Now that we have the image and protein data loaded, we can
-begin to ingest the lipid data from metaspace
+begin to ingest the lipid data from metaspace. This 
+requires an additional command to pull the information directly.
 
 ```{r metaspace import and plotting}
 ##get lipid data from metaspace 
-mspe <- retrieve_metaspace_data("2024-02-15_20h37m13s", 
+mspe <- spammR::retrieve_metaspace_data("2024-02-15_20h37m13s", 
                                 fdr = 0.2, 
                                 assay_name = 'lipids',
                                 sample_id = 'mouse_brain',
-                                rotate = TRUE,
-                                y_offset = -20,
-                                x_offset = 0)
+                                rotate = TRUE)
 ## add in image to check 
 mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
                                   sample_id = 'mouse_brain',
@@ -145,7 +154,7 @@ mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
                 image_id = 'mouse_brain')#plot with an ion
  
  
- spatial_heatmap(mspe, feature = 'C25H49O11P-H-',
+ spatial_heatmap(mspe, feature = 'C41H78NO7P-H-',
                  assay = 'lipids',
                  plot_log = TRUE,
                    metric_display = 'Lipid expression',
@@ -162,7 +171,7 @@ on a per-pixel basis, to carry out pure multiomic comparisons we need to map
 them to the same coordinate space.
 
 To do this we use the `spat_reduce` function to reduce the lipidomics data
-to the same regions as the metabolomics. 
+to the same regions as the proteomics. 
 
 ```{r reduce, echo=FALSE}
 
@@ -175,6 +184,9 @@ reduced
 ```
 
 # Correlation analysis
+
+One of the innovative analyses we can do with the spatial data is to evaluate
+correlations within molecules across space. 
 
 ## Protein correlation enrichment
 First we identify protein pathways that are enriched across the different

@@ -2,7 +2,7 @@
 % Please edit documentation in R/spat_reduce.R
 \name{spat_reduce}
 \alias{spat_reduce}
-\title{Reduce a high resolution image measurement (origin) to a lower resultion
+\title{Reduce a high resolution image measurement (origin) to a lower resolution
 measurement (target)}
 \usage{
 spat_reduce(
@@ -10,23 +10,23 @@ spat_reduce(
   spe_origin,
   origin_assay = "metabolomics",
   target_dims = c("spot_width", "spot_height"),
-  origin_dims = c("spot_width", "spot_height")
+  stat = "mean"
 )
 }
 \arguments{
 \item{spe_target}{Low resolution image measurements}
 
-\item{spe_origin}{High-resolution image measreuements to be mapped to target}
+\item{spe_origin}{High-resolution image measurements to be mapped to target}
+
+\item{origin_assay}{Name of assay in origin assay to be reduced}
 
 \item{target_dims}{Names of width and height of target spots, respectively}
-
-\item{origin_dims}{Names of width and height of origin spots, respectively}
 
 \item{stat}{Statistic used to summarize regions, choices are currently
 'mean' and 'median'}
 }
 \value{
-A copy of the spe_target object with the altExperiment slot containing
+A copy of the spe_target object with the \code{altExp} slot containing
 a reduced version of the origin
 }
 \description{
@@ -35,5 +35,8 @@ with all measurements mapped to the same coordinate space for plotting
 and analysis
 }
 \details{
-add detauls here
+This function allows us to map two distinct omics measurements to
+the same coordinate system. It takes on 'origin' measurement and summarizes
+the values (typically via mean) in the ROI in a 'target' measurement so that
+the source and target values can be compared.
 }

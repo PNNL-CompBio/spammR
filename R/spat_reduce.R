@@ -1,26 +1,29 @@
-#' Reduce a high resolution image measurement (origin) to a lower resultion
+#' Reduce a high resolution image measurement (origin) to a lower resolution
 #' measurement (target)
 #' @description `spat_reduce()` Creates a single SpatialExperiment object
 #' with all measurements mapped to the same coordinate space for plotting
 #' and analysis
-#' @details add detauls here 
+#' @details This function allows us to map two distinct omics measurements to
+#' the same coordinate system. It takes on 'origin' measurement and summarizes
+#' the values (typically via mean) in the ROI in a 'target' measurement so that
+#' the source and target values can be compared. 
 #' @import SpatialExperiment
-#' @import IRanges
 #' @param spe_target Low resolution image measurements
-#' @param spe_origin High-resolution image measreuements to be mapped to target
+#' @param spe_origin High-resolution image measurements to be mapped to target
+#' @param origin_assay Name of assay in origin assay to be reduced
 #' @param target_dims Names of width and height of target spots, respectively
 #' @param stat Statistic used to summarize regions, choices are currently
 #' 'mean' and 'median'
-#' @return A copy of the spe_target object with the altExperiment slot containing
+#' @return A copy of the spe_target object with the `altExp` slot containing
 #' a reduced version of the origin 
-#' @example Add example here
+#' @export
+#'
 #' 
 spat_reduce <- function(spe_target,
                         spe_origin,
                         origin_assay = 'metabolomics',
                         target_dims = c('spot_width','spot_height'),
-                        stat = 'mean'
-                        ){
+                        stat = 'mean'){
   
   #first let's get overlapping regions
   #hoping this will be easier when we move to polygon geometry

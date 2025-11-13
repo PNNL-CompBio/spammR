@@ -348,8 +348,8 @@ of KO associations found within the individual metagenomes. As such we are
 not strictly working with "gene abundances" that would be expected for a 
 more traditional differential expression and pathway enrichment analysis. 
 Conversely the "abundance" measurements of the individual KOs also distribute 
-differently to what would be expecetd. To this end we are relying on much 
-looser p-value thresholds than what normally would be cosidered acceptable, 
+differently to what would be expected. To this end we are relying on much 
+looser p-value thresholds than what normally would be considered acceptable, 
 i.e. we are considering everything with an adjusted p-value of < 0.1 as 
 being statistically significant for up / down regulation.
 

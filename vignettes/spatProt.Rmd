@@ -165,13 +165,12 @@ print(pooled.panc.spe)
 ```
 
 We can also create a list of `SpatialExperiment` objects, one for each of
-the 7 images we have.
+the 3 images we have. 
 
 ```{r spe list, echo=FALSE, warning=FALSE, message=FALSE}
 ## list of image names
-imglist <- c("Image_0", "Image_1", "Image_2",
-             "Image_3", "Image_4", "Image_7", "Image_10")
-
+imglist <- c("Image_0", "Image_1", "Image_2")
+           
 img.spes <- lapply(
     imglist,
     function(x) {
@@ -218,7 +217,7 @@ allimgs <- lapply(imglist, function(x) {
   return(res)
 })
 
-cowplot::plot_grid(allimgs[[2]], allimgs[[3]], nrow = 2)
+allimgs[[2]]
 ```
 
 To go further and visualize entire pathways we need to first identify which 
@@ -267,20 +266,6 @@ can also visualize those.
 
 ```{r plot pathway, message=FALSE, warning=FALSE, error=FALSE}
 spe.plot <- img.spes[[2]]
-## we need the image boundaries based on the x/y coordinates. The image will
-## be stretched between the origin and max in both directions
-bounds <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-    "x_origin",
-    "y_origin",
-    "x_max",
-    "y_max"
-)])
-# the spot size can vary between every sample, but for now
-# we assume a square spot (with a width and a height)
-sizes <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-    "spot_width",
-    "spot_height"
-)])
 
 hup <- spatial_heatmap(spe.plot,
     feature = rownames(ups),
@@ -291,31 +276,7 @@ hup <- spatial_heatmap(spe.plot,
 )
 
 hup
-## what if we want to plot in image 3?
 
-spe.plot <- img.spes[[3]]
-## we need the image boundaries based on the x/y coordinates. The image will
-## be stretched between the origin and max in both directions
-bounds <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-    "x_origin",
-    "y_origin",
-    "x_max",
-    "y_max"
-)])
-# the spot size can vary between every sample, but for now
-# we assume a square spot (with a width and a height)
-sizes <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-    "spot_width",
-    "spot_height"
-)])
-
-hup <- spatial_heatmap(spe.plot,
-    feature = rownames(ups),
-    sample_id = "Image_2",
-    image_id = "with_grid",
-    label_column = "IsletOrNot",
-    interactive = FALSE
-)
 ```
 
 ## Pathway enrichment measurements
@@ -346,20 +307,6 @@ secprots <- ora.res["REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION", ] |>
     unlist()
 
 spe.plot <- img.spes[[2]]
-## we need the image boundaries based on the x/y coordinates. The image will
-## be stretched between the origin and max in both directions
-bounds <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-    "x_origin",
-    "y_origin",
-    "x_max",
-    "y_max"
-)])
-# the spot size can vary between every sample, but for now
-# we assume a square spot (with a width and a height)
-sizes <- unlist(SummarizedExperiment::colData(spe.plot)[1, c(
-  "spot_width",
-  "spot_height"
-)])
 
 hup <- spatial_heatmap(spe.plot,
     feature = secprots,
@@ -436,10 +383,10 @@ spatial_heatmap(img.spes[[3]],
     label_column = "IsletOrNot", interactive = FALSE
 )
 
-spatial_heatmap(img.spes[[5]],
+spatial_heatmap(img.spes[[2]],
     feature = "AP3S2",
     feature_type = "PrimaryGeneName",
-    sample_id = names(img.spes)[5],
+    sample_id = names(img.spes)[2],
     image_id = "with_grid",
     label_column = "IsletOrNot", interactive = FALSE
 )
@@ -488,10 +435,10 @@ rprots <- subset(enriched.paths, krbpaths == "KEGG_RIBOSOME") |>
 
 rprots <- unlist(strsplit(rprots[1, 2], split = ", "))
 
-spatial_heatmap(img.spes[[5]],
+spatial_heatmap(img.spes[[2]],
     feature = rprots,
     feature_type = "PrimaryGeneName",
-    sample_id = names(img.spes)[5],
+    sample_id = names(img.spes)[2],
     image_id = "with_grid",
     label_column = "IsletOrNot", interactive = FALSE
 )

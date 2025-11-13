@@ -2,7 +2,7 @@
 #' @description `retrieve_metaspace_data()`Collects data from 
 #' http://metaspace2020.org by project id and returns it in 
 #' SpatialExperiment object
-#' @export
+#' @details 
 #' @import reticulate
 #' @import dplyr
 #' @import tidyr
@@ -16,34 +16,26 @@
 #' @param x_offset Number of pixels to adjust x based on image
 #' @export
 #' @examples
-#' mspe <- retrieve_metaspace_data()
+#' rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s", 
+#'                                 fdr = 0.2, 
+#'                                 assay_name = 'lipids', 
+#'                                sample_id = 'sample')
+#' head(rowMeans(assay(rdat,'lipids')))
 #' 
-#' name
-#' 
-#' 
-
-.onLoad <- function(libname, pkgname){
-  library(reticulate)
-  if (!py_available('pandas'))
-    py_install('pandas')
-  if (!py_available('numpy'))
-    py_install('numpy')
-  if (!py_available('metaspace'))
-    py_install('metaspace')
-  py_require(python_version = ">=3.11")
-  
-}
 
 retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s", 
                                     fdr = 0.2, 
-                                    assay_name = 'metabolites', 
+                                    assay_name = 'lipids', 
                                     sample_id = 'sample', 
                                     rotate = FALSE,
                                     y_offset = 0,
                                     x_offset=0){
+  
+    reticulate::py_require(c('metaspace','numpy','pandas'))
 
     #load function
-    path <- system.file('spammR','inst/python')
+    path <- system.file('python',package = 'spammR')
+    print(path)
     ms <- reticulate::import_from_path(path = path,
                                       module = 'convert_metaspace_entry')
     #convert database to tuple
@@ -94,4 +86,16 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
     return(mspe)
     
     
+}
+
+.onLoad <- function(libname, pkgname){
+  reticulate::py_require(python_version = "3.11")
+  
+  if (!reticulate::py_module_available('pandas'))
+    reticulate::py_install('pandas')
+  if (!reticulate::py_module_available('numpy'))
+    reticulate::py_install('numpy')
+  if (!reticulate::py_module_available('metaspace'))
+    reticulate::py_install('metaspace')
+  
 }

@@ -7,9 +7,11 @@
 retrieve_metaspace_data(
   project_id = "2024-02-15_20h37m13s",
   fdr = 0.2,
-  assay_name = "metabolites",
+  assay_name = "lipids",
   sample_id = "sample",
-  rotate = FALSE
+  rotate = FALSE,
+  y_offset = 0,
+  x_offset = 0
 )
 }
 \arguments{
@@ -22,6 +24,10 @@ retrieve_metaspace_data(
 \item{sample_id}{Name of sample}
 
 \item{rotate}{Set to TRUE if x and y coordinates need to be swapped}
+
+\item{y_offset}{Number of pixels to adjust y based on image}
+
+\item{x_offset}{Number of pixels to adjust x based on image}
 }
 \description{
 \code{retrieve_metaspace_data()}Collects data from
@@ -29,7 +35,10 @@ http://metaspace2020.org by project id and returns it in
 SpatialExperiment object
 }
 \examples{
-mspe <- retrieve_metaspace_data()
+rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s", 
+                                fdr = 0.2, 
+                                assay_name = 'lipids', 
+                               sample_id = 'sample')
+head(rowMeans(assay(rdat,'lipids')))
 
-name
 }

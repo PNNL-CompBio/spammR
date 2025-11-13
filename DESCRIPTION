@@ -18,7 +18,7 @@ Config/reticulate: list(
     list(package = "pandas"), 
     list(package = "metaspace")
   ),
-  python_version = ">=3.11")
+  python_version = "3.11")
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
