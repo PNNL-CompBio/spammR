@@ -34,6 +34,9 @@ retrieve_metaspace_data(
 http://metaspace2020.org by project id and returns it in
 SpatialExperiment object
 }
+\details{
+This relies on underlying python code and environment to run.
+}
 \examples{
 rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s", 
                                 fdr = 0.2, 

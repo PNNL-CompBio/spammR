@@ -103,8 +103,9 @@ spatial_heatmap <- function(spe,
                             sample_label_size = 1.75,
                             plot_title = NULL,
                             interactive = FALSE) {
+      stopifnot(!missing(feature),
+            is(spe,'SpatialExperiment'))
   ## first get the spatial coordinates from the metadata
-
     spatial <- SpatialExperiment::spatialCoords(spe)
     x <- spatial[, 1]
     y <- spatial[, 2]
@@ -134,13 +135,13 @@ spatial_heatmap <- function(spe,
                                                     drop = TRUE] %in% feature)
     }
 
-    if (length(feature) == 1) { ## we are just plotting a single row
+    if (length(rowNum_toplot) == 1) { ## we are just plotting a single row
         fval_plot <- f[rowNum_toplot, ]
     } else { ## we are plotting more than one value and need to average
         fval_plot <- colMeans(f[rowNum_toplot, ], na.rm = TRUE)
         fval_plot <- fval_plot[is.finite(fval_plot)]
     }
-    fval_plot[which(fval_plot==0)] <- NA
+    fval_plot[which(fval_plot == 0)] <- NA
     if (length(fval_plot) == 0) {
         msg <- paste("Cannot plot heatmap:", paste(feature, collapse = ","), 
                    "not in dataset")
@@ -216,6 +217,7 @@ spatial_heatmap <- function(spe,
     } else {
         rescaled_feature_values <- fval_plot
     }
+    
     spatial <- cbind(
         spatial, fval_plot, rescaled_feature_values,
         x_left, x_right, y_bottom, y_top, midpoint_x, midpoint_y
