@@ -22,25 +22,38 @@ vignette: |
 
 ---
 
+# About
+The goal of this vignette is to showcase integration between two different
+omes in the same spatial context. For this we use a dataset from sections of 
+rat brain measured via mass spetrometry imaging (MSI) to identify 
+lipidomic measurements alongside proteomics from regions of interest from 
+[Vandergrift et al](https://pubs.acs.org/doi/10.1021/acs.analchem.4c04462). 
+
+We show how `spammR` enables:
+- download and loading of datasets
+- visualization of features within each dataset
+- identification of correlated regions in this dataset
+
+First we load the required packages.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(readxl)
 library(spammR)
 library(geojsonR)
+library(pheatmap)
+library(tidygraph)
 
 ```
 
-## Dataset
-There is limited data that contains both metabolomic and proteomics in the same 
-sample. For the purposes of this example we use sections of rat brain measured
-via MSI to identify lipidomic measurements alongside proteomics from regions 
-of interest from 
-[Vandergrift et al](https://pubs.acs.org/doi/10.1021/acs.analchem.4c04462). 
-
+# Load proteomics data
 The proteomics data can be found on 
-[zenodo](https://zenodo.org/records/13345212) and downloaded directly.
+[zenodo](https://zenodo.org/records/13345212) and downloaded directly. From 
+there. 
 
+## Format data
+We require formatting the data as a matrix for loading. 
 
 ```{r get proteomics data}
 
@@ -61,15 +74,19 @@ feature_data <- select(dat, c(Protein,`Protein ID`,`Entry Name`,Gene)) |>
 dat <- select(dat, c(Protein, starts_with('ROI'))) |>
   tibble::column_to_rownames('Protein')
 
-#drop duplicates: get gene with highest expression
+```
 
+The image itself we downloaded separately from metaspace (see below) and
+stored it in the package. 
+
+```{r load image}
 ##read in image
 img <- system.file("extdata","brain_img_0.png",package = 'spammR')
 
 ```
 
 Now that the image is loaded we can visualize it (not done here
-to save space). 
+to save space) to verify it is what we expect. 
 
 ```{r plot image, eval=FALSE}
 
@@ -78,9 +95,18 @@ cowplot::ggdraw() + cowplot::draw_image(system.file("extdata",
                                                     package = "spammR"))
 ```
 
-We used the program QuPath to collect the ROI coordiantes on the image. 
+As you can see, there are squares chopped out of the image. These were the 
+samples that were measured via proteomics. The next step is to map these
+coordinates so we can compare them with the MSI data.
+
+## Loading image coordinates rom GEOJson
+
+We used the program [QuPath][(https://qupath.readthedocs.io/en/stable/) to 
+collect the regions of interest (ROI) coordinates on the image. 
 This program allowed us to highlight the regions of interest and export
 them in GEOJson format, which can then be used as input into spammR. 
+
+We store the GEOJson file in the package for you to load with this example.
 
 ```{r format coordinates}
 #remove this once we can include it in spammR
@@ -112,57 +138,146 @@ them in GEOJson format, which can then be used as input into spammR.
  #y-coordinates are from top, so need to udpate
   coords$y_pixels = 263 - unlist(coords$y_pixels) - unlist(coords$spot_height)
  
+```
+
+Now that we have the coordates we can use spammR to create the 
+`SpatialExperiment` object and plot a protein.
+
+## Create SpatialExperiment Object
+
+Here we load the proteomics and create the object. 
+
+```{r create proteomics spe}  
    #create an SFE
-  spe <- convert_to_spe(dat = dat, 
+  spe <- spammR::convert_to_spe(dat = dat, 
                       feature_meta = feature_data,
                       sample_meta = coords,
                       spatial_coords_colnames = c('x_pixels','y_pixels'),
                       assay_name = 'proteomics',
-                      sample_id = 'mouse_brain', 
+                      sample_id = 'rat_brain', 
                       image_files = img,
-                      image_id = 'mouse_brain')
+                      image_id = 'rat_brain')
 
   # myelin
-  spatial_heatmap(spe, feature = 'sp|P02688|MBP_RAT', 
-                sample_id = 'mouse_brain', 
-                image_id = 'mouse_brain')
+  spammR::spatial_heatmap(spe, feature = 'sp|P02688|MBP_RAT', 
+                sample_id = 'rat_brain', 
+                image_id = 'rat_brain')
 
 ```
+
+# Load lipidomics data
 
 Now that we have the image and protein data loaded, we can
 begin to ingest the lipid data from metaspace. This 
 requires an additional command to pull the information directly.
+
+## Retrieve metaspace data
+We created a wrapper to the [Metaspace python package]() to enable
+download and formatting of metaspace measurements for spammR. 
+
+The result is a `SpatialExperiment`
 
 ```{r metaspace import and plotting}
 ##get lipid data from metaspace 
 mspe <- spammR::retrieve_metaspace_data("2024-02-15_20h37m13s", 
                                 fdr = 0.2, 
                                 assay_name = 'lipids',
-                                sample_id = 'mouse_brain',
+                                sample_id = 'rat_brain',
                                 rotate = TRUE)
 ## add in image to check 
 mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
-                                  sample_id = 'mouse_brain',
-                                  image_id = 'mouse_brain')
+                                  sample_id = 'rat_brain',
+                                  image_id = 'rat_brain')
 
 ##test with a plot
- spatial_heatmap(mspe, feature = 'C46H78NO10P-H-',
+ spatial_heatmap(mspe, feature = 'C16H30O4-H-',
                  assay = 'lipids',
                  plot_log = TRUE,
                  metric_display = 'Lipid expression',
-                sample_id = 'mouse_brain',
-                image_id = 'mouse_brain')#plot with an ion
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain')#plot with an ion
  
  
  spatial_heatmap(mspe, feature = 'C41H78NO7P-H-',
                  assay = 'lipids',
                  plot_log = TRUE,
                    metric_display = 'Lipid expression',
-                sample_id = 'mouse_brain',
-                image_id = 'mouse_brain')#plot with an ion
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain')#plot with an ion
 
 
 ```
+
+Here we can see the overlay of specific lipids.
+
+## Lipid analysis
+We can also download the lipid annotations from SwissLipid and use them for 
+functional enrichment using `leapR`
+
+```{r lipid enrichment}
+
+class <- readr::read_tsv('~/Downloads/lipids.tsv.gz') |>
+  dplyr::select("Lipid ID","Level","Name","Abbreviation*","Synonyms*",
+                "Lipid class*","Parent") |>
+  distinct() |>
+  subset(!is.na(Level)) |>
+  subset(Level != "")
+
+rd <- rowData(mspe) |>
+  as.data.frame() |>
+  tidyr::unnest('moleculeIds') |>
+  dplyr::rename(`Lipid ID` = 'moleculeIds') |>
+  left_join(select(class,c(`Lipid ID`,`Level`,`Name`,`Lipid class*`)))
+
+#' recursive function to get lipid category from first level class
+get_categ <- function(lipid, lookup = class){
+   res <- subset(lookup, `Lipid ID` == lipid)
+#   print(lipid)
+   if (nrow(res) > 0 && 
+       res$Level != 'Category' && !is.na(res$`Lipid class*`)) {
+     return(get_categ(res$`Lipid class*`))
+   } else {
+#     print(paste('returning', res$Name))
+     if (length(lipid) > 1)
+       return(lipid[[1]])
+     else
+       return(lipid)
+   }
+}
+
+categs <- vapply(unique(rd$`Lipid class*`), function(x) {
+  get_categ(lipid = x,lookup = class)
+       }, character(1))
+
+categs <- data.frame(`Lipid class*` = unique(rd$`Lipid class*`), 
+                     Category = unlist(categs), 
+                     check.names = FALSE) |>
+  tidyr::separate_longer_delim(Category, '|') |>
+  dplyr::rename(`Lipid ID` = 'Category') |>
+  left_join(dplyr::select(class, c('Lipid ID','Name',))) |>
+  dplyr::rename(Category = 'Name') |>
+  dplyr::select(Category, `Lipid class*`) |>
+  left_join(rd) |>
+  select(ionFormula,Category,Name) |> 
+  subset(!is.na(Category)) |>
+  distinct()
+
+#there are still two duplicates in this dataset
+categs <- categs[-which(duplicated(categs$ionFormula)),]
+rowData(mspe) <- left_join(as.data.frame(rowData(mspe)), categs)
+
+spatial_heatmap(mspe, feature = 'Glycerolipids', 
+                feature_type = 'Category', 
+                assay_name = 'lipids', 
+                plot_log = TRUE,
+                metric_display = 'Lipid expression',
+                sample_id = 'rat_brain', 
+                image_id = 'rat_brain')
+
+```
+
+We only manage to map to three lipid categories for this example, but here is
+the plot of glycerolipids across the brain. 
 
 ## Merging images to single coordinate system
 
@@ -179,7 +294,10 @@ reduced <- spat_reduce(spe_target = spe,
                        spe_origin = mspe, 
                        origin_assay = 'lipids')
 
-reduced
+
+#now we can try to plot multiple features side by side
+
+
 
 ```
 
@@ -189,14 +307,212 @@ One of the innovative analyses we can do with the spatial data is to evaluate
 correlations within molecules across space. 
 
 ## Protein correlation enrichment
-First we identify protein pathways that are enriched across the different
-regions. 
 
-## Protein-lipid correlation
-Then we can calculate protein-lipid correlations and look at the related lipid
-networks
+We can also use `leapR` to calculate correlation across space and the biological
+pathways of interest. Here we don't have the rat annotations so we update the
+gene name to include a human counterpart.
 
-Now we can carry out correlation and correlation enrichment analysis across
-the different modalities. 
+```{r correlation enrichment}
+
+library(leapR)
+data(krbpaths)
+
+#first we create human gene names from rat
+rowData(reduced) <- rowData(reduced) |> 
+  as.data.frame() |>
+  dplyr::mutate(upperGene = toupper(Gene))
+
+#then calculate correlation enrichment
+res <- leapR::leapR(krbpaths, 'correlation_enrichment',id_column = 'upperGene',
+                    reduced,'proteomics')
+
+res[,c('ingroup_n','ingroup_mean','pvalue','BH_pvalue')] |> 
+  dplyr::arrange(BH_pvalue) |>
+  head()
+
+```
+
+We see that oxidative phosphorylation, is one of the more significantly 
+correlated pathways across the regions of interest. 
+
+## Pathway plotting
+
+We can extract the proteins and plot them visually.
+
+```{r heatmaps}
+
+oxphos <- unlist(strsplit(res$ingroupnames[1],','))
+
+#expression looks unexciting
+pheatmap(log(assay(reduced,'proteomics')[oxphos,] + 0.0001), 
+         cellwidth = 10,
+         cellheight = 10)
+
+#lets visualize only the oxphos proteins in the brain
+spatial_heatmap(reduced,feature = oxphos, assay_name = 'proteomics',
+                sample_id = 'rat_brain',  image_id = 'rat_brain',
+                plot_log = TRUE)
+
+```
+Clearly the oxidative phosphorylation pathway is diverse across the brain. We
+can look at which of these proteins are the most variable by just calculating 
+variance.
+
+
+```{r protein variance}
+
+var_val <- apply(assay(reduced,'proteomics')[oxphos,], 1, var) |>
+  sort()
+
+vv <- data.frame(Gene = rowData(reduced)[names(var_val),'Gene'],
+                 var = var_val)
+
+ggplot(vv,aes(x = reorder(Gene,var), y = var)) + 
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+```
+
+## Protein-protein correlation across space 
+The `spatial_network` function helps us plot these correlated proteins across
+space.
+
+```{r correlation networks}
+
+#let's get gene names
+gn <- rowData(reduced)[oxphos,'Gene']
+
+pg <- spatial_network(reduced, features_of_interest = gn,
+                      assay_names = 'proteomics',
+                      feature_names = 'Gene')
+
+##let's get a list of some interesting proteins??
+pg |> activate(edges) |>
+  filter(corval > 0.5) |>
+  ggraph()  +
+  geom_edge_link(aes(colour = corval)) + 
+  geom_node_point() + 
+  geom_node_label(aes(label = name))
+
+```
+
+Hk1, the gene with the highest variability, also seems to be correlated with 
+two distinct subnetworks in the oxidative posphorylation pathway. 
+
+Here we can visualize Hk1.
+```{r hk1 plot}
+
+spatial_heatmap(reduced,feature = 'Hk1', feature_type = 'Gene',
+                assay_name = 'proteomics',
+                sample_id = 'rat_brain',  image_id = 'rat_brain',
+                plot_log = TRUE)
+
+
+```
+
+
+## Protein-lipid correlation analysis 
+
+Next we can ask what lipids are highly correlated with oxphos proteins as an
+example of how we can use the spatial expression patterns to extract testable
+biological hypotheses. 
+
+```{r lipid networks, warning= FALSE}
+
+#first we create list of oxphos proteins and all lipids
+fl <- c(gn, rowData(altExp(reduced))[,'Name'])
+
+cg <- spatial_network(reduced, assay_names = c("proteomics","lipids"), 
+                      features_of_interest = fl,
+                      feature_names = c('Gene','Name'))
+
+rg <- cg |> activate(edges) |>
+  filter(corval > 0.5)
+
+
+```
+
+Given how large this graph is (many lipids are correlated with one another), we
+can reduce to just look at correlation with Hk1, the protein named above.
+
+### Protein neighborhood ploting
+
+```{r hk1 neighborhood}
+#maybe get the neighborhood of Hk1,
+gt <- rg %>%
+  activate(nodes) |>
+  as_tibble()
+
+hk1_g <-  rg |>
+  to_local_neighborhood(node = which(gt$name == 'Hk1'), order = 1)
+
+hk1_g$neighborhood |> ggraph()  +
+  geom_edge_link(aes(colour = corval)) + 
+  geom_node_point(aes(color = class)) +
+  geom_node_label(aes(label = name, color = class))
+
+```
+
+There are two lipids that show up as correlated with Hk1, but not with each 
+other.
+
+### Lipid expression plotting
+Only two lipids show up in our graph here, but we can plot the expression of 
+those in the heatmap as well to observe their expression in the ROI where there 
+is protein but also across the image
+
+```{r plot lipid}
+
+li <- hk1_g$neighborhood |>
+  activate(nodes) |>
+  as_tibble() |>
+  subset(class == 'lipids')
+
+p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
+                feature = li$name[1],
+                feature_type = 'Name',
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+
+p2 <- spatial_heatmap(mspe, assay_name = 'lipids',
+                feature = li$name[1],
+                feature_type = 'Name',
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+
+cowplot::plot_grid(p1,p2)
+```
+
+You can see how the `spat_reduce` function averaged the expression across 
+specific ROI, and also how expression of this Glycerophospholipid changes
+in the brain.
+
+Hk1 also correlated with a second lipid, though the two were not 
+correlated with each other, indicating complementary activity elsewhere.
+
+```{r second plot}
+p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
+                feature = li$name[2],
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+p2 <- spatial_heatmap(reduced, assay_name = 'lipids',
+                feature = li$name[2],
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+cowplot::plot_grid(p1,p2)
+
+```
+
+# Summary
+This vignette explores how one can use the spammR package to analyze multiomics
+measurements captured in a spatial context.
 
 

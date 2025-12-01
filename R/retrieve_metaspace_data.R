@@ -1,8 +1,8 @@
 #' Retreive data objects from metspace
 #' @description `retrieve_metaspace_data()`Collects data from 
-#' http://metaspace2020.org by project id and returns it in 
-#' SpatialExperiment object
-#' @details 
+#' http://metaspace2020.org by project id and returns it in SpatialExperiment 
+#' object
+#' @details This relies on underlying python code and environment to run. 
 #' @import reticulate
 #' @import dplyr
 #' @import tidyr
@@ -22,7 +22,6 @@
 #'                                sample_id = 'sample')
 #' head(rowMeans(assay(rdat,'lipids')))
 #' 
-
 retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s", 
                                     fdr = 0.2, 
                                     assay_name = 'lipids', 
@@ -40,7 +39,7 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
                                       module = 'convert_metaspace_entry')
     #convert database to tuple
     db <- reticulate::tuple('SwissLipids','2018-02-02')
-    
+    #db <- reticulate::tuple('KEGG','v1')
     message("Downloading ion data from metaspace...")
     ##will download two matrices into one
     datas <- ms$download_ion_data(project_id = project_id,

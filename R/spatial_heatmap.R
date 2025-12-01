@@ -103,8 +103,9 @@ spatial_heatmap <- function(spe,
                             sample_label_size = 1.75,
                             plot_title = NULL,
                             interactive = FALSE) {
+      stopifnot(!missing(feature),
+            is(spe,'SpatialExperiment'))
   ## first get the spatial coordinates from the metadata
-
     spatial <- SpatialExperiment::spatialCoords(spe)
     x <- spatial[, 1]
     y <- spatial[, 2]
@@ -123,24 +124,37 @@ spatial_heatmap <- function(spe,
     }
 
      ## now we can get the feature data
-    f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
+    if (assay_name %in% names(assays(spe))) {
+      f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
+      rd <- rowData(spe)
+    } else if (assay_name %in% 
+               names(assays(SingleCellExperiment::altExp(spe)))) {
+      f <- SingleCellExperiment::altExp(spe) |> 
+            assays(., withDimnames = FALSE)
+      f <- f[[assay_name]]
+      
+      rd <- rowData(SingleCellExperiment::altExp(spe))
+    } else{
+      msg = paste0("Assay name required, assay ",assay_name,' not found in
+                   SpatialExperiment object')
+      stop(msg)
+    }
     fval_plot <- c()
   
     ft <- feature_type
     if (is.na(ft)) { # default is whatever is used for rownames of f
         rowNum_toplot <- which(rownames(f) %in% feature)
     } else {
-        rowNum_toplot <- which(SummarizedExperiment::rowData(spe)[, ft, 
-                                                    drop = TRUE] %in% feature)
+        rowNum_toplot <- which(rd[, ft, drop = TRUE] %in% feature)
     }
 
-    if (length(feature) == 1) { ## we are just plotting a single row
+    if (length(rowNum_toplot) == 1) { ## we are just plotting a single row
         fval_plot <- f[rowNum_toplot, ]
     } else { ## we are plotting more than one value and need to average
         fval_plot <- colMeans(f[rowNum_toplot, ], na.rm = TRUE)
         fval_plot <- fval_plot[is.finite(fval_plot)]
     }
-    fval_plot[which(fval_plot==0)] <- NA
+    fval_plot[which(fval_plot == 0)] <- NA
     if (length(fval_plot) == 0) {
         msg <- paste("Cannot plot heatmap:", paste(feature, collapse = ","), 
                    "not in dataset")
@@ -216,6 +230,7 @@ spatial_heatmap <- function(spe,
     } else {
         rescaled_feature_values <- fval_plot
     }
+    
     spatial <- cbind(
         spatial, fval_plot, rescaled_feature_values,
         x_left, x_right, y_bottom, y_top, midpoint_x, midpoint_y

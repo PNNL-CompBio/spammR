@@ -446,6 +446,33 @@ spatial_heatmap(img.spes[[2]],
 
 This shows the ribosomal protein expression across the image.
 
+## Network plotting
+We can also look at the correlation of the ribosomal proteins in a graph.
+The correlation code takes a while but then we can reduce the graph to the 
+proteins we are most interested in, or those that are most correlated.
+
+```{r }
+library(tidygraph)
+library(ggraph)
+full_graph <- spatial_network(img.spes[[2]],'proteomics','PrimaryGeneName')
+
+##how subset for only those 81 proteins
+rgraph <- full_graph |>
+  tidygraph::activate(nodes) |>
+  dplyr::filter(name %in% rprots[sample(20)]) |>
+  tidygraph::activate(edges) |>
+  dplyr::filter(corval > 0.75)
+
+##then we can plot
+ggraph::ggraph(rgraph) + 
+   geom_edge_link(aes(colour = corval)) + 
+   geom_node_point() + 
+   geom_node_label(aes(label = name))
+
+```
+Here are the highly correlated edges between 20 randomly sampled ribosomal
+proteins. 
+
 # Summary
 
 This vignette shows various functions to apply in managing 
