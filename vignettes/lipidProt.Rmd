@@ -36,14 +36,41 @@ We show how `spammR` enables:
 
 First we load the required packages.
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(readxl)
 library(spammR)
-library(geojsonR)
-library(pheatmap)
-library(tidygraph)
+
+##there are additional dependencies
+if (!require('tidyverse')) {
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+
+if (!require('readxl')) {
+  install.packages('readxl')
+  library(readxl)
+}
+
+if (!require('geojsonR')) {
+  install.packages('geojsonR')
+  library(geojsonR)
+}
+
+if (!require('pheatmap')) {
+  install.packages("pheatmap")
+  library(pheatmap)
+
+}
+
+if (!require('tidygraph')) {
+  install.packages('tidygraph')
+  library(tidygraph)
+}
+
+if (!require('ggraph')) {
+  install.packages('ggraph')
+  library(ggraph)
+}
 
 ```
 
