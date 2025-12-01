@@ -124,15 +124,28 @@ spatial_heatmap <- function(spe,
     }
 
      ## now we can get the feature data
-    f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
+    if (assay_name %in% names(assays(spe))) {
+      f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
+      rd <- rowData(spe)
+    } else if (assay_name %in% 
+               names(assays(SingleCellExperiment::altExp(spe)))) {
+      f <- SingleCellExperiment::altExp(spe) |> 
+            assays(., withDimnames = FALSE)
+      f <- f[[assay_name]]
+      
+      rd <- rowData(SingleCellExperiment::altExp(spe))
+    } else{
+      msg = paste0("Assay name required, assay ",assay_name,' not found in
+                   SpatialExperiment object')
+      stop(msg)
+    }
     fval_plot <- c()
   
     ft <- feature_type
     if (is.na(ft)) { # default is whatever is used for rownames of f
         rowNum_toplot <- which(rownames(f) %in% feature)
     } else {
-        rowNum_toplot <- which(SummarizedExperiment::rowData(spe)[, ft, 
-                                                    drop = TRUE] %in% feature)
+        rowNum_toplot <- which(rd[, ft, drop = TRUE] %in% feature)
     }
 
     if (length(rowNum_toplot) == 1) { ## we are just plotting a single row

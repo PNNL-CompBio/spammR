@@ -9,8 +9,7 @@ spatial_network(
   assay_names,
   feature_names = NULL,
   features_of_interest = list(),
-  lowest_thresh = 0.75,
-  top_edges = 6000
+  method = "spearman"
 )
 }
 \arguments{
@@ -20,22 +19,21 @@ spatial_network(
 data to be plotted. If only one it will focus on features in the first
 assay. If more than one it will compute correlations across all features.}
 
-\item{features_of_interest}{List of features to focus on. If empty will
-compute correlation across
-is used in rownames. The name of feature_type must be present as a
-column in rowData(spe)}
+\item{feature_names}{will describe which value to use for node names. IF
+missing will use rownames}
 
-\item{top_edges}{maximum number of correlation values to plot (for
-better visibility)}
+\item{features_of_interest}{List of features to focus on. Should map to the
+\code{feature_names} value. If empty will compute correlation across all features}
 
-\item{feature}{Name of the feature in the spe object whose values are to
-plotted in the spatial heat map. This should be a column name in
-rowData(spe). If missing the rowNames will be used}
+\item{method}{to use for correlation, default is \code{spearman}}
+}
+\value{
+a \code{tidygraph} object that can be used for plotting or analysis
 }
 \description{
 \code{spatial_network()} Creates a network for a given
-SpatialExperiment object (spe) of the most correlated features within an
-image
+SpatialExperiment object (spe) based on the correlation of features. Will
+return a fully connect graph
 }
 \details{
 Using the feature values, the algorithm computes the correlation

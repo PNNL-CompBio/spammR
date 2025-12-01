@@ -23,7 +23,7 @@
 #' `feature_names` value. If empty will compute correlation across all features 
 #' @param feature_names will describe which value to use for node names. IF
 #' missing will use rownames
-#' @method Method to use for correlation, default is `spearman`
+#' @param method to use for correlation, default is `spearman`
 #' @return a `tidygraph` object that can be used for plotting or analysis
 
 spatial_network <- function(spe, 
@@ -99,7 +99,8 @@ spatial_network <- function(spe,
   
   g1 <- g0 |> 
     tidygraph::activate(nodes) |> 
-    dplyr::left_join(dplyr::distinct(full_fname[,c('name','class')]), by = 'name')
+    dplyr::left_join(dplyr::distinct(full_fname[,c('name','class')]), 
+                     by = 'name')
   
   return(g1)
 }

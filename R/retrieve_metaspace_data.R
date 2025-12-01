@@ -1,7 +1,7 @@
 #' Retreive data objects from metspace
 #' @description `retrieve_metaspace_data()`Collects data from 
-#' http://metaspace2020.org by project id and returns it in 
-#' SpatialExperiment object
+#' http://metaspace2020.org by project id and returns it in SpatialExperiment 
+#' object
 #' @details This relies on underlying python code and environment to run. 
 #' @import reticulate
 #' @import dplyr
@@ -22,7 +22,6 @@
 #'                                sample_id = 'sample')
 #' head(rowMeans(assay(rdat,'lipids')))
 #' 
-
 retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s", 
                                     fdr = 0.2, 
                                     assay_name = 'lipids', 

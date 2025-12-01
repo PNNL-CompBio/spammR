@@ -140,8 +140,8 @@ We store the GEOJson file in the package for you to load with this example.
  
 ```
 
-Now that we have the coordates we can use spammR to create the `SpatialExperiment` object
-and plot a protein.
+Now that we have the coordates we can use spammR to create the 
+`SpatialExperiment` object and plot a protein.
 
 ## Create SpatialExperiment Object
 
@@ -333,8 +333,11 @@ res[,c('ingroup_n','ingroup_mean','pvalue','BH_pvalue')] |>
 ```
 
 We see that oxidative phosphorylation, is one of the more significantly 
-correlated pathways across the regions of interest. We can extract the proteins 
-and plot them visually.
+correlated pathways across the regions of interest. 
+
+## Pathway plotting
+
+We can extract the proteins and plot them visually.
 
 ```{r heatmaps}
 
@@ -347,7 +350,7 @@ pheatmap(log(assay(reduced,'proteomics')[oxphos,] + 0.0001),
 
 #lets visualize only the oxphos proteins in the brain
 spatial_heatmap(reduced,feature = oxphos, assay_name = 'proteomics',
-                sample_id = 'mouse_brain',  image_id = 'mouse_brain',
+                sample_id = 'rat_brain',  image_id = 'rat_brain',
                 plot_log = TRUE)
 
 ```
@@ -365,12 +368,12 @@ vv <- data.frame(Gene = rowData(reduced)[names(var_val),'Gene'],
                  var = var_val)
 
 ggplot(vv,aes(x = reorder(Gene,var), y = var)) + 
-  geom_bar(stat='identity') +
+  geom_bar(stat = 'identity') +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 ```
 
-## Protein-protein correlation across space
+## Protein-protein correlation across space 
 The `spatial_network` function helps us plot these correlated proteins across
 space.
 
@@ -408,9 +411,11 @@ spatial_heatmap(reduced,feature = 'Hk1', feature_type = 'Gene',
 ```
 
 
-## Lipid correlation analysis 
+## Protein-lipid correlation analysis 
 
-Next we can ask what lipids are highly correlated with oxphos proteins.
+Next we can ask what lipids are highly correlated with oxphos proteins as an
+example of how we can use the spatial expression patterns to extract testable
+biological hypotheses. 
 
 ```{r lipid networks, warning= FALSE}
 
@@ -423,9 +428,19 @@ cg <- spatial_network(reduced, assay_names = c("proteomics","lipids"),
 
 rg <- cg |> activate(edges) |>
   filter(corval > 0.5)
+
+
+```
+
+Given how large this graph is (many lipids are correlated with one another), we
+can reduce to just look at correlation with Hk1, the protein named above.
+
+### Protein neighborhood ploting
+
+```{r hk1 neighborhood}
 #maybe get the neighborhood of Hk1,
 gt <- rg %>%
-  activate(nodes)|>
+  activate(nodes) |>
   as_tibble()
 
 hk1_g <-  rg |>
@@ -437,9 +452,14 @@ hk1_g$neighborhood |> ggraph()  +
   geom_node_label(aes(label = name, color = class))
 
 ```
-Only two lipids show up in our graph here, but we can plo the expression of those
-in the heatmap as well to observe their expression in the ROI where there is
-protein but also across the image
+
+There are two lipids that show up as correlated with Hk1, but not with each 
+other.
+
+### Lipid expression plotting
+Only two lipids show up in our graph here, but we can plot the expression of 
+those in the heatmap as well to observe their expression in the ROI where there 
+is protein but also across the image
 
 ```{r plot lipid}
 
@@ -448,17 +468,51 @@ li <- hk1_g$neighborhood |>
   as_tibble() |>
   subset(class == 'lipids')
 
-spatial_heatmap(reduced, assay_name = 'lipids',
+p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
                 feature = li$name[1],
                 feature_type = 'Name',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain', 
-                plot_log =TRUE, 
+                plot_log = TRUE, 
                 metric_display = 'Lipid expression')
+
+p2 <- spatial_heatmap(mspe, assay_name = 'lipids',
+                feature = li$name[1],
+                feature_type = 'Name',
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+
+cowplot::plot_grid(p1,p2)
+```
+
+You can see how the `spat_reduce` function averaged the expression across 
+specific ROI, and also how expression of this Glycerophospholipid changes
+in the brain.
+
+Hk1 also correlated with a second lipid, though the two were not 
+correlated with each other, indicating complementary activity elsewhere.
+
+```{r second plot}
+p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
+                feature = li$name[2],
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+p2 <- spatial_heatmap(reduced, assay_name = 'lipids',
+                feature = li$name[2],
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log = TRUE, 
+                metric_display = 'Lipid expression')
+cowplot::plot_grid(p1,p2)
 
 ```
 
 # Summary
 This vignette explores how one can use the spammR package to analyze multiomics
 measurements captured in a spatial context.
+
 
