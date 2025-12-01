@@ -19,8 +19,8 @@
 #' @param assay_names Name of assay in the spe object that contains 
 #' data to be plotted. If only one it will focus on features in the first 
 #' assay. If more than one it will compute correlations across all features.
-#' @param features_of_interest List of features to focus on. If empty will 
-#' compute correlation across all features 
+#' @param features_of_interest List of features to focus on. Should map to the 
+#' `feature_names` value. If empty will compute correlation across all features 
 #' @param feature_names will describe which value to use for node names. IF
 #' missing will use rownames
 #' @method Method to use for correlation, default is `spearman`
@@ -59,8 +59,8 @@ spatial_network <- function(spe,
       message(paste('Assay',an,'not in object'))
     }
     if (length(features_of_interest) > 0) {
-      mval <- mval[intersect(rownames(mval), features_of_interest),]
-      fname <- fname |> subset(name %in% rownames(mval))
+      fname <- fname |> subset(name %in% features_of_interest)
+      mval <- mval[,intersect(colnames(mval), fname$rowval)]
     }
     
     fullmat <- cbind(fullmat,mval)

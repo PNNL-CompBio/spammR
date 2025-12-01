@@ -43,6 +43,7 @@ library(readxl)
 library(spammR)
 library(geojsonR)
 library(pheatmap)
+library(tidygraph)
 
 ```
 
@@ -153,14 +154,14 @@ Here we load the proteomics and create the object.
                       sample_meta = coords,
                       spatial_coords_colnames = c('x_pixels','y_pixels'),
                       assay_name = 'proteomics',
-                      sample_id = 'mouse_brain', 
+                      sample_id = 'rat_brain', 
                       image_files = img,
-                      image_id = 'mouse_brain')
+                      image_id = 'rat_brain')
 
   # myelin
   spammR::spatial_heatmap(spe, feature = 'sp|P02688|MBP_RAT', 
-                sample_id = 'mouse_brain', 
-                image_id = 'mouse_brain')
+                sample_id = 'rat_brain', 
+                image_id = 'rat_brain')
 
 ```
 
@@ -181,28 +182,28 @@ The result is a `SpatialExperiment`
 mspe <- spammR::retrieve_metaspace_data("2024-02-15_20h37m13s", 
                                 fdr = 0.2, 
                                 assay_name = 'lipids',
-                                sample_id = 'mouse_brain',
+                                sample_id = 'rat_brain',
                                 rotate = TRUE)
 ## add in image to check 
 mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
-                                  sample_id = 'mouse_brain',
-                                  image_id = 'mouse_brain')
+                                  sample_id = 'rat_brain',
+                                  image_id = 'rat_brain')
 
 ##test with a plot
  spatial_heatmap(mspe, feature = 'C16H30O4-H-',
                  assay = 'lipids',
                  plot_log = TRUE,
                  metric_display = 'Lipid expression',
-                sample_id = 'mouse_brain',
-                image_id = 'mouse_brain')#plot with an ion
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain')#plot with an ion
  
  
  spatial_heatmap(mspe, feature = 'C41H78NO7P-H-',
                  assay = 'lipids',
                  plot_log = TRUE,
                    metric_display = 'Lipid expression',
-                sample_id = 'mouse_brain',
-                image_id = 'mouse_brain')#plot with an ion
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain')#plot with an ion
 
 
 ```
@@ -270,8 +271,8 @@ spatial_heatmap(mspe, feature = 'Glycerolipids',
                 assay_name = 'lipids', 
                 plot_log = TRUE,
                 metric_display = 'Lipid expression',
-                sample_id = 'mouse_brain', 
-                image_id = 'mouse_brain')
+                sample_id = 'rat_brain', 
+                image_id = 'rat_brain')
 
 ```
 
@@ -383,35 +384,81 @@ pg <- spatial_network(reduced, features_of_interest = gn,
                       feature_names = 'Gene')
 
 ##let's get a list of some interesting proteins??
+pg |> activate(edges) |>
+  filter(corval > 0.5) |>
+  ggraph()  +
+  geom_edge_link(aes(colour = corval)) + 
+  geom_node_point() + 
+  geom_node_label(aes(label = name))
 
 ```
 
+Hk1, the gene with the highest variability, also seems to be correlated with 
+two distinct subnetworks in the oxidative posphorylation pathway. 
 
+Here we can visualize Hk1.
+```{r hk1 plot}
+
+spatial_heatmap(reduced,feature = 'Hk1', feature_type = 'Gene',
+                assay_name = 'proteomics',
+                sample_id = 'rat_brain',  image_id = 'rat_brain',
+                plot_log = TRUE)
+
+
+```
 
 
 ## Lipid correlation analysis 
 
-We can also compute the correlation of the lipids. If we use the reduced
-object, it will be faster, and features more correlated.
+Next we can ask what lipids are highly correlated with oxphos proteins.
 
-```{r lipid networks}
+```{r lipid networks, warning= FALSE}
 
-
-lg <- spatial_network(mspe, assay_names = 'lipids',
-                      feature_names = 'Name', lowest_thresh = 0.6)
-
-
-lg <- spatial_network(reduced, assay_names = 'lipids',
-                      feature_names = 'Name', lowest_thresh = 0.9, 
-                      top_edges=4000)
-```
-
-
-```{r combined networks}
+#first we create list of oxphos proteins and all lipids
+fl <- c(gn, rowData(altExp(reduced))[,'Name'])
 
 cg <- spatial_network(reduced, assay_names = c("proteomics","lipids"), 
-                      feature_names = c('Gene','Name'), 
-                      lowest_thresh = 0.9)
+                      features_of_interest = fl,
+                      feature_names = c('Gene','Name'))
+
+rg <- cg |> activate(edges) |>
+  filter(corval > 0.5)
+#maybe get the neighborhood of Hk1,
+gt <- rg %>%
+  activate(nodes)|>
+  as_tibble()
+
+hk1_g <-  rg |>
+  to_local_neighborhood(node = which(gt$name == 'Hk1'), order = 1)
+
+hk1_g$neighborhood |> ggraph()  +
+  geom_edge_link(aes(colour = corval)) + 
+  geom_node_point(aes(color = class)) +
+  geom_node_label(aes(label = name, color = class))
+
+```
+Only two lipids show up in our graph here, but we can plo the expression of those
+in the heatmap as well to observe their expression in the ROI where there is
+protein but also across the image
+
+```{r plot lipid}
+
+li <- hk1_g$neighborhood |>
+  activate(nodes) |>
+  as_tibble() |>
+  subset(class == 'lipids')
+
+spatial_heatmap(reduced, assay_name = 'lipids',
+                feature = li$name[1],
+                feature_type = 'Name',
+                sample_id = 'rat_brain',
+                image_id = 'rat_brain', 
+                plot_log =TRUE, 
+                metric_display = 'Lipid expression')
+
 ```
 
+# Summary
+This vignette explores how one can use the spammR package to analyze multiomics
+measurements captured in a spatial context.
 
