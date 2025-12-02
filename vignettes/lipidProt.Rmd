@@ -72,6 +72,10 @@ if (!require('ggraph')) {
   library(ggraph)
 }
 
+if (!require('cowplot')) {
+  install.packages('cowplot')
+  library(cowplot)
+}
 ```
 
 # Load proteomics data
@@ -82,7 +86,7 @@ there.
 ## Format data
 We require formatting the data as a matrix for loading. 
 
-```{r get proteomics data}
+```{r get proteomics data, warning=FALSE, message=FALSE}
 
 #brain data
 finame <- paste0('https://zenodo.org/records/13345212/files/DESI+spatial',
@@ -106,7 +110,7 @@ dat <- select(dat, c(Protein, starts_with('ROI'))) |>
 The image itself we downloaded separately from metaspace (see below) and
 stored it in the package. 
 
-```{r load image}
+```{r load image, warning=FALSE, message=FALSE}
 ##read in image
 img <- system.file("extdata","brain_img_0.png",package = 'spammR')
 
@@ -135,7 +139,7 @@ them in GEOJson format, which can then be used as input into spammR.
 
 We store the GEOJson file in the package for you to load with this example.
 
-```{r format coordinates}
+```{r format coordinates, warning=FALSE, message=FALSE}
 #remove this once we can include it in spammR
  
   library(geojsonR)
@@ -174,7 +178,7 @@ Now that we have the coordates we can use spammR to create the
 
 Here we load the proteomics and create the object. 
 
-```{r create proteomics spe}  
+```{r create proteomics spe, warning=FALSE, message=FALSE}  
    #create an SFE
   spe <- spammR::convert_to_spe(dat = dat, 
                       feature_meta = feature_data,
@@ -204,7 +208,7 @@ download and formatting of metaspace measurements for spammR.
 
 The result is a `SpatialExperiment`
 
-```{r metaspace import and plotting}
+```{r metaspace import and plotting, warning=FALSE, message=FALSE}
 ##get lipid data from metaspace 
 mspe <- spammR::retrieve_metaspace_data("2024-02-15_20h37m13s", 
                                 fdr = 0.2, 
@@ -241,14 +245,12 @@ Here we can see the overlay of specific lipids.
 We can also download the lipid annotations from SwissLipid and use them for 
 functional enrichment using `leapR`
 
-```{r lipid enrichment}
+```{r lipid enrichment, warning=FALSE, message=FALSE}
 
-class <- readr::read_tsv('~/Downloads/lipids.tsv.gz') |>
-  dplyr::select("Lipid ID","Level","Name","Abbreviation*","Synonyms*",
-                "Lipid class*","Parent") |>
-  distinct() |>
-  subset(!is.na(Level)) |>
-  subset(Level != "")
+download.file("https://api.figshare.com/v2/file/download/60018356", 
+                    destfile = "lipids.tsv.gz", quiet = TRUE)
+
+class <- readr::read_delim("lipids.tsv.gz", delim = '\t')
 
 rd <- rowData(mspe) |>
   as.data.frame() |>
@@ -315,7 +317,7 @@ them to the same coordinate space.
 To do this we use the `spat_reduce` function to reduce the lipidomics data
 to the same regions as the proteomics. 
 
-```{r reduce, echo=FALSE}
+```{r reduce, echo=FALSE, warning=FALSE, message=FALSE}
 
 reduced <- spat_reduce(spe_target = spe, 
                        spe_origin = mspe, 
@@ -339,7 +341,7 @@ We can also use `leapR` to calculate correlation across space and the biological
 pathways of interest. Here we don't have the rat annotations so we update the
 gene name to include a human counterpart.
 
-```{r correlation enrichment}
+```{r correlation enrichment, warning=FALSE, message=FALSE}
 
 library(leapR)
 data(krbpaths)
@@ -366,7 +368,7 @@ correlated pathways across the regions of interest.
 
 We can extract the proteins and plot them visually.
 
-```{r heatmaps}
+```{r heatmaps, warning=FALSE, message=FALSE}
 
 oxphos <- unlist(strsplit(res$ingroupnames[1],','))
 
@@ -386,7 +388,7 @@ can look at which of these proteins are the most variable by just calculating
 variance.
 
 
-```{r protein variance}
+```{r protein variance, warning=FALSE, message=FALSE}
 
 var_val <- apply(assay(reduced,'proteomics')[oxphos,], 1, var) |>
   sort()
@@ -404,7 +406,7 @@ ggplot(vv,aes(x = reorder(Gene,var), y = var)) +
 The `spatial_network` function helps us plot these correlated proteins across
 space.
 
-```{r correlation networks}
+```{r correlation networks, warning=FALSE, message=FALSE}
 
 #let's get gene names
 gn <- rowData(reduced)[oxphos,'Gene']
@@ -464,7 +466,7 @@ can reduce to just look at correlation with Hk1, the protein named above.
 
 ### Protein neighborhood ploting
 
-```{r hk1 neighborhood}
+```{r hk1 neighborhood, warning=FALSE, message=FALSE}
 #maybe get the neighborhood of Hk1,
 gt <- rg %>%
   activate(nodes) |>
@@ -511,7 +513,7 @@ p2 <- spatial_heatmap(mspe, assay_name = 'lipids',
                 plot_log = TRUE, 
                 metric_display = 'Lipid expression')
 
-cowplot::plot_grid(p1,p2)
+cowplot::plot_grid(p1,p2, nrow = 2)
 ```
 
 You can see how the `spat_reduce` function averaged the expression across 
@@ -534,7 +536,7 @@ p2 <- spatial_heatmap(reduced, assay_name = 'lipids',
                 image_id = 'rat_brain', 
                 plot_log = TRUE, 
                 metric_display = 'Lipid expression')
-cowplot::plot_grid(p1,p2)
+cowplot::plot_grid(p1,p2, nrow = 2)
 
 ```
 
