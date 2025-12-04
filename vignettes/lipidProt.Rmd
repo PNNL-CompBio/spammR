@@ -56,12 +56,6 @@ if (!require('geojsonR')) {
   library(geojsonR)
 }
 
-if (!require('pheatmap')) {
-  install.packages("pheatmap")
-  library(pheatmap)
-
-}
-
 if (!require('tidygraph')) {
   install.packages('tidygraph')
   library(tidygraph)
@@ -196,6 +190,105 @@ Here we load the proteomics and create the object.
 
 ```
 
+## Protein correlation enrichment
+
+We can also use `leapR` to calculate correlation across space and the biological
+pathways of interest. Here we don't have the rat annotations so we update the
+gene name to include a human counterpart.
+
+```{r correlation enrichment, warning=FALSE, message=FALSE}
+
+library(leapR)
+data(krbpaths)
+
+#first we create human gene names from rat
+rowData(reduced) <- rowData(reduced) |> 
+  as.data.frame() |>
+  dplyr::mutate(upperGene = toupper(Gene))
+
+#then calculate correlation enrichment
+res <- leapR::leapR(krbpaths, 'correlation_enrichment',id_column = 'upperGene',
+                    reduced,'proteomics')
+
+res[,c('ingroup_n','ingroup_mean','pvalue','BH_pvalue')] |> 
+  dplyr::arrange(BH_pvalue) |>
+  head()
+
+```
+
+We see that oxidative phosphorylation, is one of the more significantly 
+correlated pathways across the regions of interest. 
+
+## Pathway plotting
+
+We can extract the proteins and plot them visually.
+
+```{r heatmaps, warning=FALSE, message=FALSE}
+
+oxphos <- unlist(strsplit(res$ingroupnames[1],','))
+
+#lets visualize only the oxphos proteins in the brain
+spatial_heatmap(reduced,feature = oxphos, assay_name = 'proteomics',
+                sample_id = 'rat_brain',  image_id = 'rat_brain',
+                plot_log = TRUE)
+
+```
+Clearly the oxidative phosphorylation pathway is diverse across the brain. We
+can look at which of these proteins are the most variable by just calculating 
+variance.
+
+
+```{r protein variance, warning=FALSE, message=FALSE}
+
+var_val <- apply(assay(reduced,'proteomics')[oxphos,], 1, var) |>
+  sort()
+
+vv <- data.frame(Gene = rowData(reduced)[names(var_val),'Gene'],
+                 var = var_val)
+
+ggplot(vv,aes(x = reorder(Gene,var), y = var)) + 
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+```
+
+## Protein-protein correlation across space 
+The `spatial_network` function helps us plot these correlated proteins across
+space.
+
+```{r correlation networks, warning=FALSE, message=FALSE}
+
+#let's get gene names
+gn <- rowData(reduced)[oxphos,'Gene']
+
+pg <- spatial_network(reduced, features_of_interest = gn,
+                      assay_names = 'proteomics',
+                      feature_names = 'Gene')
+
+##let's get a list of some interesting proteins??
+pg |> activate(edges) |>
+  filter(corval > 0.5) |>
+  ggraph()  +
+  geom_edge_link(aes(colour = corval)) + 
+  geom_node_point() + 
+  geom_node_label(aes(label = name))
+
+```
+
+Hk1, the gene with the highest variability, also seems to be correlated with 
+two distinct subnetworks in the oxidative posphorylation pathway. 
+
+Here we can visualize Hk1.
+```{r hk1 plot}
+
+spatial_heatmap(reduced,feature = 'Hk1', feature_type = 'Gene',
+                assay_name = 'proteomics',
+                sample_id = 'rat_brain',  image_id = 'rat_brain',
+                plot_log = TRUE)
+
+
+```
+
 # Load lipidomics data
 
 Now that we have the image and protein data loaded, we can
@@ -221,12 +314,12 @@ mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
                                   image_id = 'rat_brain')
 
 ##test with a plot
- spatial_heatmap(mspe, feature = 'C16H30O4-H-',
-                 assay = 'lipids',
-                 plot_log = TRUE,
-                 metric_display = 'Lipid expression',
-                sample_id = 'rat_brain',
-                image_id = 'rat_brain')#plot with an ion
+# spatial_heatmap(mspe, feature = 'C16H30O4-H-',
+#                 assay = 'lipids',
+#                 plot_log = TRUE,
+#                 metric_display = 'Lipid expression',
+#                sample_id = 'rat_brain',
+#                image_id = 'rat_brain')#plot with an ion
  
  
  spatial_heatmap(mspe, feature = 'C41H78NO7P-H-',
@@ -335,109 +428,6 @@ reduced <- spat_reduce(spe_target = spe,
 One of the innovative analyses we can do with the spatial data is to evaluate
 correlations within molecules across space. 
 
-## Protein correlation enrichment
-
-We can also use `leapR` to calculate correlation across space and the biological
-pathways of interest. Here we don't have the rat annotations so we update the
-gene name to include a human counterpart.
-
-```{r correlation enrichment, warning=FALSE, message=FALSE}
-
-library(leapR)
-data(krbpaths)
-
-#first we create human gene names from rat
-rowData(reduced) <- rowData(reduced) |> 
-  as.data.frame() |>
-  dplyr::mutate(upperGene = toupper(Gene))
-
-#then calculate correlation enrichment
-res <- leapR::leapR(krbpaths, 'correlation_enrichment',id_column = 'upperGene',
-                    reduced,'proteomics')
-
-res[,c('ingroup_n','ingroup_mean','pvalue','BH_pvalue')] |> 
-  dplyr::arrange(BH_pvalue) |>
-  head()
-
-```
-
-We see that oxidative phosphorylation, is one of the more significantly 
-correlated pathways across the regions of interest. 
-
-## Pathway plotting
-
-We can extract the proteins and plot them visually.
-
-```{r heatmaps, warning=FALSE, message=FALSE}
-
-oxphos <- unlist(strsplit(res$ingroupnames[1],','))
-
-#expression looks unexciting
-pheatmap(log(assay(reduced,'proteomics')[oxphos,] + 0.0001), 
-         cellwidth = 10,
-         cellheight = 10)
-
-#lets visualize only the oxphos proteins in the brain
-spatial_heatmap(reduced,feature = oxphos, assay_name = 'proteomics',
-                sample_id = 'rat_brain',  image_id = 'rat_brain',
-                plot_log = TRUE)
-
-```
-Clearly the oxidative phosphorylation pathway is diverse across the brain. We
-can look at which of these proteins are the most variable by just calculating 
-variance.
-
-
-```{r protein variance, warning=FALSE, message=FALSE}
-
-var_val <- apply(assay(reduced,'proteomics')[oxphos,], 1, var) |>
-  sort()
-
-vv <- data.frame(Gene = rowData(reduced)[names(var_val),'Gene'],
-                 var = var_val)
-
-ggplot(vv,aes(x = reorder(Gene,var), y = var)) + 
-  geom_bar(stat = 'identity') +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
-
-```
-
-## Protein-protein correlation across space 
-The `spatial_network` function helps us plot these correlated proteins across
-space.
-
-```{r correlation networks, warning=FALSE, message=FALSE}
-
-#let's get gene names
-gn <- rowData(reduced)[oxphos,'Gene']
-
-pg <- spatial_network(reduced, features_of_interest = gn,
-                      assay_names = 'proteomics',
-                      feature_names = 'Gene')
-
-##let's get a list of some interesting proteins??
-pg |> activate(edges) |>
-  filter(corval > 0.5) |>
-  ggraph()  +
-  geom_edge_link(aes(colour = corval)) + 
-  geom_node_point() + 
-  geom_node_label(aes(label = name))
-
-```
-
-Hk1, the gene with the highest variability, also seems to be correlated with 
-two distinct subnetworks in the oxidative posphorylation pathway. 
-
-Here we can visualize Hk1.
-```{r hk1 plot}
-
-spatial_heatmap(reduced,feature = 'Hk1', feature_type = 'Gene',
-                assay_name = 'proteomics',
-                sample_id = 'rat_brain',  image_id = 'rat_brain',
-                plot_log = TRUE)
-
-
-```
 
 
 ## Protein-lipid correlation analysis 

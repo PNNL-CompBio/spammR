@@ -31,8 +31,8 @@ retrieve_metaspace_data(
 }
 \description{
 \code{retrieve_metaspace_data()}Collects data from
-http://metaspace2020.org by project id and returns it in
-SpatialExperiment object
+http://metaspace2020.org by project id and returns it in SpatialExperiment
+object
 }
 \details{
 This relies on underlying python code and environment to run.
