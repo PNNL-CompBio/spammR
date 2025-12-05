@@ -10,6 +10,7 @@ retrieve_metaspace_data(
   assay_name = "lipids",
   sample_id = "sample",
   rotate = FALSE,
+  drop_zeroes = TRUE,
   y_offset = 0,
   x_offset = 0
 )
@@ -24,6 +25,9 @@ retrieve_metaspace_data(
 \item{sample_id}{Name of sample}
 
 \item{rotate}{Set to TRUE if x and y coordinates need to be swapped}
+
+\item{drop_zeroes}{Set to TRUE to drop zeroes and set the values to NAs. If
+False the zeroes will be included in the image data. ß}
 
 \item{y_offset}{Number of pixels to adjust y based on image}
 
