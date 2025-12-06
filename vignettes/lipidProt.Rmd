@@ -357,7 +357,6 @@ To do this we use the `spat_reduce` function to reduce the lipidomics data
 to the same regions as the proteomics. 
 
 ```{r reduce, echo=FALSE, warning=FALSE, message=FALSE}
-
 reduced <- spat_reduce(spe_target = spe, 
                        spe_origin = mspe, 
                        origin_assay = 'lipids')
@@ -387,8 +386,7 @@ cg <- spatial_network(reduced, assay_names = c("proteomics","lipids"),
                       feature_names = c('Gene','Name'))
 
 rg <- cg |> activate(edges) |>
-  filter(corval > 0.8)
-
+  filter(corval > 0.5)
 
 ```
 
@@ -404,7 +402,7 @@ gt <- rg %>%
   as_tibble()
 
 prot_neigh <-  rg |>
-  to_local_neighborhood(node = which(gt$name == 'Eno1'), order = 1)
+  to_local_neighborhood(node = which(gt$name == 'Hk1'), order = 1)
 
 prot_neigh$neighborhood |> ggraph()  +
   geom_edge_link(aes(colour = corval)) + 
@@ -417,9 +415,7 @@ There are two lipids that show up as correlated with Hk1, but not with each
 other.
 
 ### Lipid expression plotting
-Only two lipids show up in our graph here, but we can plot the expression of 
-those in the heatmap as well to observe their expression in the ROI where there 
-is protein but also across the image
+Many lipids show up in our graph
 
 ```{r plot lipid}
 
@@ -429,7 +425,7 @@ li <- prot_neigh$neighborhood |>
   subset(class == 'lipids')
 
 p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
-                feature = li$name[2],
+                feature = li$name[1],
                 feature_type = 'Name',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain', 
@@ -437,7 +433,7 @@ p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
                 metric_display = 'Lipid expression')
 
 p2 <- spatial_heatmap(mspe, assay_name = 'lipids',
-                feature = li$name[2],
+                feature = li$name[1],
                 feature_type = 'Name',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain', 
@@ -451,25 +447,6 @@ You can see how the `spat_reduce` function averaged the expression across
 specific ROI, and also how expression of this Glycerophospholipid changes
 in the brain.
 
-Hk1 also correlated with a second lipid, though the two were not 
-correlated with each other, indicating complementary activity elsewhere.
-
-```{r second plot}
-p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
-                feature = li$name[2],
-                sample_id = 'rat_brain',
-                image_id = 'rat_brain', 
-                plot_log = TRUE, 
-                metric_display = 'Lipid expression')
-p2 <- spatial_heatmap(reduced, assay_name = 'lipids',
-                feature = li$name[2],
-                sample_id = 'rat_brain',
-                image_id = 'rat_brain', 
-                plot_log = TRUE, 
-                metric_display = 'Lipid expression')
-cowplot::plot_grid(p1,p2, nrow = 2)
-
-```
 
 # Summary
 This vignette explores how one can use the spammR package to analyze multiomics
