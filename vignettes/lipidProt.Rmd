@@ -3,7 +3,7 @@ title: "spammR lipidomic and proteomic integration"
 author: "Sara Gosline"
 package: spammR
 date: "`r format(Sys.Date(), '%b %d, %Y')`"
-output:
+output: 
     BiocStyle::html_document:
         toc: true
         number_sections: true
@@ -15,7 +15,7 @@ description: |
   spatial omics analysis for lipidomic and proteomic data. 
   
 vignette: |
-  %\VignetteIndexEntry{spammRMicrobiomeEval}
+  %\VignetteIndexEntry{spammR-lipids}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   
@@ -417,7 +417,7 @@ other.
 ### Lipid expression plotting
 Many lipids show up in our graph
 
-```{r plot lipid}
+```{r plot lipid, warning = FALSE, message = FALSE}
 
 li <- prot_neigh$neighborhood |>
   activate(nodes) |>
@@ -430,6 +430,7 @@ p1 <- spatial_heatmap(reduced, assay_name = 'lipids',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain', 
                 plot_log = TRUE, 
+                plot_title = li$name[1],
                 metric_display = 'Lipid expression')
 
 p2 <- spatial_heatmap(mspe, assay_name = 'lipids',
@@ -438,6 +439,7 @@ p2 <- spatial_heatmap(mspe, assay_name = 'lipids',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain', 
                 plot_log = TRUE, 
+                plot_title = li$name[1],
                 metric_display = 'Lipid expression')
 
 cowplot::plot_grid(p1,p2, nrow = 2)

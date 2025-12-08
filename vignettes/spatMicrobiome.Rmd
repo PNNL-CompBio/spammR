@@ -15,7 +15,7 @@ description: |
   spatial omics analysis for microbiome data. 
   
 vignette: |
-  %\VignetteIndexEntry{spammRMicrobiomeEval}
+  %\VignetteIndexEntry{spammR-microbes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   

@@ -265,7 +265,8 @@ spatial_heatmap <- function(spe,
       # correctly with samples' coordinates
       ggplot2::xlab("x") +
       ggplot2::ylab("y") +
-      ggplot2::ggtitle(title)
+      ggplot2::ggtitle(title) +
+      theme(plot.title = element_text(size = 8))
     if (interactive) {
       p <- plotly::ggplotly(p)
     }
