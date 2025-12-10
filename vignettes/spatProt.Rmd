@@ -1,6 +1,6 @@
 ---
 title: "spammR Spatial Proteomics Example"
-author: "Harkirat Sohi, Sara Gosline"
+author: "Sara Gosline"
 package: spammR
 date: "`r format(Sys.Date(), '%b %d, %Y')`"
 output:
@@ -15,7 +15,7 @@ description: |
   measurements in the spammR package. 
   
 vignette: |
-  %\VignetteIndexEntry{spammR}
+  %\VignetteIndexEntry{spammR-protein}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   
@@ -451,7 +451,7 @@ We can also look at the correlation of the ribosomal proteins in a graph.
 The correlation code takes a while but then we can reduce the graph to the 
 proteins we are most interested in, or those that are most correlated.
 
-```{r }
+```{r graph correlations}
 library(tidygraph)
 library(ggraph)
 full_graph <- spatial_network(img.spes[[2]],'proteomics','PrimaryGeneName')

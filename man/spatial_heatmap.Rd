@@ -17,6 +17,7 @@ spatial_heatmap(
   metric_display = "Protein expression",
   plot_log = FALSE,
   label_column = NA,
+  fill_colors = c("slateblue", "darkgreen", "goldenrod"),
   sample_label_color = "white",
   sample_label_size = 1.75,
   plot_title = NULL,
@@ -66,6 +67,9 @@ plotting. Defaults to FALSE}
 
 \item{label_column}{Column in colData(spe) to be used for labeling grid
 squares. If not specified, default is no labels.}
+
+\item{fill_colors}{List of colors to use to provide gradient for heatmap
+plotting}
 
 \item{sample_label_color}{Color to be used for labels of samples/grid
 squares. Default is white.}

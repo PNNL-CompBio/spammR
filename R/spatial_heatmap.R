@@ -54,6 +54,8 @@
 #'  plotting. Defaults to FALSE
 #' @param label_column Column in colData(spe) to be used for labeling grid 
 #' squares. If not specified, default is no labels.
+#' @param fill_colors List of colors to use to provide gradient for heatmap
+#' plotting
 #' @param sample_label_color Color to be used for labels of samples/grid 
 #' squares. Default is white.
 #' @param sample_label_size Font size for sample labels. Default is 1.75.
@@ -99,6 +101,8 @@ spatial_heatmap <- function(spe,
                             metric_display = "Protein expression",
                             plot_log = FALSE,
                             label_column = NA,
+                            fill_colors = c("slateblue", "darkgreen", 
+                                            "goldenrod"), 
                             sample_label_color = "white",
                             sample_label_size = 1.75,
                             plot_title = NULL,
@@ -250,8 +254,7 @@ spatial_heatmap <- function(spe,
         size = sample_label_size
       ) +
       ggplot2::labs(fill = metric_display) +
-      ggplot2::scale_fill_gradientn(colors = c("slateblue", "darkgreen", 
-                                               "goldenrod")) +
+      ggplot2::scale_fill_gradientn(colors = fill_colors) +
       # ggplot2::labs(fill = "Scaled values (min=0, max=1)")+
       ggplot2::theme_bw() +
       ggplot2::xlim(xmin_image, xmax_image) +
@@ -262,7 +265,8 @@ spatial_heatmap <- function(spe,
       # correctly with samples' coordinates
       ggplot2::xlab("x") +
       ggplot2::ylab("y") +
-      ggplot2::ggtitle(title)
+      ggplot2::ggtitle(title) +
+      theme(plot.title = element_text(size = 8))
     if (interactive) {
       p <- plotly::ggplotly(p)
     }

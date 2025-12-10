@@ -10,6 +10,7 @@ retrieve_metaspace_data(
   assay_name = "lipids",
   sample_id = "sample",
   rotate = FALSE,
+  drop_zeroes = TRUE,
   y_offset = 0,
   x_offset = 0
 )
@@ -25,14 +26,17 @@ retrieve_metaspace_data(
 
 \item{rotate}{Set to TRUE if x and y coordinates need to be swapped}
 
+\item{drop_zeroes}{Set to TRUE to drop zeroes and set the values to NAs. If
+False the zeroes will be included in the image data. ß}
+
 \item{y_offset}{Number of pixels to adjust y based on image}
 
 \item{x_offset}{Number of pixels to adjust x based on image}
 }
 \description{
 \code{retrieve_metaspace_data()}Collects data from
-http://metaspace2020.org by project id and returns it in
-SpatialExperiment object
+http://metaspace2020.org by project id and returns it in SpatialExperiment
+object
 }
 \details{
 This relies on underlying python code and environment to run.

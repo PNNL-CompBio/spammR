@@ -133,9 +133,9 @@ convert_to_spe <- function(dat,
     ## if we have more sample metadata than we have samples, 
     ## we need to replicate samples
     if (ncol(dat_samples_only) != nrow(sample_meta) && !is.null(sc)) {
-      newdat <- do.call(cbind, vapply(sample_meta[[sc]], function(x) {
+      newdat <- vapply(sample_meta[[sc]], function(x) {
         return(dat_samples_only[, x, drop = TRUE])
-      }, numeric()))
+      }, numeric(nrow(dat_samples_only)))
       rownames(newdat) <- rownames(dat_samples_only)
       colnames(newdat) <- rownames(sample_meta)
       dat_samples_only <- newdat
