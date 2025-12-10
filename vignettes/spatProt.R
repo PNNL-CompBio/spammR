@@ -224,3 +224,25 @@ spatial_heatmap(img.spes[[2]],
     label_column = "IsletOrNot", interactive = FALSE
 )
 
+## -----------------------------------------------------------------------------
+library(tidygraph)
+library(ggraph)
+full_graph <- spatial_network(img.spes[[2]],'proteomics','PrimaryGeneName')
+
+##how subset for only those 81 proteins
+rgraph <- full_graph |>
+  tidygraph::activate(nodes) |>
+  dplyr::filter(name %in% rprots[sample(20)]) |>
+  tidygraph::activate(edges) |>
+  dplyr::filter(corval > 0.75)
+
+##then we can plot
+ggraph::ggraph(rgraph) + 
+   geom_edge_link(aes(colour = corval)) + 
+   geom_node_point() + 
+   geom_node_label(aes(label = name))
+
+
+## ----sessionInfo, echo=FALSE--------------------------------------------------
+sessionInfo()
+
