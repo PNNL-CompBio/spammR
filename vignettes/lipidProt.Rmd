@@ -294,7 +294,7 @@ patterns.
 ```{r hk1 plot}
 
 spatial_heatmap(spe,feature = 'Hk1', feature_type = 'Gene',
-                assay_name = 'proteomics',
+                assay_name = 'proteomics', title_size = 10, 
                 sample_id = 'rat_brain',  image_id = 'rat_brain',
                 plot_log = TRUE)
 
