@@ -110,11 +110,18 @@ spatial_heatmap <- function(spe,
                             sample_label_color = "white",
                             sample_label_size = 1.75,
                             plot_title = NULL,
-                            title_size = 8,
+                            title_size = 10,
                             show_na = FALSE, 
                             interactive = FALSE) {
-      stopifnot(!missing(feature),
-            is(spe,'SpatialExperiment'))
+  
+  if (!is(spe,'SpatialExperiment'))
+    stop('Must provide SpatialExperiment object')
+  if (missing(feature)) 
+    stop("Must provide feature or list of features to plot")
+  if (missing(sample_id) || missing(image_id))
+    stop("Must provide sample_id and image_id")
+ 
+      
   ## first get the spatial coordinates from the metadata
     spatial <- SpatialExperiment::spatialCoords(spe)
     x <- spatial[, 1]
@@ -137,7 +144,8 @@ spatial_heatmap <- function(spe,
     if (assay_name %in% names(assays(spe))) {
       f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
       rd <- rowData(spe)
-    } else if (assay_name %in% 
+    } else if (length(SingleCellExperiment::altExpNames(spe)>1) &&
+               assay_name %in% 
                names(assays(SingleCellExperiment::altExp(spe)))) {
       f <- SingleCellExperiment::altExp(spe) |> 
             assays(., withDimnames = FALSE)
@@ -248,7 +256,6 @@ spatial_heatmap <- function(spe,
       as.data.frame()
     spatial$lab <- lab
     
-    print(head(spatial))
     if (!show_na) {
       spatial <- spatial |>
         subset(!is.na(rescaled_feature_values)) #just dont plot NA value

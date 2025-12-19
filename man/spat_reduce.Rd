@@ -8,8 +8,9 @@ measurement (target)}
 spat_reduce(
   spe_target,
   spe_origin,
-  origin_assay = "metabolomics",
+  origin_assay = "lipids",
   target_dims = c("spot_width", "spot_height"),
+  replace_nas = FALSE,
   stat = "mean"
 )
 }
@@ -21,6 +22,10 @@ spat_reduce(
 \item{origin_assay}{Name of assay in origin assay to be reduced}
 
 \item{target_dims}{Names of width and height of target spots, respectively}
+
+\item{replace_nas}{Set to TRUE if we want to replace NA values with zeroes.
+This will increase the number of data points in common for correlation
+calculations.}
 
 \item{stat}{Statistic used to summarize regions, choices are currently
 'mean' and 'median'}

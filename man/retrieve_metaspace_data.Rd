@@ -27,7 +27,7 @@ retrieve_metaspace_data(
 \item{rotate}{Set to TRUE if x and y coordinates need to be swapped}
 
 \item{drop_zeroes}{Set to TRUE to drop zeroes and set the values to NAs. If
-False the zeroes will be included in the image data. ß}
+False the zeroes will be included in the image data.}
 
 \item{y_offset}{Number of pixels to adjust y based on image}
 
