@@ -47,7 +47,7 @@ data(pancMeta)
 data(protMeta)
 imglist <- c("Image_0", "Image_1", "Image_2")
 
-x = 'Image_0'
+x = 'Image_1'
 i0 <- convert_to_spe(pancDataList[[x]],
                    pancMeta,
                    protMeta,

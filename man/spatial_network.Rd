@@ -52,3 +52,19 @@ compute time) and then selects the most correlated edges using the
 Only the largest connected component is plotted, but the entire
 graph is returned as an \code{tidygraph} object.
 }
+\examples{
+
+data(pancMeta)
+data(smallPancData)
+data(protMeta)
+img0.spe <- convert_to_spe(smallPancData$Image_0,
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+  spatial_coords_colnames = c("x_pixels", "y_pixels"),
+  sample_id = "Image0",
+  image_ids = "with_grid"
+)
+##now call the network
+}

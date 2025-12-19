@@ -21,7 +21,7 @@ spatial_heatmap(
   sample_label_color = "white",
   sample_label_size = 1.75,
   plot_title = NULL,
-  title_size = 8,
+  title_size = 10,
   show_na = FALSE,
   interactive = FALSE
 )

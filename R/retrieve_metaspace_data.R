@@ -13,7 +13,7 @@
 #' @param sample_id Name of sample
 #' @param rotate Set to TRUE if x and y coordinates need to be swapped
 #' @param drop_zeroes Set to TRUE to drop zeroes and set the values to NAs. If
-#' False the zeroes will be included in the image data. ß
+#' False the zeroes will be included in the image data. 
 #' @param y_offset Number of pixels to adjust y based on image
 #' @param x_offset Number of pixels to adjust x based on image
 #' @export
@@ -55,8 +55,9 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
     
     #get get ion data to matrix
     idata <- datas[[1]]
+    zeros <- which(idata$intensity == 0)
     if (drop_zeroes) 
-      idata <- idata |> subset(intensity != 0)
+      idata$intensity[zeros] <- rep(NA, length(zeros))
     
     dat <- idata[,c('ion','sample_id','intensity')] |>
       tidyr::pivot_wider(names_from = 'sample_id',values_from = 'intensity') |>
