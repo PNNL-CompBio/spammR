@@ -16,7 +16,7 @@ Config/reticulate: list(
   packages = list(
     list(package = "numpy"),
     list(package = "pandas"), 
-    list(package = "metaspace")
+    list(package = "metaspace2020")
   ),
   python_version = "3.11")
 License: MIT + file LICENSE
