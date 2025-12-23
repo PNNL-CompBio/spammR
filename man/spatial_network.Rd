@@ -8,7 +8,8 @@ spatial_network(
   spe,
   assay_names,
   feature_names = NULL,
-  features_of_interest = list(),
+  query_features = NULL,
+  target_features = list(),
   method = "spearman"
 )
 }
@@ -22,8 +23,15 @@ assay. If more than one it will compute correlations across all features.}
 \item{feature_names}{will describe which value to use for node names. IF
 missing will use rownames}
 
-\item{features_of_interest}{List of features to focus on. Should map to the
-\code{feature_names} value. If empty will compute correlation across all features}
+\item{query_features}{List of features to query for correlation. If there
+are no \code{target_featres} will build a network between this feature all other
+nodes. If missing, correlation will be computed between all nodes in
+\code{target_features}.}
+
+\item{target_features}{List of features to compute correlation across. If
+\code{query_features} is not NULL, will compute correlation only between these
+features and the \code{query_features}. Otherwise, it will compute correlation
+between all features in this list. DEFAULT: all features in spe.}
 
 \item{method}{to use for correlation, default is \code{spearman}}
 }
@@ -43,4 +51,20 @@ compute time) and then selects the most correlated edges using the
 
 Only the largest connected component is plotted, but the entire
 graph is returned as an \code{tidygraph} object.
+}
+\examples{
+
+data(pancMeta)
+data(smallPancData)
+data(protMeta)
+img0.spe <- convert_to_spe(smallPancData$Image_0,
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+  spatial_coords_colnames = c("x_pixels", "y_pixels"),
+  sample_id = "Image0",
+  image_ids = "with_grid"
+)
+##now call the network
 }

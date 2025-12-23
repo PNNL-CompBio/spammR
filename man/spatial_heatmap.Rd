@@ -21,6 +21,8 @@ spatial_heatmap(
   sample_label_color = "white",
   sample_label_size = 1.75,
   plot_title = NULL,
+  title_size = 10,
+  show_na = FALSE,
   interactive = FALSE
 )
 }
@@ -78,6 +80,11 @@ squares. Default is white.}
 
 \item{plot_title}{Title to be given to the spatial heatmap. Default is
 "Spatial signature for XYZ" where XYZ is the name of the specified feature}
+
+\item{title_size}{Font size of title}
+
+\item{show_na}{Set to TRUE if you want to plot NA values (will be grey)
+otherwise they will not be plotted}
 
 \item{interactive}{Boolean value (TRUE/FALSE) indicating whether the plot
 should have interactive mouse hovering. If not specified, this defaults to

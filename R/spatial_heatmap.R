@@ -14,6 +14,7 @@
 #' @import ggplot2
 #' @import ggnewscale
 #' @import SpatialExperiment
+#' @importFrom SingleCellExperiment altExp
 #' @import dplyr
 #' @importFrom plotly ggplotly
 #' @import scales
@@ -61,6 +62,9 @@
 #' @param sample_label_size Font size for sample labels. Default is 1.75.
 #' @param plot_title Title to be given to the spatial heatmap. Default is 
 #' "Spatial signature for XYZ" where XYZ is the name of the specified feature
+#' @param title_size Font size of title
+#' @param show_na Set to TRUE if you want to plot NA values (will be grey)
+#' otherwise they will not be plotted
 #' @param interactive Boolean value (TRUE/FALSE) indicating whether the plot 
 #' should have interactive mouse hovering. If not specified, this defaults to 
 #' TRUE. Note: grid squares can only be labeled when interactive = FALSE due 
@@ -106,9 +110,18 @@ spatial_heatmap <- function(spe,
                             sample_label_color = "white",
                             sample_label_size = 1.75,
                             plot_title = NULL,
+                            title_size = 10,
+                            show_na = FALSE, 
                             interactive = FALSE) {
-      stopifnot(!missing(feature),
-            is(spe,'SpatialExperiment'))
+  
+  if (!is(spe,'SpatialExperiment'))
+    stop('Must provide SpatialExperiment object')
+  if (missing(feature)) 
+    stop("Must provide feature or list of features to plot")
+  if (missing(sample_id) || missing(image_id))
+    stop("Must provide sample_id and image_id")
+ 
+      
   ## first get the spatial coordinates from the metadata
     spatial <- SpatialExperiment::spatialCoords(spe)
     x <- spatial[, 1]
@@ -131,7 +144,8 @@ spatial_heatmap <- function(spe,
     if (assay_name %in% names(assays(spe))) {
       f <- SummarizedExperiment::assays(spe, withDimnames = FALSE)[[assay_name]]
       rd <- rowData(spe)
-    } else if (assay_name %in% 
+    } else if (length(SingleCellExperiment::altExpNames(spe)>1) &&
+               assay_name %in% 
                names(assays(SingleCellExperiment::altExp(spe)))) {
       f <- SingleCellExperiment::altExp(spe) |> 
             assays(., withDimnames = FALSE)
@@ -240,6 +254,12 @@ spatial_heatmap <- function(spe,
         x_left, x_right, y_bottom, y_top, midpoint_x, midpoint_y
     ) |>
       as.data.frame()
+    spatial$lab <- lab
+    
+    if (!show_na) {
+      spatial <- spatial |>
+        subset(!is.na(rescaled_feature_values)) #just dont plot NA value
+    }
     # print(spatial)
     p <- ggplot2::ggplot(spatial, ggplot2::aes(
       xmin = x_left, xmax = x_right,
@@ -266,7 +286,7 @@ spatial_heatmap <- function(spe,
       ggplot2::xlab("x") +
       ggplot2::ylab("y") +
       ggplot2::ggtitle(title) +
-      theme(plot.title = element_text(size = 8))
+      theme(plot.title = element_text(size = title_size))
     if (interactive) {
       p <- plotly::ggplotly(p)
     }
