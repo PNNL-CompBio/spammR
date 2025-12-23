@@ -33,7 +33,7 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
                                     y_offset = 0,
                                     x_offset=0){
   
-    reticulate::py_require(c('metaspace','numpy','pandas'))
+    reticulate::py_require(c('metaspace2020','numpy','pandas'))
 
     #load function
     path <- system.file('python',package = 'spammR')
@@ -101,7 +101,7 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
     reticulate::py_install('pandas')
   if (!reticulate::py_module_available('numpy'))
     reticulate::py_install('numpy')
-  if (!reticulate::py_module_available('metaspace'))
-    reticulate::py_install('metaspace')
+  if (!reticulate::py_module_available('metaspace2020'))
+    reticulate::py_install('metaspace2020')
   
 }
