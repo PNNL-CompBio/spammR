@@ -101,7 +101,8 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
     reticulate::py_install('pandas')
   if (!reticulate::py_module_available('numpy'))
     reticulate::py_install('numpy')
-  if (!reticulate::py_module_available('metaspace2020'))
+  # import name for `metaspace` is different from the pypi package name
+  if (!reticulate::py_module_available('metaspace'))
     reticulate::py_install('metaspace2020')
   
 }
