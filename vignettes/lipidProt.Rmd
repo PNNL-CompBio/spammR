@@ -209,16 +209,33 @@ requires an additional command to pull the information directly.
 We created a wrapper to the [Metaspace python package]() to enable
 download and formatting of metaspace measurements for spammR. 
 
-The result is a `SpatialExperiment`
+The result is a `SpatialExperiment`. This takes too long to run as a vignette
+so we show the code and then load the file separately.
 
-```{r metaspace import and plotting, warning=FALSE, message=FALSE}
+```{r metaspace import and plotting, warning=FALSE, message=FALSE, eval = FALSE}
 ##get lipid data from metaspace 
+
 mspe <- spammR::retrieve_metaspace_data("2024-02-15_20h37m13s", 
                                 fdr = 0.2, 
                                 assay_name = 'lipids',
                                 sample_id = 'rat_brain',
                                 rotate = TRUE, 
                                 drop_zeroes = TRUE)
+```
+
+Now we can downlod the object from figshare and load it.
+```{r udpate ms object}
+
+download.file('https://api.figshare.com/v2/file/download/60993349',
+              destfile = 'mspe.rds')
+mspe <- readRDS('mspe.rds')
+file.remove('mspe.rds')
+
+```
+
+Lastly we add the image file to the data downloaded by metaspace and visualize a
+lipid of interest. 
+```{r add image}
 ## add in image to check 
 mspe <- SpatialExperiment::addImg(mspe, img, scaleFactor = NA_real_,
                                   sample_id = 'rat_brain',
@@ -372,7 +389,7 @@ the `enrichment_in_order` method.
 ##add back to data set
 
 prot_cor <- prot_cor |> 
-  group_by(Gene)|> 
+  group_by(Gene) |> 
   summarize(lipid_cor = mean(lipid_cor))
 
 rowData(reduced) <- rowData(reduced) |>
@@ -386,7 +403,7 @@ enrich <- leapR::leapR(geneset = krbpaths, enrichment_method = 'enrichment_in_or
                        id_column = 'upperGene', minsize = 5)
 
 
-paths <- subset(enrich, BH_pvalue<0.3)
+paths <- subset(enrich, BH_pvalue < 0.3)
 #subset(enrich,ingroup_mean > 0.25) |> 
 #  subset(pvalue <0.05)
 
@@ -408,7 +425,7 @@ pv <- assay(subset(reduced,upperGene %in% prots),'proteomics')
 lv <- assay(subset(altExp(reduced),Name == lvn[1]),'lipids')
  
 ##proteins seem anti-correlated
-mean(cor(t(pv),t(lv), method='spearman'))
+mean(cor(t(pv),t(lv), method = 'spearman'))
 ```
 We can see that they are negative correlated.
 
