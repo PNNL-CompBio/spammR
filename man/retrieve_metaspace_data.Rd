@@ -47,5 +47,4 @@ rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s",
                                 assay_name = 'lipids', 
                                sample_id = 'sample')
 head(rowMeans(assay(rdat,'lipids')))
-
 }

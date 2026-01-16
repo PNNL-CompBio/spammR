@@ -39,42 +39,15 @@ First we load the required packages.
 ```{r setup, include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(spammR)
+##these are all on cran
+library(tidyverse)
+library(readxl)
+library(geojsonR)
+library(tidygraph)
+library(ggraph)
+library(cowplot)
+library(leapR) ##this is on bioconductor
 
-##there are additional dependencies
-if (!require('tidyverse')) {
-  install.packages("tidyverse", repos = "https://cran.rstudio.com/")
-  library(tidyverse)
-}
-
-if (!require('readxl')) {
-  install.packages('readxl', repos = "https://cran.rstudio.com/")
-  library(readxl)
-}
-
-if (!require('geojsonR')) {
-  install.packages('geojsonR', repos = "https://cran.rstudio.com/")
-  library(geojsonR)
-}
-
-if (!require('tidygraph')) {
-  install.packages('tidygraph', repos = "https://cran.rstudio.com/")
-  library(tidygraph)
-}
-
-if (!require('ggraph')) {
-  install.packages('ggraph', repos = "https://cran.rstudio.com/")
-  library(ggraph)
-}
-
-if (!require('cowplot')) {
-  install.packages('cowplot', repos = "https://cran.rstudio.com/")
-  library(cowplot)
-}
-
-if (!require('leapR')) {
-  BiocManager::install('leapR')
-  library(leapR)
-}
 ```
 
 # Load proteomics data
@@ -170,7 +143,7 @@ We store the GEOJson file in the package for you to load with this example.
  
 ```
 
-Now that we have the coordates we can use spammR to create the 
+Now that we have the coordinates we can use spammR to create the 
 `SpatialExperiment` object and plot a protein.
 
 ## Create SpatialExperiment Object
@@ -302,7 +275,7 @@ Let's see which of our lipids are most variable across the tissue.
 
 ```{r get protein cors}
 
-lvs <- sort(apply(assay(mspe,'lipids'),1,var,na.rm = T),decreasing = TRUE)[1:10]
+lvs <- sort(apply(assay(mspe,'lipids'),1,var,na.rm = TRUE),decreasing = TRUE)[1:10]
 
 lvn <- rowData(altExp(reduced))[names(lvs),'Name']
 

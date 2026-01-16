@@ -16,14 +16,13 @@
 #' False the zeroes will be included in the image data. 
 #' @param y_offset Number of pixels to adjust y based on image
 #' @param x_offset Number of pixels to adjust x based on image
-#' @export
+#' @export 
 #' @examples
 #' rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s", 
 #'                                 fdr = 0.2, 
 #'                                 assay_name = 'lipids', 
 #'                                sample_id = 'sample')
 #' head(rowMeans(assay(rdat,'lipids')))
-#' 
 retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s", 
                                     fdr = 0.2, 
                                     assay_name = 'lipids', 
@@ -94,6 +93,13 @@ retrieve_metaspace_data <- function(project_id = "2024-02-15_20h37m13s",
     
 }
 
+#' Loads python code
+#' @description `.onLoad()` is called when loading package. 
+#' @import reticulate
+#' @import dplyr
+#' @param libname name of library 
+#' @param pkgname Name of package
+#' @noRd 
 .onLoad <- function(libname, pkgname){
   reticulate::py_require(python_version = "3.11")
   
