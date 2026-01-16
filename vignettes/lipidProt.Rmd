@@ -42,7 +42,6 @@ library(spammR)
 ##these are all on cran
 library(tidyverse)
 library(readxl)
-library(geojsonR)
 library(tidygraph)
 library(ggraph)
 library(cowplot)
@@ -109,9 +108,10 @@ collect the regions of interest (ROI) coordinates on the image.
 This program allowed us to highlight the regions of interest and export
 them in GEOJson format, which can then be used as input into spammR. 
 
-We store the GEOJson file in the package for you to load with this example.
+We store the GEOJson file in the package for you to load with this example 
+should you choose to load teo GEOJson using the `geojsonR` package. 
 
-```{r format coordinates, warning=FALSE, message=FALSE}
+```{r format coordinates, warning=FALSE, message=FALSE, eval = FALSE}
 #remove this once we can include it in spammR
  
   library(geojsonR)
@@ -140,7 +140,19 @@ We store the GEOJson file in the package for you to load with this example.
  ##now for each ROI we want an x, y, cell height and cell_width
  #y-coordinates are from top, so need to udpate
   coords$y_pixels = 263 - unlist(coords$y_pixels) - unlist(coords$spot_height)
+  coords$x_pixels = unlist(coords$x_pixels)
+  coords$spot_height = unlist(coords$spot_height)
+  coords$spot_width = unlist(coords$spot_width)
+  readr::write_csv(as.data.frame(coords),file='../inst/extdata/bcoords.csv')
  
+```
+
+To avoid this we just load the csv directly:
+
+```{r load coords}
+coords <- read.csv(system.file('extdata','bcoords.csv',
+                               package = 'spammR'))
+rownames(coords) <- paste(coords$ROI, coords$Replicate,sep = '_')
 ```
 
 Now that we have the coordinates we can use spammR to create the 
