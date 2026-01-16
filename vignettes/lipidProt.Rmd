@@ -42,32 +42,32 @@ library(spammR)
 
 ##there are additional dependencies
 if (!require('tidyverse')) {
-  install.packages("tidyverse")
+  install.packages("tidyverse", repos = "https://cran.rstudio.com/")
   library(tidyverse)
 }
 
 if (!require('readxl')) {
-  install.packages('readxl')
+  install.packages('readxl', repos = "https://cran.rstudio.com/")
   library(readxl)
 }
 
 if (!require('geojsonR')) {
-  install.packages('geojsonR')
+  install.packages('geojsonR', repos = "https://cran.rstudio.com/")
   library(geojsonR)
 }
 
 if (!require('tidygraph')) {
-  install.packages('tidygraph')
+  install.packages('tidygraph', repos = "https://cran.rstudio.com/")
   library(tidygraph)
 }
 
 if (!require('ggraph')) {
-  install.packages('ggraph')
+  install.packages('ggraph', repos = "https://cran.rstudio.com/")
   library(ggraph)
 }
 
 if (!require('cowplot')) {
-  install.packages('cowplot')
+  install.packages('cowplot', repos = "https://cran.rstudio.com/")
   library(cowplot)
 }
 
