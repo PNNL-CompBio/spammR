@@ -456,7 +456,7 @@ library(tidygraph)
 library(ggraph)
 
 ##correlation analysis can be slow, so let's only evaluate the top 1000 most variable proteins
-varprots = apply(assay(img.spes[[2]]),1,var,na.rm=T) |>
+varprots = apply(assay(img.spes[[2]]),1,var,na.rm = TRUE) |>
   sort(decreasing = TRUE) |>
   names()
 
