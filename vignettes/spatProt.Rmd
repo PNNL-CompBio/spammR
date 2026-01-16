@@ -454,12 +454,20 @@ proteins we are most interested in, or those that are most correlated.
 ```{r graph correlations}
 library(tidygraph)
 library(ggraph)
-full_graph <- spatial_network(img.spes[[2]],'proteomics','PrimaryGeneName')
 
+##correlation analysis can be slow, so let's only evaluate the top 1000 most variable proteins
+varprots = apply(assay(img.spes[[2]]),1,var,na.rm=T) |>
+  sort(decreasing = TRUE) |>
+  names()
+
+date()
+full_graph <- spatial_network(img.spes[[2]][varprots[1:1000],],
+                              'proteomics','PrimaryGeneName')
+date()
 ##how subset for only those 81 proteins
 rgraph <- full_graph |>
   tidygraph::activate(nodes) |>
-  dplyr::filter(name %in% rprots[sample(20)]) |>
+  dplyr::filter(name %in% rprots) |>#[sample(20)]) |>
   tidygraph::activate(edges) |>
   dplyr::filter(corval > 0.75)
 
