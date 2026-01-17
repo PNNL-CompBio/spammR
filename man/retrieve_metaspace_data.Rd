@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieve_metaspace_data.R
 \name{retrieve_metaspace_data}
 \alias{retrieve_metaspace_data}
-\title{Retreive data objects from metspace}
+\title{Retrieve data objects from metaspace}
 \usage{
 retrieve_metaspace_data(
   project_id = "2024-02-15_20h37m13s",
@@ -33,18 +33,24 @@ False the zeroes will be included in the image data.}
 
 \item{x_offset}{Number of pixels to adjust x based on image}
 }
+\value{
+a \code{SpatialExperiment} object with the metaspace data and
+coordinates.
+}
 \description{
-\code{retrieve_metaspace_data()}Collects data from
+\code{retrieve_metaspace_data}Collects data from
 http://metaspace2020.org by project id and returns it in SpatialExperiment
 object
 }
 \details{
-This relies on underlying python code and environment to run.
+This relies on underlying python code and environment to run,
+including the metaspace2020 package, the numpy package, and the pandas
+package.
 }
 \examples{
-rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s", 
-                                fdr = 0.2, 
-                                assay_name = 'lipids', 
+rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s",
+                                fdr = 0.2,
+                                assay_name = 'lipids',
                                sample_id = 'sample')
 head(rowMeans(assay(rdat,'lipids')))
 }

@@ -5,8 +5,8 @@
 #' samples. names(feature_values) should contain names of samples
 calc_diff_pairwiseSamples <- function(feature_values) {
     pairwiseDiff <- data.frame()
-    for (i in seq_along(1:length(feature_values))) {
-      for (j in seq_along(1:length(feature_values))) {
+    for (i in seq_len(length(feature_values))) {
+      for (j in seq_len(length(feature_values))) {
         pairwiseDiff[i, j] <- feature_values[i] - feature_values[j]
       }
     }
