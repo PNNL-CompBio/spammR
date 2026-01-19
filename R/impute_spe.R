@@ -66,7 +66,7 @@ impute_spe <- function(spe,
                        protein_missingness = NULL) {
   
     .methods <- c("zero", "median", "median_half", "mean", 
-                  "group_mean", "knn", "group_knn", "spatial_knn")
+                  "group_mean", "sampMin", "knn", "group_knn", "spatial_knn")
     
   
     ## check for args
@@ -97,7 +97,7 @@ impute_spe <- function(spe,
     fix_prots <- which((rowSums(is.na(dat)) / ncol(dat)) > protein_missingness)
   
     ### first iterate through the global methods
-    if (method %in% c("zero", "mean", "median", "median_half")) {
+    if (method %in% c("zero", "mean", "median", "median_half", "minSamp")) {
         ## row-wise values first
         if (method == "zero") {
             replace_vals <- rep(0, nrow(dat))
@@ -109,7 +109,11 @@ impute_spe <- function(spe,
         } else if (method == "median_half") {
            replace_vals <- 0.5 * matrixStats::rowMedians(as.matrix(dat), 
                                                         na.rm = TRUE)
+        } else if (method == 'minSamp') {
+          replace_vals <- matrixStats::colMins(as.matrix(dat),
+                                               na.rm = TRUE)
         }
+        
         imputed_data <- dat
         ### now do the imputation
         for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
