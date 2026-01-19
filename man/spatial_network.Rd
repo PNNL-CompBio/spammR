@@ -53,7 +53,7 @@ Only the largest connected component is plotted, but the entire
 graph is returned as an \code{tidygraph} object.
 }
 \examples{
-
+\dontrun{
 data(pancMeta)
 data(smallPancData)
 data(protMeta)
@@ -67,4 +67,6 @@ img0.spe <- convert_to_spe(smallPancData$Image_0,
   image_ids = "with_grid"
 )
 ##now call the network
+res <- spatial_network(img0.spe,'proteomics')
+}
 }

@@ -34,7 +34,7 @@
 #' @param method to use for correlation, default is `spearman`
 #' @return a `tidygraph` object that can be used for plotting or analysis
 #' @examples
-#' 
+#' \dontrun{
 #' data(pancMeta)
 #' data(smallPancData)
 #' data(protMeta)
@@ -48,6 +48,8 @@
 #'   image_ids = "with_grid"
 #' )
 #' ##now call the network
+#' res <- spatial_network(img0.spe,'proteomics')
+#' }
 spatial_network <- function(spe, 
                              assay_names,
                              feature_names = NULL, 
