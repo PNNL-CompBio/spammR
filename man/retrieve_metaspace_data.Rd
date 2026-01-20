@@ -48,7 +48,7 @@ including the metaspace2020 package, the numpy package, and the pandas
 package.
 }
 \examples{
-\dontrun{
+\donttest{
 rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s",
                                 fdr = 0.2,
                                 assay_name = 'lipids',

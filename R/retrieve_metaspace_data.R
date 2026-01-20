@@ -22,7 +22,7 @@
 #' @returns a `SpatialExperiment` object with the metaspace data and
 #' coordinates.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' rdat <- retrieve_metaspace_data(project_id = "2024-02-15_20h37m13s",
 #'                                 fdr = 0.2,
 #'                                 assay_name = 'lipids',

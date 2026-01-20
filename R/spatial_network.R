@@ -34,7 +34,7 @@
 #' @param method to use for correlation, default is `spearman`
 #' @return a `tidygraph` object that can be used for plotting or analysis
 #' @examples
-#' \dontrun{
+#'
 #' data(pancMeta)
 #' data(smallPancData)
 #' data(protMeta)
@@ -47,9 +47,11 @@
 #'   sample_id = "Image0",
 #'   image_ids = "with_grid"
 #' )
+#' #get 10 most variable features
+#' vp <- sort(apply(assay(img0.spe),1,var),decreasing = TRUE)[1:10]
 #' ##now call the network
-#' res <- spatial_network(img0.spe,'proteomics')
-#' }
+#' res <- spatial_network(img0.spe,'proteomics', target_features=names(vp))
+#' 
 spatial_network <- function(spe, 
                              assay_names,
                              feature_names = NULL, 
