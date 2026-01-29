@@ -268,7 +268,7 @@ can also visualize those.
 spe.plot <- img.spes[[2]]
 
 hup <- spatial_heatmap(spe.plot,
-    feature = rownames(ups),
+    feature = rownames(downs),
     sample_id = "Image_1",
     image_id = "with_grid",
     label_column = "IsletOrNot",
@@ -317,6 +317,8 @@ hup <- spatial_heatmap(spe.plot,
     plot_title = "Glucose regulation proteins",
     interactive = FALSE
 )
+
+hup
 ```
 
 The average expression of the 20 proteins selected is shown to be higher in 
@@ -405,20 +407,18 @@ functionality and we can use the rankings as input.
 ```{r rank based enrichment,warning=FALSE,error=FALSE}
 library(leapR)
 data("krbpaths")
-enriched.paths <- do.call(rbind, lapply(names(rank.imgs), function(x) {
-  spe <- rank.imgs[[x]]
-  es <- enrich_gradient(spe,
+
+spe <- rank.imgs[[2]]
+enriched.paths <- enrich_gradient(spe,
     geneset = krbpaths,
     feature_column = "PrimaryGeneName", # mapped to enrichment data
     ranking_column = "IsletDistancespearmanCor"
-  )
-  es[, "comp"] <- rep(x, nrow(es))
-  es[, "krbpaths"] <- rownames(es)
-  es
-}))
+)
+enriched.paths[, "comp"] <- rep(names(rank.imgs)[[2]], nrow(enriched.paths))
+enriched.paths[, "krbpaths"] <- rownames(enriched.paths)
 
 enriched.paths |>
-  subset(BH_pvalue < 0.05) |>
+  subset(pvalue < 0.01) |>
   dplyr::group_by(krbpaths) |>
   dplyr::summarize(numImgs = dplyr::n()) |>
   dplyr::arrange(desc(numImgs))
@@ -430,7 +430,7 @@ proteins from a particular pathway and visualize those as well.
 ## Plotting pathways from gradient
 
 ```{r gradient plotting}
-rprots <- subset(enriched.paths, krbpaths == "KEGG_RIBOSOME") |>
+rprots <- subset(enriched.paths, krbpaths == "REACTOME_INSULIN_SYNTHESIS_AND_SECRETION") |>
     dplyr::select(comp, ingroupnames)
 
 rprots <- unlist(strsplit(rprots[1, 2], split = ", "))
