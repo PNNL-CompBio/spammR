@@ -75,7 +75,7 @@ calc_spatial_diff_ex <- function(spe,
     # print(design)
     dat <- SummarizedExperiment::assays(spe)[[assay_name]]
     ldat <- dat
-    if (!log_transformed) {
+    if (!log_transformed & !count_based) {
       ldat <- log2(dat)
     }
 
