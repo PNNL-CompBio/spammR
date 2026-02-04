@@ -1,0 +1,90 @@
+# Plot network of correlated features
+
+`spatial_network()` Creates a network for a given SpatialExperiment
+object (spe) based on the correlation of features. Will return a fully
+connect graph
+
+## Usage
+
+``` r
+spatial_network(
+  spe,
+  assay_names,
+  feature_names = NULL,
+  query_features = NULL,
+  target_features = list(),
+  method = "spearman"
+)
+```
+
+## Arguments
+
+- spe:
+
+  SpatialExperiment (SPE) object
+
+- assay_names:
+
+  Name of assay in the spe object that contains data to be plotted. If
+  only one it will focus on features in the first assay. If more than
+  one it will compute correlations across all features.
+
+- feature_names:
+
+  will describe which value to use for node names. IF missing will use
+  rownames
+
+- query_features:
+
+  List of features to query for correlation. If there are no
+  `target_featres` will build a network between this feature all other
+  nodes. If missing, correlation will be computed between all nodes in
+  `target_features`.
+
+- target_features:
+
+  List of features to compute correlation across. If `query_features` is
+  not NULL, will compute correlation only between these features and the
+  `query_features`. Otherwise, it will compute correlation between all
+  features in this list. DEFAULT: all features in spe.
+
+- method:
+
+  to use for correlation, default is `spearman`
+
+## Value
+
+a `tidygraph` object that can be used for plotting or analysis
+
+## Details
+
+Using the feature values, the algorithm computes the correlation between
+them across space, filtes by `lowest_thresh` (in the interest of compute
+time) and then selects the most correlated edges using the `top_edges`
+parameter.
+
+Only the largest connected component is plotted, but the entire graph is
+returned as an `tidygraph` object.
+
+## Examples
+
+``` r
+data(pancMeta)
+data(smallPancData)
+data(protMeta)
+img0.spe <- convert_to_spe(smallPancData$Image_0,
+  pancMeta,
+  protMeta,
+  feature_meta_colname = "pancProts",
+  image_files = system.file("extdata", "Image_0.png", package = "spammR"),
+  spatial_coords_colnames = c("x_pixels", "y_pixels"),
+  sample_id = "Image0",
+  image_ids = "with_grid"
+)
+#> Note: Only mapping metadata for 2986 features out of 3000 data points
+#get 10 most variable features
+vp <- sort(apply(assay(img0.spe),1,var),decreasing = TRUE)[1:10]
+##now call the network
+res <- spatial_network(img0.spe,'proteomics', target_features=names(vp))
+#> Joining with `by = join_by(rowval)`
+```

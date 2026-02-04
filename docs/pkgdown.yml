@@ -1,0 +1,8 @@
+pandoc: 3.7.0.2
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  lipidProt: lipidProt.html
+  spatMicrobiome: spatMicrobiome.html
+  spatProt: spatProt.html
+last_built: 2026-02-04T23:13Z
