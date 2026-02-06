@@ -384,9 +384,8 @@ rowData(reduced) <- rowData(reduced) |>
 
 data("krbpaths")
 enrich <- leapR::leapR(geneset = krbpaths, enrichment_method = 'enrichment_in_order',
-                       eset = reduced, primary_column = 'lipid_cor', 
+                       eset = reduced, primary_column = 'lipid_cor', method = 'ks', 
                        id_column = 'upperGene', minsize = 5)
-
 
 paths <- subset(enrich, BH_pvalue < 0.3)
 #subset(enrich,ingroup_mean > 0.25) |> 

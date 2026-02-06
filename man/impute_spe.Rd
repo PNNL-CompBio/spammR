@@ -51,6 +51,7 @@ Methods options and descriptions:
 \item median : replace missing values with global median per protein
 \item median_half : replace missing values with 1/2 global median per protein
 \item mean: replace missing values with global mean per protein
+\item min_samp: replace missing values with sample minimum per protein
 \item group_mean: replace missing values with mean per group, e.g. group
 (example: ROI) for each protein
 \item knn: imputation based on k-nearest neighbors, with proteins as neighbors,
@@ -77,7 +78,7 @@ pooled.panc.spe <- convert_to_spe(pooledData,
 )
 # we can try two imputation methods and compare the difference
 res <- impute_spe(pooled.panc.spe, method = "mean")
-res2 <- impute_spe(pooled.panc.spe, method = "group_mean", 
+res2 <- impute_spe(pooled.panc.spe, method = "group_mean",
                   group_colname = "Image")
 mean(assay(res, "imputed") - assay(res2, "imputed"), na.rm = TRUE)
 

@@ -4,7 +4,15 @@
 \alias{enrich_gradient}
 \title{Calculate functional or pathway enrichment from a gradient}
 \usage{
-enrich_gradient(spe, assay_name, geneset, feature_column, ranking_column)
+enrich_gradient(
+  spe,
+  assay_name,
+  geneset,
+  feature_column,
+  ranking_column,
+  method = "ztest",
+  ...
+)
 }
 \arguments{
 \item{spe}{SpatialExperiment object containing spatial omics data and
@@ -17,6 +25,8 @@ spatial diffex results}
 \item{feature_column}{Column of rowData that maps to gene set}
 
 \item{ranking_column}{Column of rowData that maps to ranks}
+
+\item{method}{Rank enrichmemnt method used by leapR. Default is \code{ztest}}
 }
 \value{
 A dataframe containing results from over-representation analysis

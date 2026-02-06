@@ -338,35 +338,20 @@ the islet cells.
 ```{r distance, warning=FALSE, error=FALSE, message=FALSE}
 ## for each image, let's compute the distance of each voxel to 
 ## the one labeled 'Islet'
-rank.imgs <- lapply(
-  img.spes,
-  function(x) {
-    distance_based_analysis(x, "proteomics",
+img.rank <- distance_based_analysis(img.spes[[3]], "proteomics",
       sampleCategoryCol = "IsletOrNot",
       sampleCategoryValue = "Islet"
     )
-  }
-)
+
 
 ## now we have the distances, let's plot some interesting proteins
-negProts <- do.call(rbind, lapply(names(rank.imgs), function(x) {
-    subset(as.data.frame(rowData(rank.imgs[[x]])), 
-           IsletDistancespearmanPval < 0.01) |>
-      subset(IsletDistancespearmanCor < (-.75)) |>
-      dplyr::select(PrimaryGeneName, IsletDistancespearmanCor) |>
-      dplyr::mutate(image = x)
-}))
+negProts <- rowData(img.rank) |>
+  subset(IsletDistancespearmanPval < 0.01) |>
+  as.data.frame() |>
+  dplyr::arrange(IsletDistancespearmanCor)
 
 print(head(negProts))
 
-## do any proteins show up more than once?
-icounts <- negProts |>
-    dplyr::group_by(PrimaryGeneName) |>
-    dplyr::summarize(numImgs = dplyr::n()) |>
-    dplyr::arrange(desc(numImgs))
-
-
-print(icounts)
 ```
 
 It looks like SH3GL1 is correlated with distance to Islet in a few images. 
@@ -374,21 +359,21 @@ It looks like SH3GL1 is correlated with distance to Islet in a few images.
 ## Plot protein gradient
 
 Now we can plot the expression of a protein suspected to have decreasing 
-expression farther from the islet cells.We start with SH3GL1 and SP3S2.
+expression farther from the islet cells.We start with SRP14 and ENPP4
 
 ```{r plot correlated proteins, message=FALSE}
 spatial_heatmap(img.spes[[3]],
-    feature = "SH3GL1",
+    feature = "SRP14",
     feature_type = "PrimaryGeneName",
     sample_id = names(img.spes)[3],
     image_id = "with_grid",
     label_column = "IsletOrNot", interactive = FALSE
 )
 
-spatial_heatmap(img.spes[[2]],
-    feature = "AP3S2",
+spatial_heatmap(img.spes[[3]],
+    feature = "ENPP4",
     feature_type = "PrimaryGeneName",
-    sample_id = names(img.spes)[2],
+    sample_id = names(img.spes)[3],
     image_id = "with_grid",
     label_column = "IsletOrNot", interactive = FALSE
 )
@@ -408,20 +393,20 @@ functionality and we can use the rankings as input.
 library(leapR)
 data("krbpaths")
 
-spe <- rank.imgs[[2]]
+spe <- img.rank
 enriched.paths <- enrich_gradient(spe,
     geneset = krbpaths,
+    method = 'ks',
+    log_transformed = FALSE, 
     feature_column = "PrimaryGeneName", # mapped to enrichment data
     ranking_column = "IsletDistancespearmanCor"
 )
-enriched.paths[, "comp"] <- rep(names(rank.imgs)[[2]], nrow(enriched.paths))
+enriched.paths[, "comp"] <- rep(names(img.spes)[[3]], nrow(enriched.paths))
 enriched.paths[, "krbpaths"] <- rownames(enriched.paths)
 
 enriched.paths |>
   subset(pvalue < 0.01) |>
-  dplyr::group_by(krbpaths) |>
-  dplyr::summarize(numImgs = dplyr::n()) |>
-  dplyr::arrange(desc(numImgs))
+  dplyr::arrange(BH_pvalue)
 ```
 We can see that numerous pathways are coming up as enriched across images, 
 including ribosomal and translation related pathways. Now we can select
@@ -430,15 +415,15 @@ proteins from a particular pathway and visualize those as well.
 ## Plotting pathways from gradient
 
 ```{r gradient plotting}
-rprots <- subset(enriched.paths, krbpaths == "REACTOME_INSULIN_SYNTHESIS_AND_SECRETION") |>
+rprots <- subset(enriched.paths, krbpaths == "REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS") |>
     dplyr::select(comp, ingroupnames)
 
 rprots <- unlist(strsplit(rprots[1, 2], split = ", "))
 
-spatial_heatmap(img.spes[[2]],
+spatial_heatmap(img.rank,
     feature = rprots,
     feature_type = "PrimaryGeneName",
-    sample_id = names(img.spes)[2],
+    sample_id = names(img.spes)[3],
     image_id = "with_grid",
     label_column = "IsletOrNot", interactive = FALSE
 )
@@ -456,20 +441,19 @@ library(tidygraph)
 library(ggraph)
 
 ##correlation analysis can be slow, so let's only evaluate the top 1000 most variable proteins
-varprots = apply(assay(img.spes[[2]]),1,var,na.rm = TRUE) |>
+varprots = apply(assay(img.spes[[3]]),1,var,na.rm = TRUE) |>
   sort(decreasing = TRUE) |>
   names()
 
-date()
-full_graph <- spatial_network(img.spes[[2]][varprots[1:1000],],
+full_graph <- spatial_network(img.spes[[3]],target_features = rprots,
                               'proteomics','PrimaryGeneName')
-date()
+
 ##how subset for only those 81 proteins
 rgraph <- full_graph |>
   tidygraph::activate(nodes) |>
   dplyr::filter(name %in% rprots) |>#[sample(20)]) |>
   tidygraph::activate(edges) |>
-  dplyr::filter(corval > 0.75)
+  dplyr::filter(abs(corval) > 0.25)
 
 ##then we can plot
 ggraph::ggraph(rgraph) + 
@@ -478,8 +462,8 @@ ggraph::ggraph(rgraph) +
    geom_node_label(aes(label = name))
 
 ```
-Here are the highly correlated edges between 20 randomly sampled ribosomal
-proteins. 
+Here are the highly correlated edges between the proteins selected in the cytokine
+pathway. 
 
 # Summary
 

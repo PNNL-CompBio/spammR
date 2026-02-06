@@ -12,6 +12,7 @@
 #' @param assay_name name of assay
 #' @param feature_column Column of rowData that maps to gene set
 #' @param ranking_column Column of rowData that maps to ranks
+#' @param method Rank enrichmemnt method used by leapR. Default is `ztest`
 #' @returns A dataframe containing results from over-representation analysis 
 #' of members of gene sets in the interest list of genes based on filtering 
 #' criteria above.
@@ -47,13 +48,17 @@ enrich_gradient <- function(spe,
                             assay_name,
                             geneset,
                             feature_column, # name to be mapped to gene set
-                            ranking_column) {
+                            ranking_column, 
+                            method = 'ztest', 
+                            ...) { #other methods to pass to leapR
+  
 
     # here we use the leapR package for the rank enrichment
     es <- leapR::leapR(
       eset = spe, assay_name = assay_name, geneset = geneset,
       enrichment_method = "enrichment_in_order",
-      id_column = feature_column, primary_columns = ranking_column
+      method = method,
+      id_column = feature_column, primary_columns = ranking_column, ...
     ) |>
       subset(!is.na(pvalue)) |>
       dplyr::arrange(pvalue)
