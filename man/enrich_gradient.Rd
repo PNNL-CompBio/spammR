@@ -10,8 +10,7 @@ enrich_gradient(
   geneset,
   feature_column,
   ranking_column,
-  method = "ztest",
-  ...
+  method = "ztest"
 )
 }
 \arguments{

@@ -397,7 +397,6 @@ spe <- img.rank
 enriched.paths <- enrich_gradient(spe,
     geneset = krbpaths,
     method = 'ks',
-    log_transformed = FALSE, 
     feature_column = "PrimaryGeneName", # mapped to enrichment data
     ranking_column = "IsletDistancespearmanCor"
 )

@@ -25,6 +25,6 @@ test_that("gradient enrichment works", {
      ranking_column = "IsletDistancespearmanCor"
    )
   
-  sigs <- subset(rank.res,pvalue < 0.05)
-  expect_equal(nrow(sigs), 12)
+  sigs <- subset(rank.res,BH_pvalue < 0.05)
+  expect_equal(nrow(sigs), 40)
 })

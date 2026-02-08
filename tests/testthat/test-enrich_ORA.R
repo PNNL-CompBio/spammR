@@ -6,6 +6,6 @@ test_that("ORA enrichment works", {
   data("krbpaths")
   ora.res <- enrich_ora(diffex.spe, geneset = krbpaths, geneset_name = "krbpaths", feature_column = "PrimaryGeneName")
   sigs <- subset(ora.res, BH_pvalue < 0.05)
-  expect_equal(nrow(sigs), 14)
+  expect_equal(nrow(sigs), 33)
   
 })

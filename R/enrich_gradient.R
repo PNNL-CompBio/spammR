@@ -49,8 +49,7 @@ enrich_gradient <- function(spe,
                             geneset,
                             feature_column, # name to be mapped to gene set
                             ranking_column, 
-                            method = 'ztest', 
-                            ...) { #other methods to pass to leapR
+                            method = 'ztest') { #other methods to pass to leapR
   
 
     # here we use the leapR package for the rank enrichment
@@ -58,8 +57,7 @@ enrich_gradient <- function(spe,
       eset = spe, assay_name = assay_name, geneset = geneset,
       enrichment_method = "enrichment_in_order",
       method = method,
-      id_column = feature_column, primary_columns = ranking_column, ...
-    ) |>
+      id_column = feature_column, primary_columns = ranking_column) |>
       subset(!is.na(pvalue)) |>
       dplyr::arrange(pvalue)
   
