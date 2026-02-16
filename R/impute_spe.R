@@ -98,7 +98,7 @@ impute_spe <- function(spe,
     fix_prots <- which((rowSums(is.na(dat)) / ncol(dat)) > protein_missingness)
 
     ### first iterate through the global methods
-    if (method %in% c("zero", "mean", "median", "median_half", "min_samp")) {
+    if (method %in% c("zero", "mean", "median", "median_half")) {
         ## row-wise values first
         if (method == "zero") {
             replace_vals <- rep(0, nrow(dat))
@@ -110,11 +110,7 @@ impute_spe <- function(spe,
         } else if (method == "median_half") {
            replace_vals <- 0.5 * matrixStats::rowMedians(as.matrix(dat),
                                                         na.rm = TRUE)
-        } else if (method == 'min_samp') {
-          replace_vals <- matrixStats::colMins(as.matrix(dat),
-                                               na.rm = TRUE)
         }
-
         imputed_data <- dat
         ### now do the imputation
         for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
@@ -122,7 +118,19 @@ impute_spe <- function(spe,
             imputed_data[i, which(is.na(dat[i, ]))] <- replace_vals[i]
         }
 
-      ## if we were mising things
+    } else if (method == 'samp_min') {
+      replace_vals <- matrixStats::colMins(as.matrix(dat),
+                                           na.rm = TRUE)
+      imputed_data <- dat
+      for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
+        ## for all of the values we WANT to fix
+        for (j in seq_along(1:ncol(dat))){
+          if(is.na(imputed_data[i,j])){
+            imputed_data[i, j] <- replace_vals[j]
+          }
+        }
+      }
+
     } else if (method == "knn") {
       kres <- impute::impute.knn(as.matrix(dat), k = k,
                                  rowmax = protein_missingness,
