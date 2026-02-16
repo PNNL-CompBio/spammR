@@ -21,13 +21,13 @@
 #' @param assay_names Name of assay in the spe object that contains 
 #' data to be plotted. If only one it will focus on features in the first 
 #' assay. If more than one it will compute correlations across all features.
-#' @param query_features List of features to query for correlation. If there 
-#' are no `target_featres` will build a network between this feature all other
+#' @param query_feature A single feature to query for correlation. If there 
+#' are no `target_features` will build a network between this feature all other
 #' nodes. If missing, correlation will be computed between all nodes in 
-#' `target_features`.
+#' `target_features`. 
 #' @param target_features List of features to compute correlation across. If
-#' `query_features` is not NULL, will compute correlation only between these
-#' features and the `query_features`. Otherwise, it will compute correlation
+#' `query_feature` is not NULL, will compute correlation only between these
+#' features and the `query_feature`. Otherwise, it will compute correlation
 #' between all features in this list. DEFAULT: all features in spe. 
 #' @param feature_names will describe which value to use for node names. IF
 #' missing will use rownames
@@ -55,7 +55,7 @@
 spatial_network <- function(spe, 
                              assay_names,
                              feature_names = NULL, 
-                             query_features = NULL,
+                             query_feature = NULL,
                              target_features = list(), 
                              method = 'spearman'){
   
@@ -92,9 +92,9 @@ spatial_network <- function(spe,
     if (length(target_features) == 0) {
       all_features <- c(all_features,fname$name)
     }
-    #add query_features to list
-    if (!is.null(query_features) && query_features %in% fname$name) {
-      all_features <- union(all_features, query_features)
+    #add query_feature to list
+    if (!is.null(query_feature) && query_feature %in% fname$name) {
+      all_features <- union(all_features, query_feature)
     }
     
     fullmat <- cbind(fullmat,mval)
@@ -110,17 +110,29 @@ spatial_network <- function(spe,
     full_fname$rowval[which(is.na(full_fname$name))]
   
   #calculate correlations
-  if (is.null(query_features)) {
-    cormat <- cor(x = fullmat, method = method, use = 'p') |>
+  if (is.null(query_feature)) {
+    cormat <- cor(x = fullmat, method = method) |>#, use = 'p') |>
         as.data.frame(check.names = FALSE) 
+    cormat <- data.frame(feature1 = full_fname$name, cormat, 
+                         check.names = FALSE)
   }else{
-    qi <- subset(full_fname, name == query_features)
+    qi <- subset(full_fname, name == query_feature)
+    if (nrow(qi) > 1) {
+      stop('Query feature can only map to one set of values', call. = FALSE)
+    }
+      
     ti <- subset(full_fname, name %in% target_features)
     cormat <- cor(x = fullmat[,qi$rowval], y = fullmat[,ti$rowval], 
-                  method = method, use = 'p')
+                  method = method) #, use = 'p')
+    #if (nrow(cormat) == 1) { #only 1 feature correlated
+    cormat <- data.frame(feature1 = fname$name, 
+                           t(cormat), 
+                           check.names = FALSE)
+    colnames(cormat)[2] <- qi$rowval
     
   }
-  cormat <- data.frame(feature1 = full_fname$name, cormat, check.names = FALSE)
+  #join correlation values with feature name
+
   #make into long format
   cordat <- cormat |>
       tidyr::pivot_longer(names_to = 'rowval', values_to = 'corval', 

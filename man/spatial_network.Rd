@@ -8,7 +8,7 @@ spatial_network(
   spe,
   assay_names,
   feature_names = NULL,
-  query_features = NULL,
+  query_feature = NULL,
   target_features = list(),
   method = "spearman"
 )
@@ -23,14 +23,14 @@ assay. If more than one it will compute correlations across all features.}
 \item{feature_names}{will describe which value to use for node names. IF
 missing will use rownames}
 
-\item{query_features}{List of features to query for correlation. If there
-are no \code{target_featres} will build a network between this feature all other
+\item{query_feature}{A single feature to query for correlation. If there
+are no \code{target_features} will build a network between this feature all other
 nodes. If missing, correlation will be computed between all nodes in
 \code{target_features}.}
 
 \item{target_features}{List of features to compute correlation across. If
-\code{query_features} is not NULL, will compute correlation only between these
-features and the \code{query_features}. Otherwise, it will compute correlation
+\code{query_feature} is not NULL, will compute correlation only between these
+features and the \code{query_feature}. Otherwise, it will compute correlation
 between all features in this list. DEFAULT: all features in spe.}
 
 \item{method}{to use for correlation, default is \code{spearman}}

@@ -95,6 +95,8 @@ to save space) to verify it is what we expect.
 cowplot::ggdraw() + cowplot::draw_image(system.file("extdata",
                                                     "brain_img_0.png",
                                                     package = "spammR"))
+
+#ggsave('brain_image.pdf')
 ```
 
 As you can see, there are squares chopped out of the image. These were the 
@@ -174,8 +176,8 @@ Here we load the proteomics and create the object.
                       image_id = 'rat_brain')
 
   # myelin
-  spammR::spatial_heatmap(spe, feature = 'Mbp', 
-                          feature_type = 'Gene',
+  spammR::spatial_heatmap(spe, feature = 'P02688', 
+                          feature_type = 'Protein ID',
                 sample_id = 'rat_brain', 
                 image_id = 'rat_brain')
 
@@ -217,6 +219,7 @@ mspe <- readRDS('mspe.rds')
 file.remove('mspe.rds')
 
 ```
+## Add image data
 
 Lastly we add the image file to the data downloaded by metaspace and visualize a
 lipid of interest. 
@@ -239,10 +242,15 @@ spatial_heatmap(mspe, feature = 'C41H78NO7P-H-',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain')#plot with an ion
 
+#ggsave('lipidExpr.pdf')
 
 ```
 
 Here we can see the overlay of specific lipids.
+
+# Comparing Protein and Lipids
+
+Now we can compare lipids in proteins in the same image.
 
 ## Merging images to single coordinate system
 
@@ -251,7 +259,8 @@ on a per-pixel basis, to carry out pure multiomic comparisons we need to map
 them to the same coordinate space.
 
 To do this we use the `spat_reduce` function to reduce the lipidomics data
-to the same regions as the proteomics. 
+to the same regions as the proteomics.  Here is an example of the same ion
+we saw before. 
 
 ```{r reduce, echo=FALSE, warning=FALSE, message=FALSE}
 reduced <- spat_reduce(spe_target = spe, 
@@ -265,25 +274,118 @@ spatial_heatmap(reduced, feature = 'C41H78NO7P-H-',
                 sample_id = 'rat_brain',
                 image_id = 'rat_brain')#plot with an ion
 
+#ggsave('lipidRedExpr.pdf')
+
 ```
 
 Now we can start to analyze the relationship between lipids and proteins.
-# Correlation analysis
+
+## Correlation analysis
 
 One of the innovative analyses we can do with the spatial data is to evaluate
 correlations within molecules across space. We include the `spatial_network`
 function that can compute correlations between groups of features across
 omic domains and show how to use it below. 
 
-## Ascribing function to unknown lipids
+### Looking for lipids associated with known proteins
+The genes and proteins of the brain have been well studied, and proteins such
+as glial marker Gfqp are known to play a significant role in the central nervous 
+system and can be used as markers for disease. 
+We can now search for lipids that are correlated with myelin
+spatially using our network tool.
 
-We can use the correlation analysis to assess the biological function
+```{r gfap cors, warning = FALSE, message = FALSE}
+#let's look at the correlation between the protein and the lipids
+mbp_cor <- spatial_network(reduced, 
+                      assay_names = c("proteomics","lipids"), 
+                      query_feature = 'P47819', #protein
+                      target_features = rowData(altExp(reduced))[,'Name'],#lipids
+                      feature_names = c('Protein ID','Name'))
+
+mbp_cor |>
+  activate(edges) |> 
+  arrange(desc(abs(corval)))
+
+mbp_cor |>
+  ggraph(layout = 'stress')  +
+  geom_edge_link(aes(colour = corval)) + 
+  geom_node_point(aes(color = class)) +
+  geom_node_label(aes(label = name, color = class)) +
+  scale_color_manual(values=c(lipids = 'darkorange',proteomics = 'slateblue3'))
+  
+#ggsave('gfap_cor_graph.pdf')
+nodes <- mbp_cor |> activate(nodes) |> as_tibble()
+
+nodes[c(4,2),]
+```
+
+Now we can now double check the lipid measurements of these values. As a 
+refresher here is myelin.
+
+```{r lipid heatmap}
+
+spatial_heatmap(reduced,
+                feature = 'P47819', 
+                assay_name = 'proteomics',
+                feature_type = 'Protein ID',
+                metric_display = 'Protein expression',
+                plot_title = 'Gfap expression',
+                sample_id = 'rat_brain', image_id = 'rat_brain')
+
+#ggsave('gfap_brain.pdf')
+```
+
+And here we can see how the correlated lipids are expressed throughout.
+
+```{r lipid cor}
+## anti-correlated
+a1 <- spatial_heatmap(reduced,
+                feature = '22:6(4Z,7Z,10Z,13Z,16Z,19Z)', 
+                assay_name = 'lipids',
+                feature_type = 'Name',
+                metric_display = 'Lipid expression',
+                sample_id = 'rat_brain', image_id = 'rat_brain')
+
+
+a2 <- spatial_heatmap(mspe,
+                feature = '22:6(4Z,7Z,10Z,13Z,16Z,19Z)', 
+                assay_name = 'lipids',
+                feature_type = 'Name',
+                metric_display = 'Lipid expression',
+                sample_id = 'rat_brain', image_id = 'rat_brain')
+
+cowplot::plot_grid(a1, a2, ncol=2)
+#ggsave('antiCorrelatedLipids.pdf', width = 10)
+
+#correlated
+c1 <- spatial_heatmap(reduced,
+                feature = 'PI(18:1(11Z)/20:3(8Z,11Z,14Z))', 
+                assay_name = 'lipids',
+                feature_type = 'Name',
+                metric_display = 'Lipid expression',
+                sample_id = 'rat_brain', image_id = 'rat_brain')
+
+c2 <- spatial_heatmap(mspe,
+                feature = 'PI(18:1(11Z)/20:3(8Z,11Z,14Z))', 
+                assay_name = 'lipids',
+                feature_type = 'Name',
+                metric_display = 'Lipid expression',
+                sample_id = 'rat_brain', image_id = 'rat_brain')
+
+cowplot::plot_grid(c1, c2, ncol = 2)
+#ggsave('correlatedLipids.pdf', width = 10)
+```
+          
+This approach, if used on larger samples, can be used to identify  lipid 
+biomarkers based on known protein function. 
+          
+### Ascribing function to unknown lipids
+
+We can also use the correlation analysis to assess the biological function
 of specific lipids, by seeking out which pathways are over-represented among
 proteins who are correlated with a lipid of interest. 
 
-### Protein correlations
-
-Let's see which of our lipids are most variable across the tissue.
+First we look to see which of our lipids are most variable across the tissue.
 
 ```{r get protein cors}
 
@@ -291,10 +393,10 @@ lvs <- sort(apply(assay(mspe,'lipids'),1,var,na.rm = TRUE),decreasing = TRUE)[1:
 
 lvn <- rowData(altExp(reduced))[names(lvs),'Name']
 
-lvn[3]
+lvn[1:5]
 ```
 
-We'll focus on phosphatidylserin "PS(28:6(10Z,13Z,16Z,19Z,22Z,25Z)/12:0)", which is the 
+We'll focus on phosphatidylserine "PS(28:6(10Z,13Z,16Z,19Z,22Z,25Z)/12:0)", which is the 
 most variable across the sample. 
 
 ```{r plot lipid of interest}
@@ -323,7 +425,7 @@ fl <- c(lvn[1], rowData(reduced)[,'Gene'])
 
 cg <- spatial_network(reduced, 
                       assay_names = c("proteomics","lipids"), 
-                      query_features = lvn[1], #lipid
+                      query_feature = lvn[1], #lipid
                       target_features = rowData(reduced)[,'Gene'],
                       feature_names = c('Gene','Name'))
 
@@ -365,8 +467,6 @@ neigh_weights |>
 Now we have the correlation value - both negative and positive - that we can
 use as input to a functional enrichment test.
 
-### Functional enrichment
-
 We can look at the pathway enriched by these correlation values using leapR via
 the `enrichment_in_order` method. 
 
@@ -396,7 +496,7 @@ print(paths)
 
 We can now look at pathways that are the most statistically significant. 
 
-### Plot proteins
+#### Plot proteins
 
 We first check the expression of the proteins as well and see if they are
 all correlated in the same direction. 

@@ -2,7 +2,7 @@ Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
 Version: 0.99.17
 Authors@R:
-    person("Harkirat", "Sohi", email="harkirat.sohi@pnnl.gov", role = c("cre"), 
+    person("Harkirat", "Sohi", email="harkirat.sohi@pnnl.gov", role = c("aut"), 
     comment = c(ORCID = "0009-0000-9935-1641"))
     person("Yannick", "Mahlich", email="yannick.mahlich@pnnl.gov", 
     role = c("aut"), comment = c(ORCID = "0000-0002-0717-2927"))
@@ -20,6 +20,8 @@ Config/reticulate: list(
   ),
   python_version = "3.11")
 License: MIT + file LICENSE
+BugReports: https://github.com/PNNL-CompBio/spammR/issues
+URL: https://pnnl-compbio.github.io/spammR/ 
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
