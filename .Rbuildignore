@@ -1,6 +1,7 @@
 ^spammR\.Rproj$
-^\.Rproj\.user$
+^\.Rproj\.user*
 ^LICENSE\.md$
 ^doc$
 ^misc$
 ^\.github$
+^\.git$
