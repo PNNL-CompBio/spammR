@@ -39,12 +39,34 @@ First we load the required packages.
 ```{r setup, include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(spammR)
+
 ##these are all on cran
-library(tidyverse)
-library(readxl)
-library(tidygraph)
-library(ggraph)
-library(cowplot)
+if (!require(tidyverse)) {
+  install.packages("tidyverse")
+  library(tidyverse)
+}
+
+if (!require(tidygraph)) {
+  install.packages("tidygraph")
+  library(tidygraph)
+}
+
+if (!require(readxl)) {
+  install.packages("readxl")
+  library(readxl)
+}
+
+if (!require(ggraph)) {
+  install.packages("ggraph")
+  library(ggraph)
+}
+
+if (!require(cowplot)) {
+  install.packages("cowplot")
+  library(cowplot)
+}
+
+
 library(BiocFileCache)
 library(leapR) ##this is on bioconductor
 
@@ -155,7 +177,7 @@ should you choose to load teo GEOJson using the `geojsonR` package.
   coords$x_pixels = unlist(coords$x_pixels)
   coords$spot_height = unlist(coords$spot_height)
   coords$spot_width = unlist(coords$spot_width)
-  readr::write_csv(as.data.frame(coords),file='../inst/extdata/bcoords.csv')
+  write.csv(as.data.frame(coords),file='../inst/extdata/bcoords.csv')
  
 ```
 

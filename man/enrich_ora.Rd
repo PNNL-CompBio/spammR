@@ -58,11 +58,11 @@ interest list of genes based on filtering criteria above.
 \code{enrich_ora()} calculates over-representation statistics
 (ORA) using an interest list of genes from differential
 expression results in spammR and gene sets (either the ones provided in
-spammR or user supplied)
+spammR or user supplied).
 This function uses results from \code{calc_spatial_diff_ex}. Interest list of
 genes for ORA is obtained from spatialDiffEx results
-based on the criteria specified in this function.It is a wrapper for the
-\code{leapR} package which is required
+based on the criteria specified in this function. It is a wrapper for the
+\code{leapR} package which is required.
 For ORA using an external or already defined interest list of genes and
 gene sets, use leapR functions directly
 }
@@ -71,12 +71,12 @@ data(smallPancData)
 data(pancMeta)
 data(protMeta)
 pooledPanc <- dplyr::bind_cols(smallPancData)
-panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta, 
+panc.spe <- convert_to_spe(pooledPanc, pancMeta, protMeta,
 feature_meta_colname = "pancProts")
 diffex.spe <- calc_spatial_diff_ex(panc.spe, category_col = "IsletOrNot")
 library(leapR)
 data("krbpaths")
-ora.res <- enrich_ora(diffex.spe, geneset = krbpaths, 
+ora.res <- enrich_ora(diffex.spe, geneset = krbpaths,
          geneset_name = "krbpaths", feature_column = "PrimaryGeneName")
 
 }

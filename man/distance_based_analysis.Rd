@@ -64,8 +64,21 @@ colData
 }
 \description{
 distance_based_analysis: Identifies proteins/features that show
-a strong correlation between distance from a specified ROI's samples and
-protein/feature abundance differences between samples.
+a strong correlation between spatial distance (centroid based) from a
+specified ROI's samples and protein/feature abundance differences between
+samples.
+}
+\details{
+Identifies proteins/features that show a strong correlation between spatial
+distance and protein/feature abundance differences between a specified ROI
+all other ROIs (Regions Of Interest) in the dataset.
+Spatial distance between ROIs is calculated based on their euclidean centroid
+distance.
+Features (e.g. proteins) of interest are then extracted by correlating
+(Pearson or Spearman correlation) feature intensities across samples/ROIs
+with the previously calculated pairwise distances.
+NOTE: No differential expression is calculated here. For spatial differential
+expression please use \code{calc_spatial_diff_ex} & \code{enrich_ORA}.
 }
 \examples{
 data(pancMeta)

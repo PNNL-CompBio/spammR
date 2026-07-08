@@ -43,7 +43,8 @@ expresssion analysis was carried out
 }
 \description{
 \code{calc_spatial_diff_ex()} Calculates differential expression
-analysis using annotations in a SpatialExperiment object
+analysis using annotations in a SpatialExperiment object. Differential
+expression is calculated using functionality from the \code{limma} package.
 }
 \examples{
 data(smallPancData)

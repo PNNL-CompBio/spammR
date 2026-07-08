@@ -1,6 +1,7 @@
 #' Identify differentially abundant features across image
 #' @description `calc_spatial_diff_ex()` Calculates differential expression
-#' analysis using annotations in a SpatialExperiment object
+#' analysis using annotations in a SpatialExperiment object. Differential
+#' expression is calculated using functionality from the `limma` package.
 #' @importFrom limma lmFit
 #' @importFrom limma eBayes
 #' @importFrom limma voom

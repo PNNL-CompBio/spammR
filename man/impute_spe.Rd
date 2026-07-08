@@ -62,6 +62,11 @@ neighbors, based on data from specified group (e.g. ROI, tissue). NOTE:
 There will still be NA values if the protein is not expressed in this group.
 \item spatial_knn: imputation based on k-nearest neighors in space
 }
+
+Imputation will have significant impact on the outcome of statistical
+anlayses and further downstream investigations as well as vary depending on
+the chosen imputation method. We can not recommend a single universally best
+imputation method applicable for different types of omics data.
 }
 \examples{
 
