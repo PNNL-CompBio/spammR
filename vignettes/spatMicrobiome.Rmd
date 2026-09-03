@@ -99,7 +99,7 @@ oneKSoilsOmicsMeta["annotation"] <- seq(1, by = 1,
                                         length.out = nrow(oneKSoilsOmicsMeta))
 oneKSoilsOmicsMeta["annotation"] <- lapply(oneKSoilsOmicsMeta["annotation"], 
                                            as.character)
-head(oneKSoilsOmicsMeta)
+DT::datatable(head(oneKSoilsOmicsMeta),options = list(scrollX = TRUE))
 ```
 
 
@@ -119,7 +119,7 @@ for example, as well as the coordinates.
 
 ```{r coordiantes}
 data("oneKSoilsMeta")
-head(oneKSoilsMeta)
+DT::datatable(head(oneKSoilsMeta),options = list(scrollX = TRUE))
 
 ggplot2::ggplot(oneKSoilsMeta, aes(x = Core_Layer, y = pH, fill = biome_name)) +
   geom_boxplot()
@@ -211,7 +211,8 @@ oneKSoilsMeta <- oneKSoilsMeta[!is.na(oneKSoilsMeta$latitude) &
 coords <- sf::st_as_sf(oneKSoilsMeta, coords = c("longitude", "latitude"), 
                        remove = TRUE)
 sf::st_crs(coords) <- sf::st_crs(s_us_cont)
-coords
+
+DT::datatable(coords,options = list(scrollX = TRUE))
 ```
 
 Using the same rasterization template as we used above, we can make the soils 
@@ -241,7 +242,7 @@ to the rasterization process?
 
 ```{r}
 cells <- terra::extract(coords_rast, coords, xy = TRUE, cells = TRUE)
-print(head(cells))
+DT::datatable(head(cells),options = list(scrollX = TRUE))
 ```
 
 ```{r}
@@ -322,7 +323,7 @@ dm[, "Desert"] <- dplyr::if_else(dm[, "BIOME"] == "13",
                                  true = "Desert", false = "NonDesert")
 
 data_meta <- dm
-head(data_meta)
+DT::datatable(head(data_meta),options = list(scrollX = TRUE))
 ```
 ## CLEANING UP OF DATA
 
@@ -383,7 +384,8 @@ print(paste(
 ))
 
 ups %>% as_tibble(.) %>%
-  arrange(., -Desert_vs_NonDesert.logFC.limma)
+  arrange(., -Desert_vs_NonDesert.logFC.limma)|>
+  DT::datatable(options = list(scrollX = TRUE))
 ```
 
 ## Spatial heatmap showing abundance of significant KO
@@ -441,7 +443,8 @@ pathway_names <- cbind(keggPathwayToKo$name, keggPathwayToKo$desc) %>%
   as_tibble() %>% 
   rename(., KEGG_Pathway = V1, KEGG_pathway_name = V2)
 
-left_join(filtered_res, pathway_names, by = 'KEGG_Pathway')
+left_join(filtered_res, pathway_names, by = 'KEGG_Pathway')|>
+  DT::datatable(options = list(scrollX = TRUE))
 ```
 
 

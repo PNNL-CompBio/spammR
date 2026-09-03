@@ -480,7 +480,8 @@ nodes <- neigh_weights |>
   as_tibble()
 
 ##create a table with the protein correlationm
-prot_cor <- data.frame(nodes[edges$to,],lipid_cor = edges$corval) |>
+#sep2026: proteins used to be in $to column now in $from
+prot_cor <- data.frame(nodes[edges$from,],lipid_cor = edges$corval) |>
   dplyr::rename(Gene = 'name') |>
   subset(Gene %in% rowData(reduced)[,'Gene'])
 
@@ -513,7 +514,7 @@ prot_cor <- prot_cor |>
 
 rowData(reduced) <- rowData(reduced) |>
   as.data.frame() |>
-  left_join(prot_cor) |>
+  left_join(as.data.frame(prot_cor)) |>
   mutate(upperGene = toupper(Gene))
 
 data("krbpaths")
@@ -525,7 +526,7 @@ paths <- subset(enrich, BH_pvalue < 0.3)
 #subset(enrich,ingroup_mean > 0.25) |> 
 #  subset(pvalue <0.05)
 
-print(paths)
+DT::datatable(paths,options = list(scrollX = TRUE))
 ```
 
 We can now look at pathways that are the most statistically significant. 

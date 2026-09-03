@@ -1,6 +1,6 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
-Version: 0.99.23
+Version: 0.99.24
 Authors@R:
     c(person("Sara", "Gosline", , email="sara.gosline@pnnl.gov", 
     role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774")),
@@ -37,7 +37,7 @@ Depends: SummarizedExperiment, SingleCellExperiment,
 Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, reticulate, impute,
         matrixStats, scales, spdep, ggrepel, IRanges, tibble, tidyr, leapR, 
         tidygraph, ggraph,BiocFileCache, terra, readxl, tidygraph, tidyverse,
-        magrittr, sf, cowplot
+        magrittr, sf, cowplot, DT
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
 

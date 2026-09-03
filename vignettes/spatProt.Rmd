@@ -85,7 +85,8 @@ pdl_f <- "https://api.figshare.com/v2/file/download/55158821"#,
 pc <- bfcadd(bfc, "pdl", fpath=pdl_f)
 load(pc)#"pdl.rda")
      
-utils::head(pancDataList$Image_0[, 1:8])
+utils::head(pancDataList$Image_0[, 1:8])|>
+  DT::datatable(options = list(scrollX = TRUE))
 file.remove("pdl.rda")
 ```
 
@@ -95,7 +96,8 @@ different sample:
 
 ```{r data list}
 print(length(pancDataList))
-head(pancDataList[[2]][, 1:8])
+head(pancDataList[[2]][, 1:8]) |>
+  DT::datatable(options = list(scrollX = TRUE))
 ```
 
 This list is used below in our analysis examples.
@@ -114,7 +116,8 @@ image mapping information, which includes:
   
 ```{r samp meta}
 data(pancMeta)
-head(pancMeta)
+head(pancMeta) |>
+  DT::datatable(options = list(scrollX = TRUE))
 ```
 
 This metadata contains information for all 7 images, so we do not need a 
@@ -297,8 +300,9 @@ data("krbpaths")
 ora.res <- enrich_ora(islet_res, geneset = krbpaths, 
                       geneset_name = "krbpaths", 
                       feature_column = "PrimaryGeneName")
-print(ora.res[grep("INSULIN", rownames(ora.res)), 
-              c("ingroup_n", "pvalue", "BH_pvalue")])
+DT::datatable(ora.res[grep("INSULIN", rownames(ora.res)), 
+              c("ingroup_n", "pvalue", "BH_pvalue")],
+              options = list(scrollX = TRUE))
 ```
 
 
@@ -358,7 +362,7 @@ negProts <- rowData(img.rank) |>
   as.data.frame() |>
   dplyr::arrange(IsletDistancespearmanCor)
 
-print(head(negProts))
+DT::datatable(head(negProts),options = list(scrollX = TRUE))
 
 ```
 
@@ -413,7 +417,9 @@ enriched.paths[, "krbpaths"] <- rownames(enriched.paths)
 
 enriched.paths |>
   subset(pvalue < 0.01) |>
-  dplyr::arrange(BH_pvalue)
+  dplyr::select(-ingroupnames)|>
+  dplyr::arrange(BH_pvalue) |>
+  DT::datatable(options = list(scrollX = TRUE))
 ```
 We can see that numerous pathways are coming up as enriched across images, 
 including ribosomal and translation related pathways. Now we can select

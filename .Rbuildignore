@@ -5,3 +5,4 @@
 ^misc$
 ^\.github$
 ^\.git$
+^\.Rproj\.user$
