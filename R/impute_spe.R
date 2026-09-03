@@ -119,7 +119,7 @@ impute_spe <- function(spe,
         }
         imputed_data <- dat
         ### now do the imputation
-        for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
+        for (i in setdiff(seq_len(nrow(dat)), fix_prots)) {
             ## for all of the values we WANT to fix
             imputed_data[i, which(is.na(dat[i, ]))] <- replace_vals[i]
         }
@@ -128,9 +128,9 @@ impute_spe <- function(spe,
       replace_vals <- matrixStats::colMins(as.matrix(dat),
                                            na.rm = TRUE)
       imputed_data <- dat
-      for (i in setdiff(seq_along(1:nrow(dat)), fix_prots)) {
+      for (i in setdiff(seq_len(nrow(dat)), fix_prots)) {
         ## for all of the values we WANT to fix
-        for (j in seq_along(1:ncol(dat))){
+        for (j in seq_len(ncol(dat))){
           if(is.na(imputed_data[i,j])){
             imputed_data[i, j] <- replace_vals[j]
           }
@@ -177,7 +177,7 @@ impute_spe <- function(spe,
         if (method == "group_mean") {
             replace_vals <- rowMeans(dat[, ROI_indices], na.rm = TRUE)
             ## for all of the values we WANT to fix
-            for (i in setdiff(seq_along(1:nrow(imputed_data)), fix_prots)) {
+            for (i in setdiff(seq_len(nrow(imputed_data)), fix_prots)) {
               if (any(is.na(dat[i, ROI_indices]))) {
                 imputed_data[i, which(is.na(dat[i, ROI_indices]))] <-
                   replace_vals[i]
@@ -215,8 +215,7 @@ impute_spe <- function(spe,
         knn <- spdep::knearneigh(d_for_nearestNeighb, k = k)
         # nearest neighbor indices are in knn$nn
         nn <- knn$nn
-        imputed_data <- vapply(seq_along(1:nrow(dat)), function(prot){
-        #for (prot in seq_along(1:dim(dat)[1])) {
+        imputed_data <- vapply(seq_len(nrow(dat)), function(prot){
           this.prot <- dat[prot, ]
           na_indices <- which(is.na(this.prot))
           for (n in na_indices) {

@@ -41,32 +41,12 @@ knitr::opts_chunk$set(echo = TRUE)
 library(spammR)
 
 ##these are all on cran
-if (!require(tidyverse)) {
-  install.packages("tidyverse")
-  library(tidyverse)
-}
 
-if (!require(tidygraph)) {
-  install.packages("tidygraph")
-  library(tidygraph)
-}
-
-if (!require(readxl)) {
-  install.packages("readxl")
-  library(readxl)
-}
-
-if (!require(ggraph)) {
-  install.packages("ggraph")
-  library(ggraph)
-}
-
-if (!require(cowplot)) {
-  install.packages("cowplot")
-  library(cowplot)
-}
-
-
+library(tidyverse)
+library(tidygraph)
+library(readxl)
+library(cowplot)
+library(ggraph)
 library(BiocFileCache)
 library(leapR) ##this is on bioconductor
 
@@ -572,3 +552,8 @@ This vignette explores how one can use the spammR package to analyze multiomics
 measurements captured in a spatial context.
 
 
+# Session info  {.unnumbered}
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

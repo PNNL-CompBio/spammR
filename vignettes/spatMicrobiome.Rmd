@@ -51,11 +51,9 @@ library(magrittr)
 library(dplyr)
 ## these two libraries are only used for geographic data
 library(sf)
-if (!require('terra')) {
-  install.packages("terra")
-  library(terra)
+library(terra)
 
-}
+
 library(BiocFileCache)
 ```
 

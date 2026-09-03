@@ -1,6 +1,6 @@
 Package: spammR
 Title: SPatial Analysis of Multiomics Measurements in R
-Version: 0.99.24
+Version: 0.99.25
 Authors@R:
     c(person("Sara", "Gosline", , email="sara.gosline@pnnl.gov", 
     role = c("cre","aut"), comment = c(ORCID = "0000-0002-6534-4774")),
@@ -30,7 +30,13 @@ Config/testthat/edition: 3
 VignetteBuilder: knitr
 biocViews: Spatial, Pathways, Proteomics, DifferentialExpression, 
     Metabolomics, SystemsBiology, GeneExpression, GeneSetEnrichment,
-    Software
+    Software,Transcription,Sequencing, Microarray, Epigenetics, Cheminformatics, 
+    Transcriptomics,Coverage, Normalization, Preprocessing, Bayesian, 
+    Clustering, Regression, ExonArray, RNASeq, OneChannel, TwoChannel, 
+    MicroRNAArray, mRNAMicroarray,ProprietaryPlatforms, SingleCell, 
+    CellBiology, BiomedicalInformatics,FunctionalGenomics, ImmunoOncology, 
+    AlternativeSplicing, DifferentialSplicing,BatchEffect, MultipleComparison, 
+    QualityControl, TimeCourse, DataImport
 Depends: SummarizedExperiment, SingleCellExperiment, 
          SpatialExperiment, limma, R (>= 4.5.0)
 Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, reticulate, impute,
