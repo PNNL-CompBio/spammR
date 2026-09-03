@@ -27,15 +27,21 @@ import(scales)
 import(tibble)
 import(tidygraph)
 import(tidyr)
-importFrom(IRanges,IRanges)
-importFrom(IRanges,countOverlaps)
-importFrom(SingleCellExperiment,altExp)
-importFrom(SingleCellExperiment,altExpNames)
+importFrom(IRanges,
+  IRanges,
+  countOverlaps
+)
+importFrom(SingleCellExperiment,
+  altExp,
+  altExpNames
+)
 importFrom(ggrepel,geom_text_repel)
 importFrom(impute,impute.knn)
-importFrom(limma,eBayes)
-importFrom(limma,lmFit)
-importFrom(limma,voom)
+importFrom(limma,
+  eBayes,
+  lmFit,
+  voom
+)
 importFrom(matrixStats,rowMedians)
 importFrom(plotly,ggplotly)
 importFrom(spdep,knearneigh)

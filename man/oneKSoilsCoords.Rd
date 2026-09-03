@@ -8,7 +8,7 @@
 An object of class \code{data.frame} with 127 rows and 3 columns.
 }
 \usage{
-oneKSoilsCoords
+data(oneKSoilsCoords)
 }
 \description{
 Soil sample coordinates for the sample information

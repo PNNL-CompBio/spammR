@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Sara Gosline \email{sara.gosline@pnnl.gov} (\href{https://orcid.org/0000-0002-6534-4774}{ORCID})
   \item Harkirat Sohi \email{harkirat.sohi@pnnl.gov} (\href{https://orcid.org/0009-0000-9935-1641}{ORCID})
   \item Yannick Mahlich \email{yannick.mahlich@pnnl.gov} (\href{https://orcid.org/0000-0002-0717-2927}{ORCID})
 }

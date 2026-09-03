@@ -25,7 +25,6 @@ BugReports: https://github.com/PNNL-CompBio/spammR/issues
 URL: https://pnnl-compbio.github.io/spammR/ 
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests: testthat (>= 3.0.0), BiocStyle, knitr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
@@ -40,4 +39,4 @@ Imports: dplyr, ggplot2, plotly, ggnewscale, ggpubr, png, reticulate, impute,
         magrittr, sf, cowplot, DT
 NeedsCompilation: no
 Packaged: 2025-05-20 23:09:25 UTC; gosl241
-
+Config/roxygen2/version: 8.1.0

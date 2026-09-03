@@ -12,7 +12,7 @@ An object of class \code{data.frame} with 6662 rows and 6 columns.
 Uniprot
 }
 \usage{
-protMeta
+data(protMeta)
 }
 \description{
 Protein metadata for general uniprot data, including the pancProts

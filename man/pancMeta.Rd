@@ -8,7 +8,7 @@
 An object of class \code{data.frame} with 63 rows and 15 columns.
 }
 \usage{
-pancMeta
+data(pancMeta)
 }
 \description{
 Sample metadata for the \code{pancData} file.

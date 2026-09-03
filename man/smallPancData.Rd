@@ -17,7 +17,7 @@ An object of class \code{list} of length 3.
 \url{panc paper}
 }
 \usage{
-smallPancData
+data(smallPancData)
 }
 \description{
 Pancreatic proteomics measurements from Gosline et al. proteomics study.

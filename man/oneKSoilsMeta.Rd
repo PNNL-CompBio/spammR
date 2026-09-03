@@ -10,7 +10,7 @@ Soil samples metadata for the sample information}
 An object of class \code{data.frame} with 142 rows and 21 columns.
 }
 \usage{
-oneKSoilsMeta
+data(oneKSoilsMeta)
 }
 \description{
 Soil samples from the 1000 soils project
