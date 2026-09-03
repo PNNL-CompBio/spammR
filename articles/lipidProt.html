@@ -35,7 +35,7 @@ spatial omics analysis for lipidomic and proteomic data.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">spammR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.23</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.24</span>
       </span>
     </div>
 
@@ -83,14 +83,19 @@ spatial omics analysis for lipidomic and proteomic data.
 
 
 
-      </header><div class="row">
+      </header><link href="lipidProt_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="lipidProt_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="lipidProt_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="lipidProt_files/datatables-binding-0.34.0/datatables.js"></script><link href="lipidProt_files/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="lipidProt_files/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="lipidProt_files/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="lipidProt_files/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="lipidProt_files/crosstalk-1.2.2/js/crosstalk.min.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>spammR lipidomic and proteomic integration</h1>
                         <h4 data-toc-skip class="author">Sara
 Gosline</h4>
             
-            <h4 data-toc-skip class="date">Jul 08, 2026</h4>
+            <h4 data-toc-skip class="date">Sep 03, 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/PNNL-CompBio/spammR/blob/main/vignettes/lipidProt.Rmd" class="external-link"><code>vignettes/lipidProt.Rmd</code></a></small>
       <div class="hidden name"><code>lipidProt.Rmd</code></div>
@@ -533,7 +538,8 @@ object.</p>
 <span>  <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">##create a table with the protein correlationm</span></span>
-<span><span class="va">prot_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">nodes</span><span class="op">[</span><span class="va">edges</span><span class="op">$</span><span class="va">to</span>,<span class="op">]</span>,lipid_cor <span class="op">=</span> <span class="va">edges</span><span class="op">$</span><span class="va">corval</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="co">#sep2026: proteins used to be in $to column now in $from</span></span>
+<span><span class="va">prot_cor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">nodes</span><span class="op">[</span><span class="va">edges</span><span class="op">$</span><span class="va">from</span>,<span class="op">]</span>,lipid_cor <span class="op">=</span> <span class="va">edges</span><span class="op">$</span><span class="va">corval</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Gene <span class="op">=</span> <span class="st">'name'</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">Gene</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">reduced</span><span class="op">)</span><span class="op">[</span>,<span class="st">'Gene'</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
@@ -560,7 +566,7 @@ leapR via the <code>enrichment_in_order</code> method.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">reduced</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></span><span class="op">(</span><span class="va">reduced</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">prot_cor</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">left_join</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">prot_cor</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>upperGene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/chartr.html" class="external-link">toupper</a></span><span class="op">(</span><span class="va">Gene</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Joining with `by = join_by(Gene)`</span></span></code></pre>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
@@ -573,19 +579,16 @@ leapR via the <code>enrichment_in_order</code> method.</p>
 <span><span class="co">#subset(enrich,ingroup_mean &gt; 0.25) |&gt; </span></span>
 <span><span class="co">#  subset(pvalue &lt;0.05)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##  [1] ingroup_n       ingroupnames    ingroup_mean    outgroup_n     </span></span>
-<span><span class="co">##  [5] outgroup_mean   zscore          oddsratio       pvalue         </span></span>
-<span><span class="co">##  [9] BH_pvalue       SignedBH_pvalue background_n    background_mean</span></span>
-<span><span class="co">## &lt;0 rows&gt; (or 0-length row.names)</span></span></code></pre>
-<p>We can now look at pathways that are the most statistically
+<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span><span class="va">paths</span>,options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"filter":"none","vertical":false,"data":[["KEGG_ALANINE_ASPARTATE_AND_GLUTAMATE_METABOLISM"],[19],["GOT2, ASS1, GLUL, GLUD1, GOT1, GLS, GAD1, ASL, GPT, PPAT, ASNS, ABAT, GFPT1, GAD2, ACY3, ASPA, ALDH5A1, ADSL, NIT2, CAD"],[0.839678545604246],[5040],[-0.00308228214190122],[0.731501398546421],[0.384983688351564],[7.08508629936793e-05],[0.04151860571429607],[0.04151860571429607],[null],[null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>ingroup_n<\/th>\n      <th>ingroupnames<\/th>\n      <th>ingroup_mean<\/th>\n      <th>outgroup_n<\/th>\n      <th>outgroup_mean<\/th>\n      <th>zscore<\/th>\n      <th>oddsratio<\/th>\n      <th>pvalue<\/th>\n      <th>BH_pvalue<\/th>\n      <th>SignedBH_pvalue<\/th>\n      <th>background_n<\/th>\n      <th>background_mean<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,3,4,5,6,7,8,9,10,11,12]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"ingroup_n","targets":1},{"name":"ingroupnames","targets":2},{"name":"ingroup_mean","targets":3},{"name":"outgroup_n","targets":4},{"name":"outgroup_mean","targets":5},{"name":"zscore","targets":6},{"name":"oddsratio","targets":7},{"name":"pvalue","targets":8},{"name":"BH_pvalue","targets":9},{"name":"SignedBH_pvalue","targets":10},{"name":"background_n","targets":11},{"name":"background_mean","targets":12}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>We can now look at pathways that are the most statistically
 significant.</p>
 <div class="section level5">
 <h5 id="plot-proteins">Plot proteins<a class="anchor" aria-label="anchor" href="#plot-proteins"></a>
 </h5>
 <p>We first check the expression of the proteins as well and see if they
 are all correlated in the same direction.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_split.html" class="external-link">str_split</a></span><span class="op">(</span><span class="va">paths</span><span class="op">[</span><span class="fl">1</span>,<span class="st">'ingroupnames'</span><span class="op">]</span>, pattern <span class="op">=</span> <span class="st">', '</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">reduced</span>,<span class="va">upperGene</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">prots</span><span class="op">)</span>,<span class="st">'proteomics'</span><span class="op">)</span></span>
@@ -593,9 +596,9 @@ are all correlated in the same direction.</p>
 <span> </span>
 <span><span class="co">##proteins seem anti-correlated</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">pv</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">lv</span><span class="op">)</span>, method <span class="op">=</span> <span class="st">'spearman'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 0.01484068</span></span></code></pre>
+<pre><code><span><span class="co">## [1] -0.2047532</span></span></code></pre>
 <p>We can see that they are negative correlated.</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatial_heatmap.html">spatial_heatmap</a></span><span class="op">(</span><span class="va">reduced</span>, assay_name <span class="op">=</span> <span class="st">'proteomics'</span>,</span>
 <span>                feature <span class="op">=</span> <span class="va">prots</span>,</span>
 <span>                feature_type <span class="op">=</span> <span class="st">'upperGene'</span>,</span>

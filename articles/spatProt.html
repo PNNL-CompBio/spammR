@@ -35,7 +35,7 @@ measurements in the spammR package.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">spammR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.23</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.24</span>
       </span>
     </div>
 
@@ -83,14 +83,19 @@ measurements in the spammR package.
 
 
 
-      </header><div class="row">
+      </header><link href="spatProt_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="spatProt_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="spatProt_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+<script src="spatProt_files/datatables-binding-0.34.0/datatables.js"></script><link href="spatProt_files/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="spatProt_files/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+<script src="spatProt_files/dt-core-1.13.6/js/jquery.dataTables.min.js"></script><link href="spatProt_files/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="spatProt_files/crosstalk-1.2.2/js/crosstalk.min.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>spammR Spatial Proteomics Example</h1>
                         <h4 data-toc-skip class="author">Sara
 Gosline</h4>
             
-            <h4 data-toc-skip class="date">Jul 08, 2026</h4>
+            <h4 data-toc-skip class="date">Sep 03, 2026</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/PNNL-CompBio/spammR/blob/main/vignettes/spatProt.Rmd" class="external-link"><code>vignettes/spatProt.Rmd</code></a></small>
       <div class="hidden name"><code>spatProt.Rmd</code></div>
@@ -161,22 +166,10 @@ image representing a cluster of islet cells.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span><span class="co">#"pdl.rda")</span></span>
 <span>     </span>
-<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pancDataList</span><span class="op">$</span><span class="va">Image_0</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                            0_S_1_1  0_S_1_2  0_S_1_3  0_S_2_1  0_S_2_2  0_S_2_3</span></span>
-<span><span class="co">## sp|A0A024RBG1|NUD4B_HUMAN 13.06042 13.42317 12.42396 13.02470 12.56442 12.69023</span></span>
-<span><span class="co">## sp|A0A096LP55|QCR6L_HUMAN 15.10920 15.27460 15.16780 15.01030 15.46639 14.73712</span></span>
-<span><span class="co">## sp|A0AV96|RBM47_HUMAN     17.40246 17.29727 17.25559 17.34851 17.12866 17.17658</span></span>
-<span><span class="co">## sp|A0AVT1|UBA6_HUMAN      18.00653 18.43015 18.24663 18.17563 18.38961 18.29268</span></span>
-<span><span class="co">## sp|A0FGR8|ESYT2_HUMAN     16.59018 16.48890 16.50134 16.55334 16.32316 16.43397</span></span>
-<span><span class="co">## sp|A0MZ66|SHOT1_HUMAN     18.19277 18.73633 18.54485 18.20005 18.74041 18.70762</span></span>
-<span><span class="co">##                            0_S_3_1  0_S_3_2</span></span>
-<span><span class="co">## sp|A0A024RBG1|NUD4B_HUMAN       NA 13.40670</span></span>
-<span><span class="co">## sp|A0A096LP55|QCR6L_HUMAN 14.81792 15.63741</span></span>
-<span><span class="co">## sp|A0AV96|RBM47_HUMAN     17.27792 17.11678</span></span>
-<span><span class="co">## sp|A0AVT1|UBA6_HUMAN      18.12080 18.10220</span></span>
-<span><span class="co">## sp|A0FGR8|ESYT2_HUMAN     16.43682 16.20515</span></span>
-<span><span class="co">## sp|A0MZ66|SHOT1_HUMAN     18.60198 18.62946</span></span></code></pre>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pancDataList</span><span class="op">$</span><span class="va">Image_0</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span><span class="op">|&gt;</span></span>
+<span>  <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span>options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"filter":"none","vertical":false,"data":[["sp|A0A024RBG1|NUD4B_HUMAN","sp|A0A096LP55|QCR6L_HUMAN","sp|A0AV96|RBM47_HUMAN","sp|A0AVT1|UBA6_HUMAN","sp|A0FGR8|ESYT2_HUMAN","sp|A0MZ66|SHOT1_HUMAN"],[13.0604158860138,15.1091972765331,17.402458061861,18.0065306805304,16.5901789004894,18.1927721005054],[13.4231719704321,15.2745966106896,17.2972713299465,18.4301491089452,16.4888997802388,18.7363349967986],[12.4239587357249,15.1678016131741,17.2555915707375,18.2466342415791,16.5013417043234,18.5448519139404],[13.0246997653403,15.0102958293149,17.3485104350262,18.1756309520332,16.5533383429332,18.2000527079451],[12.5644162752142,15.4663906189451,17.128664364791,18.3896135388882,16.3231574118375,18.7404054405537],[12.6902337437152,14.7371184497518,17.1765816548339,18.292679403987,16.4339677750835,18.7076191787995],[null,14.8179213662587,17.2779230237543,18.1207983419924,16.4368204215693,18.601979810796],[13.4066994338153,15.6374128989725,17.1167838123943,18.1021967472245,16.2051456674936,18.6294603363973]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>0_S_1_1<\/th>\n      <th>0_S_1_2<\/th>\n      <th>0_S_1_3<\/th>\n      <th>0_S_2_1<\/th>\n      <th>0_S_2_2<\/th>\n      <th>0_S_2_3<\/th>\n      <th>0_S_3_1<\/th>\n      <th>0_S_3_2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"0_S_1_1","targets":1},{"name":"0_S_1_2","targets":2},{"name":"0_S_1_3","targets":3},{"name":"0_S_2_1","targets":4},{"name":"0_S_2_2","targets":5},{"name":"0_S_2_3","targets":6},{"name":"0_S_3_1","targets":7},{"name":"0_S_3_2","targets":8}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="st">"pdl.rda"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in file.remove("pdl.rda"): cannot remove file 'pdl.rda', reason 'No</span></span>
 <span><span class="co">## such file or directory'</span></span></code></pre>
@@ -184,26 +177,14 @@ image representing a cluster of islet cells.</p>
 <p>Here the rownames represent protein identifiers and the column names
 represent individual samples. Each element of the list contains the
 measurements from a different sample:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">pancDataList</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 7</span></span></code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pancDataList</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                            1_S_1_1  1_S_1_2  1_S_1_3  1_S_2_1  1_S_2_2  1_S_2_3</span></span>
-<span><span class="co">## sp|A0A024RBG1|NUD4B_HUMAN       NA       NA       NA       NA       NA       NA</span></span>
-<span><span class="co">## sp|A0A096LP55|QCR6L_HUMAN       NA       NA       NA       NA       NA       NA</span></span>
-<span><span class="co">## sp|A0AV96|RBM47_HUMAN     17.68866 17.58076 17.51335 17.65900 17.52926 17.44999</span></span>
-<span><span class="co">## sp|A0AVT1|UBA6_HUMAN      18.02235 18.35493 18.03651 18.09462 18.08796 18.04204</span></span>
-<span><span class="co">## sp|A0FGR8|ESYT2_HUMAN     17.50177 17.51525 17.34338 17.41622 17.34254 17.46062</span></span>
-<span><span class="co">## sp|A0MZ66|SHOT1_HUMAN     18.57445 18.67262 18.83672 18.69094 18.48785 18.75190</span></span>
-<span><span class="co">##                            1_S_3_1  1_S_3_2</span></span>
-<span><span class="co">## sp|A0A024RBG1|NUD4B_HUMAN       NA       NA</span></span>
-<span><span class="co">## sp|A0A096LP55|QCR6L_HUMAN       NA       NA</span></span>
-<span><span class="co">## sp|A0AV96|RBM47_HUMAN     17.37103 17.50367</span></span>
-<span><span class="co">## sp|A0AVT1|UBA6_HUMAN      18.21052 17.94707</span></span>
-<span><span class="co">## sp|A0FGR8|ESYT2_HUMAN     17.31495 17.53217</span></span>
-<span><span class="co">## sp|A0MZ66|SHOT1_HUMAN     18.82805 18.48856</span></span></code></pre>
-<p>This list is used below in our analysis examples.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pancDataList</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span>options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"filter":"none","vertical":false,"data":[["sp|A0A024RBG1|NUD4B_HUMAN","sp|A0A096LP55|QCR6L_HUMAN","sp|A0AV96|RBM47_HUMAN","sp|A0AVT1|UBA6_HUMAN","sp|A0FGR8|ESYT2_HUMAN","sp|A0MZ66|SHOT1_HUMAN"],[null,null,17.6886578351475,18.0223543822418,17.5017724635668,18.5744503995357],[null,null,17.5807616608488,18.3549343373311,17.515253605306,18.6726248070354],[null,null,17.513350576704,18.0365115731323,17.3433840212711,18.8367195999383],[null,null,17.6589976574827,18.0946240474011,17.4162230109541,18.6909409022074],[null,null,17.5292604325311,18.0879589383543,17.3425436319873,18.4878458236316],[null,null,17.4499859110981,18.0420353034644,17.4606225127177,18.7518950273831],[null,null,17.3710251345946,18.2105249719629,17.3149490395167,18.8280457268884],[null,null,17.5036675673148,17.9470709638625,17.532170945404,18.4885639776248]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>1_S_1_1<\/th>\n      <th>1_S_1_2<\/th>\n      <th>1_S_1_3<\/th>\n      <th>1_S_2_1<\/th>\n      <th>1_S_2_2<\/th>\n      <th>1_S_2_3<\/th>\n      <th>1_S_3_1<\/th>\n      <th>1_S_3_2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"1_S_1_1","targets":1},{"name":"1_S_1_2","targets":2},{"name":"1_S_1_3","targets":3},{"name":"1_S_2_1","targets":4},{"name":"1_S_2_2","targets":5},{"name":"1_S_2_3","targets":6},{"name":"1_S_3_1","targets":7},{"name":"1_S_3_2","targets":8}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>This list is used below in our analysis examples.</p>
 </div>
 <div class="section level4">
 <h4 id="sample-metadata">Sample metadata<a class="anchor" aria-label="anchor" href="#sample-metadata"></a>
@@ -220,24 +201,12 @@ that all other points are properly mapped. - <em>Sample
 coordinates:</em> Each sample has its own <code>x_coord</code> and
 <code>y_coord</code>. - <em>Spot size:</em> <code>spot_height</code> and
 <code>spot_width</code>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pancMeta</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pancMeta</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##         Image x_coord y_coord IsletStatus IsletOrNot Plex Grid.Number x_pixels</span></span>
-<span><span class="co">## 0_S_3_1     0       3       1    Proximal   NonIslet 127N           1      475</span></span>
-<span><span class="co">## 0_S_2_1     0       2       1       Islet      Islet 128N           2      380</span></span>
-<span><span class="co">## 0_S_1_1     0       1       1    Proximal   NonIslet 127C           3      285</span></span>
-<span><span class="co">## 0_S_3_2     0       3       2    Proximal   NonIslet 128C           4      475</span></span>
-<span><span class="co">## 0_S_2_2     0       2       2    Proximal   NonIslet 129N           5      380</span></span>
-<span><span class="co">## 0_S_1_2     0       1       2    Proximal   NonIslet 129C           6      285</span></span>
-<span><span class="co">##         y_pixels x_origin y_origin x_max y_max spot_width spot_height</span></span>
-<span><span class="co">## 0_S_3_1      170        0        0   860   725         90         140</span></span>
-<span><span class="co">## 0_S_2_1      170        0        0   860   725         90         140</span></span>
-<span><span class="co">## 0_S_1_1      170        0        0   860   725         90         140</span></span>
-<span><span class="co">## 0_S_3_2      315        0        0   860   725         90         140</span></span>
-<span><span class="co">## 0_S_2_2      315        0        0   860   725         90         140</span></span>
-<span><span class="co">## 0_S_1_2      315        0        0   860   725         90         140</span></span></code></pre>
-<p>This metadata contains information for all 7 images, so we do not
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pancMeta</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span>options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-36aa3d2a04d42bbc2145" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"filter":"none","vertical":false,"data":[["0_S_3_1","0_S_2_1","0_S_1_1","0_S_3_2","0_S_2_2","0_S_1_2"],[0,0,0,0,0,0],[3,2,1,3,2,1],[1,1,1,2,2,2],["Proximal","Islet","Proximal","Proximal","Proximal","Proximal"],["NonIslet","Islet","NonIslet","NonIslet","NonIslet","NonIslet"],["127N","128N","127C","128C","129N","129C"],[1,2,3,4,5,6],[475,380,285,475,380,285],[170,170,170,315,315,315],[0,0,0,0,0,0],[0,0,0,0,0,0],[860,860,860,860,860,860],[725,725,725,725,725,725],[90,90,90,90,90,90],[140,140,140,140,140,140]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Image<\/th>\n      <th>x_coord<\/th>\n      <th>y_coord<\/th>\n      <th>IsletStatus<\/th>\n      <th>IsletOrNot<\/th>\n      <th>Plex<\/th>\n      <th>Grid.Number<\/th>\n      <th>x_pixels<\/th>\n      <th>y_pixels<\/th>\n      <th>x_origin<\/th>\n      <th>y_origin<\/th>\n      <th>x_max<\/th>\n      <th>y_max<\/th>\n      <th>spot_width<\/th>\n      <th>spot_height<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,7,8,9,10,11,12,13,14,15]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Image","targets":1},{"name":"x_coord","targets":2},{"name":"y_coord","targets":3},{"name":"IsletStatus","targets":4},{"name":"IsletOrNot","targets":5},{"name":"Plex","targets":6},{"name":"Grid.Number","targets":7},{"name":"x_pixels","targets":8},{"name":"y_pixels","targets":9},{"name":"x_origin","targets":10},{"name":"y_origin","targets":11},{"name":"x_max","targets":12},{"name":"y_max","targets":13},{"name":"spot_width","targets":14},{"name":"spot_height","targets":15}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>This metadata contains information for all 7 images, so we do not
 need a separate metadata file for each image, the
 <code>convert_to_spe</code> function will simply take the metadata
 relevant to the data file.</p>
@@ -251,7 +220,7 @@ omics measurements. Currently we have tested working with files in
 identify the Islet cells. Each image also has a grid superimposed to
 show where the sample measurements came from. The grid is not necessary,
 of course, but can help alibrate the coordinates.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/ggdraw.html" class="external-link">ggdraw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/draw_image.html" class="external-link">draw_image</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>,</span>
@@ -267,7 +236,7 @@ omics measurement data. When using gene-based data, this will be the
 genes or proteins in the dataset. When using metagenomics, this will
 refer to the species. One column of this table must uniquely map to the
 rownames of the omics data.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">protMeta</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">protMeta</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pancProts"</span>, <span class="st">"EntryName"</span>, <span class="st">"PrimaryGeneName"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                   pancProts   EntryName PrimaryGeneName</span></span>
@@ -287,7 +256,7 @@ rownames of the omics data.</p>
 <code>SpatialExperiment</code> object either using ALL samples or just
 the samples in a single image. We can pool all the data for more
 statistical power.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pooledData</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span><span class="va">pancDataList</span><span class="op">)</span></span>
 <span><span class="va">pooled.panc.spe</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convert_to_spe.html">convert_to_spe</a></span><span class="op">(</span><span class="va">pooledData</span>, <span class="co">## pooled data table</span></span>
 <span>  <span class="va">pancMeta</span>, <span class="co">## pooled metadata</span></span>
@@ -297,7 +266,7 @@ statistical power.</p>
 <pre><code><span><span class="co">## Spatial object created without spatial coordinate </span></span>
 <span><span class="co">##          column names provided. Distance based analysis will not be enabled.</span></span></code></pre>
 <pre><code><span><span class="co">## Note: Only mapping metadata for 6662 features out of 6693 data points</span></span></code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">pooled.panc.spe</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## class: SpatialExperiment </span></span>
 <span><span class="co">## dim: 6662 63 </span></span>
@@ -326,7 +295,7 @@ the expression of the insulin protein in each image. We expect insulin
 (or INS) to be highest in voxels containing islet cells, which we label
 using the <code>label_column</code> ‘IsletOrNot’ which was loaded into
 the metadata for us.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">allimgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">imglist</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">spe</span> <span class="op">&lt;-</span> <span class="va">img.spes</span><span class="op">[[</span><span class="va">x</span><span class="op">]</span><span class="op">]</span></span>
 <span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatial_heatmap.html">spatial_heatmap</a></span><span class="op">(</span><span class="va">spe</span>,</span>
@@ -360,7 +329,7 @@ labels and the <code>limma</code> pathway.</p>
 <p>First we want to identify specific proteins that are up-regulated in
 the islet cells (or regions labeled ‘islet’) compared to other regions.
 We can then plot the set of proteins.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">islet_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/calc_spatial_diff_ex.html">calc_spatial_diff_ex</a></span><span class="op">(</span><span class="va">pooled.panc.spe</span>,</span>
 <span>    assay_name <span class="op">=</span> <span class="st">"proteomics"</span>,</span>
 <span>    log_transformed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -388,7 +357,7 @@ images.</p>
 </h3>
 <p>If we are interested in the combined expression of proteins we can
 also visualize those.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spe.plot</span> <span class="op">&lt;-</span> <span class="va">img.spes</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">hup</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatial_heatmap.html">spatial_heatmap</a></span><span class="op">(</span><span class="va">spe.plot</span>,</span>
@@ -406,54 +375,24 @@ also visualize those.</p>
 <h3 id="pathway-enrichment-measurements">Pathway enrichment measurements<a class="anchor" aria-label="anchor" href="#pathway-enrichment-measurements"></a>
 </h3>
 <p>Now we can calculate the enriched pathways in the islets.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">leapR</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"krbpaths"</span><span class="op">)</span></span>
 <span><span class="va">ora.res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/enrich_ora.html">enrich_ora</a></span><span class="op">(</span><span class="va">islet_res</span>, geneset <span class="op">=</span> <span class="va">krbpaths</span>, </span>
 <span>                      geneset_name <span class="op">=</span> <span class="st">"krbpaths"</span>, </span>
 <span>                      feature_column <span class="op">=</span> <span class="st">"PrimaryGeneName"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">ora.res</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"INSULIN"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">ora.res</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>              <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ingroup_n"</span>, <span class="st">"pvalue"</span>, <span class="st">"BH_pvalue"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                                                                           ingroup_n</span></span>
-<span><span class="co">## KEGG_INSULIN_SIGNALING_PATHWAY                                                                                    5</span></span>
-<span><span class="co">## BIOCARTA_INSULIN_PATHWAY                                                                                          2</span></span>
-<span><span class="co">## REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION                                                                 13</span></span>
-<span><span class="co">## REACTOME_INSULIN_SYNTHESIS_AND_SECRETION                                                                         24</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_LIKE_GROWTH_FACTOR_ACTIVITY_BY_INSULIN_LIKE_GROWTH_FACTOR_BINDING_PROTEINS         0</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION                                                                         16</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_ACETYLCHOLINE                                                         7</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_GLUCAGON_LIKE_PEPTIDE_1                                              11</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_FREE_FATTY_ACIDS                                                      7</span></span>
-<span><span class="co">## REACTOME_INHIBITION_OF_INSULIN_SECRETION_BY_ADRENALINE_NORADRENALINE                                              4</span></span>
-<span><span class="co">##                                                                                                                 pvalue</span></span>
-<span><span class="co">## KEGG_INSULIN_SIGNALING_PATHWAY                                                                            1.000000e+00</span></span>
-<span><span class="co">## BIOCARTA_INSULIN_PATHWAY                                                                                  2.247236e-01</span></span>
-<span><span class="co">## REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION                                                          5.549704e-02</span></span>
-<span><span class="co">## REACTOME_INSULIN_SYNTHESIS_AND_SECRETION                                                                  2.522014e-07</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_LIKE_GROWTH_FACTOR_ACTIVITY_BY_INSULIN_LIKE_GROWTH_FACTOR_BINDING_PROTEINS 1.000000e+00</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION                                                                  3.897737e-02</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_ACETYLCHOLINE                                                 1.077909e-04</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_GLUCAGON_LIKE_PEPTIDE_1                                       9.083131e-06</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_FREE_FATTY_ACIDS                                              2.897170e-05</span></span>
-<span><span class="co">## REACTOME_INHIBITION_OF_INSULIN_SECRETION_BY_ADRENALINE_NORADRENALINE                                      1.628147e-02</span></span>
-<span><span class="co">##                                                                                                              BH_pvalue</span></span>
-<span><span class="co">## KEGG_INSULIN_SIGNALING_PATHWAY                                                                            1.0000000000</span></span>
-<span><span class="co">## BIOCARTA_INSULIN_PATHWAY                                                                                  0.9987657450</span></span>
-<span><span class="co">## REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION                                                          0.7062802680</span></span>
-<span><span class="co">## REACTOME_INSULIN_SYNTHESIS_AND_SECRETION                                                                  0.0002100838</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_LIKE_GROWTH_FACTOR_ACTIVITY_BY_INSULIN_LIKE_GROWTH_FACTOR_BINDING_PROTEINS 1.0000000000</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION                                                                  0.5797883996</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_ACETYLCHOLINE                                                 0.0128271210</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_GLUCAGON_LIKE_PEPTIDE_1                                       0.0037831242</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_FREE_FATTY_ACIDS                                              0.0070612576</span></span>
-<span><span class="co">## REACTOME_INHIBITION_OF_INSULIN_SECRETION_BY_ADRENALINE_NORADRENALINE                                      0.3686245089</span></span></code></pre>
+<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span><span class="va">ora.res</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"INSULIN"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">ora.res</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>              <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ingroup_n"</span>, <span class="st">"pvalue"</span>, <span class="st">"BH_pvalue"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>              options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-febe03efa1a2d8d52a86" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-febe03efa1a2d8d52a86">{"x":{"filter":"none","vertical":false,"data":[["KEGG_INSULIN_SIGNALING_PATHWAY","BIOCARTA_INSULIN_PATHWAY","REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION","REACTOME_INSULIN_SYNTHESIS_AND_SECRETION","REACTOME_REGULATION_OF_INSULIN_LIKE_GROWTH_FACTOR_ACTIVITY_BY_INSULIN_LIKE_GROWTH_FACTOR_BINDING_PROTEINS","REACTOME_REGULATION_OF_INSULIN_SECRETION","REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_ACETYLCHOLINE","REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_GLUCAGON_LIKE_PEPTIDE_1","REACTOME_REGULATION_OF_INSULIN_SECRETION_BY_FREE_FATTY_ACIDS","REACTOME_INHIBITION_OF_INSULIN_SECRETION_BY_ADRENALINE_NORADRENALINE"],[5,2,13,24,0,16,7,11,7,4],[1,0.224723612275223,0.0554970413975389,2.52201432074422e-07,1,0.0389773714038483,0.000107790933019107,9.08313135698609e-06,2.89717047382064e-05,0.0162814676329737],[1,0.9987657449680813,0.7062802679838407,0.0002100837929179935,1,0.5797883996322435,0.01282712102927373,0.003783124210184707,0.007061257574320667,0.3686245089460545]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>ingroup_n<\/th>\n      <th>pvalue<\/th>\n      <th>BH_pvalue<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"ingroup_n","targets":1},{"name":"pvalue","targets":2},{"name":"BH_pvalue","targets":3}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level3">
 <h3 id="pathway-plotting">Pathway plotting<a class="anchor" aria-label="anchor" href="#pathway-plotting"></a>
 </h3>
 <p>We know that there are significantly enriched pathways in insulin
 secretion, so let’s plot those.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">secprots</span> <span class="op">&lt;-</span> <span class="va">ora.res</span><span class="op">[</span><span class="st">"REACTOME_GLUCOSE_REGULATION_OF_INSULIN_SECRETION"</span>, <span class="op">]</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ingroupnames</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -491,7 +430,7 @@ rank-based statistical tools that can help identify pathways.</p>
 identify proteins correlated with distance from the islet in each image.
 Proteins with a negative correlation are decreasing in expression as
 they are farther from the islet cells.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## for each image, let's compute the distance of each voxel to </span></span>
 <span><span class="co">## the one labeled 'Islet'</span></span>
 <span><span class="va">img.rank</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/distance_based_analysis.html">distance_based_analysis</a></span><span class="op">(</span><span class="va">img.spes</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="st">"proteomics"</span>,</span>
@@ -506,36 +445,9 @@ they are farther from the islet cells.</p>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">IsletDistancespearmanCor</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">negProts</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                   pancProts  Entry   EntryName</span></span>
-<span><span class="co">## sp|P37108|SRP14_HUMAN sp|P37108|SRP14_HUMAN P37108 SRP14_HUMAN</span></span>
-<span><span class="co">## sp|P52209|6PGD_HUMAN   sp|P52209|6PGD_HUMAN P52209  6PGD_HUMAN</span></span>
-<span><span class="co">## sp|P78560|CRADD_HUMAN sp|P78560|CRADD_HUMAN P78560 CRADD_HUMAN</span></span>
-<span><span class="co">## sp|Q14019|COTL1_HUMAN sp|Q14019|COTL1_HUMAN Q14019 COTL1_HUMAN</span></span>
-<span><span class="co">## sp|Q9Y6X5|ENPP4_HUMAN sp|Q9Y6X5|ENPP4_HUMAN Q9Y6X5 ENPP4_HUMAN</span></span>
-<span><span class="co">## sp|P50552|VASP_HUMAN   sp|P50552|VASP_HUMAN P50552  VASP_HUMAN</span></span>
-<span><span class="co">##                                                                                                                                                                              ProteinNames</span></span>
-<span><span class="co">## sp|P37108|SRP14_HUMAN                                                                                 Signal recognition particle 14 kDa protein (SRP14) (18 kDa Alu RNA-binding protein)</span></span>
-<span><span class="co">## sp|P52209|6PGD_HUMAN                                                                                                      6-phosphogluconate dehydrogenase, decarboxylating (EC 1.1.1.44)</span></span>
-<span><span class="co">## sp|P78560|CRADD_HUMAN                                      Death domain-containing protein CRADD (Caspase and RIP adapter with death domain) (RIP-associated protein with a death domain)</span></span>
-<span><span class="co">## sp|Q14019|COTL1_HUMAN                                                                                                                                              Coactosin-like protein</span></span>
-<span><span class="co">## sp|Q9Y6X5|ENPP4_HUMAN Bis(5'-adenosyl)-triphosphatase ENPP4 (EC 3.6.1.29) (AP3A hydrolase) (AP3Aase) (Ectonucleotide pyrophosphatase/phosphodiesterase family member 4) (E-NPP 4) (NPP-4)</span></span>
-<span><span class="co">## sp|P50552|VASP_HUMAN                                                                                                                         Vasodilator-stimulated phosphoprotein (VASP)</span></span>
-<span><span class="co">##                                 GeneNames PrimaryGeneName</span></span>
-<span><span class="co">## sp|P37108|SRP14_HUMAN               SRP14           SRP14</span></span>
-<span><span class="co">## sp|P52209|6PGD_HUMAN             PGD PGDH             PGD</span></span>
-<span><span class="co">## sp|P78560|CRADD_HUMAN         CRADD RAIDD           CRADD</span></span>
-<span><span class="co">## sp|Q14019|COTL1_HUMAN           COTL1 CLP           COTL1</span></span>
-<span><span class="co">## sp|Q9Y6X5|ENPP4_HUMAN ENPP4 KIAA0879 NPP4           ENPP4</span></span>
-<span><span class="co">## sp|P50552|VASP_HUMAN                 VASP            VASP</span></span>
-<span><span class="co">##                       IsletDistancespearmanCor IsletDistancespearmanPval</span></span>
-<span><span class="co">## sp|P37108|SRP14_HUMAN               -0.9621024              3.361762e-05</span></span>
-<span><span class="co">## sp|P52209|6PGD_HUMAN                -0.9621024              3.361762e-05</span></span>
-<span><span class="co">## sp|P78560|CRADD_HUMAN               -0.9518763              2.686633e-04</span></span>
-<span><span class="co">## sp|Q14019|COTL1_HUMAN               -0.9518763              2.686633e-04</span></span>
-<span><span class="co">## sp|Q9Y6X5|ENPP4_HUMAN               -0.9518763              2.686633e-04</span></span>
-<span><span class="co">## sp|P50552|VASP_HUMAN                -0.9367839              1.965329e-04</span></span></code></pre>
-<p>It looks like SH3GL1 is correlated with distance to Islet in a few
+<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">negProts</span><span class="op">)</span>,options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1fb4450895fe099f74a1" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1fb4450895fe099f74a1">{"x":{"filter":"none","vertical":false,"data":[["sp|P37108|SRP14_HUMAN","sp|P52209|6PGD_HUMAN","sp|P78560|CRADD_HUMAN","sp|Q14019|COTL1_HUMAN","sp|Q9Y6X5|ENPP4_HUMAN","sp|P50552|VASP_HUMAN"],["sp|P37108|SRP14_HUMAN","sp|P52209|6PGD_HUMAN","sp|P78560|CRADD_HUMAN","sp|Q14019|COTL1_HUMAN","sp|Q9Y6X5|ENPP4_HUMAN","sp|P50552|VASP_HUMAN"],["P37108","P52209","P78560","Q14019","Q9Y6X5","P50552"],["SRP14_HUMAN","6PGD_HUMAN","CRADD_HUMAN","COTL1_HUMAN","ENPP4_HUMAN","VASP_HUMAN"],["Signal recognition particle 14 kDa protein (SRP14) (18 kDa Alu RNA-binding protein)","6-phosphogluconate dehydrogenase, decarboxylating (EC 1.1.1.44)","Death domain-containing protein CRADD (Caspase and RIP adapter with death domain) (RIP-associated protein with a death domain)","Coactosin-like protein","Bis(5'-adenosyl)-triphosphatase ENPP4 (EC 3.6.1.29) (AP3A hydrolase) (AP3Aase) (Ectonucleotide pyrophosphatase/phosphodiesterase family member 4) (E-NPP 4) (NPP-4)","Vasodilator-stimulated phosphoprotein (VASP)"],["SRP14","PGD PGDH","CRADD RAIDD","COTL1 CLP","ENPP4 KIAA0879 NPP4","VASP"],["SRP14","PGD","CRADD","COTL1","ENPP4","VASP"],[-0.9621023987294832,-0.9621023987294832,-0.951876318105963,-0.951876318105963,-0.951876318105963,-0.9367839145523915],[3.361761699194866e-05,3.361761699194866e-05,0.000268663259848359,0.000268663259848359,0.000268663259848359,0.0001965328669548415]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>pancProts<\/th>\n      <th>Entry<\/th>\n      <th>EntryName<\/th>\n      <th>ProteinNames<\/th>\n      <th>GeneNames<\/th>\n      <th>PrimaryGeneName<\/th>\n      <th>IsletDistancespearmanCor<\/th>\n      <th>IsletDistancespearmanPval<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[7,8]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"pancProts","targets":1},{"name":"Entry","targets":2},{"name":"EntryName","targets":3},{"name":"ProteinNames","targets":4},{"name":"GeneNames","targets":5},{"name":"PrimaryGeneName","targets":6},{"name":"IsletDistancespearmanCor","targets":7},{"name":"IsletDistancespearmanPval","targets":8}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>It looks like SH3GL1 is correlated with distance to Islet in a few
 images.</p>
 </div>
 <div class="section level3">
@@ -544,7 +456,7 @@ images.</p>
 <p>Now we can plot the expression of a protein suspected to have
 decreasing expression farther from the islet cells.We start with SRP14
 and ENPP4</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spatial_heatmap.html">spatial_heatmap</a></span><span class="op">(</span><span class="va">img.spes</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>    feature <span class="op">=</span> <span class="st">"SRP14"</span>,</span>
 <span>    feature_type <span class="op">=</span> <span class="st">"PrimaryGeneName"</span>,</span>
@@ -553,7 +465,7 @@ and ENPP4</p>
 <span>    label_column <span class="op">=</span> <span class="st">"IsletOrNot"</span>, interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="spatProt_files/figure-html/plot%20correlated%20proteins-1.png" class="r-plt" alt="" width="700"></p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/spatial_heatmap.html">spatial_heatmap</a></span><span class="op">(</span><span class="va">img.spes</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>,</span>
 <span>    feature <span class="op">=</span> <span class="st">"ENPP4"</span>,</span>
 <span>    feature_type <span class="op">=</span> <span class="st">"PrimaryGeneName"</span>,</span>
@@ -572,7 +484,7 @@ we identify trends in the proteins?</p>
 that are over-represented in a ranked list of genes. The
 <code>leapR</code> pathway has such functionality and we can use the
 rankings as input.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">leapR</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"krbpaths"</span><span class="op">)</span></span>
 <span></span>
@@ -588,204 +500,11 @@ rankings as input.</p>
 <span></span>
 <span><span class="va">enriched.paths</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">pvalue</span> <span class="op">&lt;</span> <span class="fl">0.01</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">BH_pvalue</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                                       ingroup_n</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                        12</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                               38</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                  46</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                                 26</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                      15</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE        51</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                               42</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                                 16</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                          59</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                      8</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                            43</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                      42</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                  48</span></span>
-<span><span class="co">##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ingroupnames</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      CHUK, NFKB1, NFKBIA, IRAK1, RELA, RIPK1, TRADD, TAB1, MYD88, TRAF6, IKBKG, IKBKB, MAP3K7, FADD, IL1A</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                                                                                                                                                                                                                               DFFA, PIK3R2, CHUK, ENDOD1, AIFM1, CAPN1, PRKAR1A, PRKAR2A, PPP3CB, PRKACA, CAPN2, NFKB1, PRKACB, NFKBIA, PIK3R1, PRKAR2B, AKT1, AKT2, IRAK1, BID, PPP3R1, CYCS, RELA, BAX, BCL2L1, PPP3CA, TRAF2, ATM, BIRC2, RIPK1, ENDOG, TRADD, BAD, MYD88, IRAK4, IKBKG, IKBKB, CASP7, CASP8, CASP10, PRKACG, PIK3R3, PPP3CC, FADD, EXOG, IL1A, CASP6, PIK3CB</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                                                                                                                                                                                                                  PSMD11, PSMD12, PSMD9, PSMD14, PSMA7, PSMD3, PSMD10, UBB, PSMC3, PSMB1, CDK2, PSMA1, PSMA2, PSMA3, PSMA4, PSMB8, PSMB9, PSMA5, PSMB4, PSMB6, PSMB5, PSMC2, PSMB10, PSMC4, PSMD8, PSMB3, PSMB2, PSMD7, CCNH, MNAT1, PSMD4, PSMA6, PSME3, PSMC1, PSMC5, PSMC6, SKP1, PSME1, PSMD2, CUL1, PSMD6, PSMD5, PSMF1, PSMB7, PSMD1, PSME2, PSMD13, RB1, CDK7</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                                                                                                                                                                                                                                                                                                                                                                                                         SDHD, IDH3B, CS, IDH1, FH, PDHA1, DLD, DLAT, PDHB, PC, SDHB, SDHA, PCK1, DLST, MDH1, MDH2, IDH2, IDH3A, IDH3G, ACLY, SUCLG1, OGDH, PCK2, SUCLG2, SDHC, ACO2, SUCLA2, OGDHL</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                                                                                                                                                                                                                                                                                                                                                                                                                                             CHUK, JUN, NFKB1, NFKBIA, MAPK8, MAP2K4, MAP2K3, MAP2K6, CRADD, RELA, TRAF2, RIPK1, TRADD, MAPK14, IKBKG, IKBKB, ATF1, TANK</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE                                                                                                                                      PSMD11, PSMD12, PSMD9, PSMD14, PSMA7, PSMD3, BUB3, PSMD10, CDK1, UBB, PSMC3, PSMB1, CDK2, PSMA1, PSMA2, PSMA3, PSMA4, PSMB8, PSMB9, PSMA5, PSMB4, PSMB6, PSMB5, CDC27, PSMC2, PSMB10, PSMC4, PSMD8, PSMB3, PSMB2, PSMD7, PSMD4, PSMA6, PSME3, PSMC1, PSMC5, PSMC6, SKP1, PSME1, CDC16, PSMD2, MAD2L1, CUL1, PSMD6, PSMD5, PSMF1, PSMB7, PSMD1, CDC23, PSME2, PSMD13, UBE2E1, ANAPC1, ANAPC7, ANAPC2, ANAPC10, UBE2D1</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                                                                                                                                                                                                                                                                  PSMD11, PSMD12, PSMD9, PSMD14, PSMA7, PSMD3, PSMD10, NQO1, PSMC3, PSMB1, PSMA1, PSMA2, PSMA3, PSMA4, PSMB8, PSMB9, PSMA5, PSMB4, PSMB6, PSMB5, PSMC2, PSMB10, PSMC4, PSMD8, PSMB3, PSMB2, PSMD7, OAZ1, PSMD4, PSMA6, PSME3, PSMC1, PSMC5, PSMC6, PSME1, PSMD2, PSMD6, PSMD5, PSMF1, PSMB7, PSMD1, PSME2, PSMD13</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                                                                                                                                                                                                                                                                                                                                                                                                                                                        GLS, GLUD1, CA2, ATP1A1, ATP1B1, CA4, AQP1, PCK1, MDH1, GLUD2, ATP1B3, FXYD2, PCK2, SLC38A3, SLC25A10, GLS2, SLC4A4, ATP1A3</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                   PIK3R2, MAP2K7, MAPK13, RIPK2, NRAS, RAF1, JUN, CALM1, NFKB1, NFKBIA, YWHAQ, MAPK3, PIK3R1, MAPK1, SHC1, AKT1, AKT2, YWHAB, MAP2K2, CSK, MAPK8, MAPK9, CRK, CRKL, MAPKAPK2, PSEN1, GSK3B, IRAK1, RPS6KA3, ARHGDIA, ARHGDIB, CDC42, RAP1B, RHOA, YWHAG, YWHAE, GRB2, RAC1, YWHAZ, MAP2K1, RELA, YWHAH, PRKCD, PTPN11, BAX, CAMK2B, CAMK2G, CAMK2D, PDK1, RPS6KA2, RPS6KA1, NFKBIB, MAPK14, BAD, SORT1, MAP3K5, IRAK4, RPS6KA6, KIDINS220, TRAF6, IKBKB, FOXO3, HRAS, NGFR, BRAF, CALML3, RAP1A, CALML5, MAGED1, PLCG2, PIK3R3, NFKBIE, PIK3CB, KRAS, PLCG1</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           AKT1, YWHAB, MAPK8, BID, PPP3R1, DYNLL1, BAD, DYNLL2, PPP3CC</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                                                                                                                                                                                                                                                    PSMD11, PSMD12, PSMD9, PSMD14, PSMA7, PSMD3, PSMD10, UBB, PSMC3, PSMB1, CDK2, PSMA1, PSMA2, PSMA3, PSMA4, PSMB8, PSMB9, PSMA5, PSMB4, PSMB6, PSMB5, PSMC2, PSMB10, PSMC4, PSMD8, PSMB3, PSMB2, PSMD7, PSMD4, PSMA6, PSME3, PSMC1, PSMC5, PSMC6, SKP1, PSME1, PSMD2, CUL1, PSMD6, PSMD5, PSMF1, PSMB7, PSMD1, PSME2, PSMD13</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                                                                                                                                                                             PPP1R12A, ROCK2, GNAS, RAF1, PLA2G1B, CALM1, ARAF, MYL6B, PRKCA, PRKACA, PRKACB, MYL9, MAPK3, MAPK1, GNA11, GUCY1A2, MYH11, MAP2K2, PPP1CC, GNAQ, MYL6, RHOA, PPP1CA, PPP1CB, ACTA2, PLCB3, MAP2K1, GNA12, PRKCD, CALD1, ROCK1, PRKG1, GNA13, ITPR2, ITPR1, MYLK, ARHGEF1, PPP1R14A, PLCB1, ARHGEF12, BRAF, CALML3, ITPR3, CALML5, PLA2G2D, PRKACG, PPP1R12B, PRKCE, PLCB4, ARHGEF11, ADCY6</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                                                                                                                                                                  PSMD11, PSMD12, PSMD9, PSMD14, PSMA7, PSMD3, BUB3, PSMD10, CDK1, UBB, PSMC3, PSMB1, PSMA1, PSMA2, PSMA3, PSMA4, PSMB8, PSMB9, PSMA5, PSMB4, PSMB6, PSMB5, CDC27, PSMC2, PSMB10, PSMC4, PSMD8, PSMB3, PSMB2, PSMD7, PSMD4, PSMA6, PSME3, PSMC1, PSMC5, PSMC6, PSME1, CDC16, PSMD2, MAD2L1, PSMD6, PSMD5, PSMF1, PSMB7, PSMD1, CDC23, PSME2, PSMD13, UBE2E1, ANAPC1, ANAPC7, ANAPC2, ANAPC10, UBE2D1</span></span>
-<span><span class="co">##                                                                       ingroup_mean</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                   -0.9666485</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                          -0.4769082</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_             -0.4340674</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                            -0.5586684</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                 -0.5554352</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE   -0.4333342</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                          -0.3872065</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                            -0.5898146</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                     -0.3309119</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                -0.9133547</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                       -0.4132140</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                 -0.3402784</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A             -0.3990574</span></span>
-<span><span class="co">##                                                                       outgroup_n</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                       6653</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                              6653</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                 6653</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                                6653</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                     6653</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE       6653</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                              6653</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                                6653</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                         6653</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                    6653</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                           6653</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                     6653</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                 6653</span></span>
-<span><span class="co">##                                                                       outgroup_mean</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                   0.002190291</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                          0.003438807</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_             0.003794583</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                            0.002749977</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                 0.001574065</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE   0.004203927</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                          0.003088240</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                            0.001783264</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                     0.003719528</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                0.001378649</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                       0.003374777</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                 0.002713956</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A             0.003641589</span></span>
-<span><span class="co">##                                                                           zscore</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                 -1.2100054</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                        -0.5550717</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_           -0.4487281</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                          -0.6356013</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                               -0.4717361</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE -0.4275025</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                        -0.4063364</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                          -0.6804846</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                   -0.2950585</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                              -1.1230686</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                     -0.4191580</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                               -0.3932963</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A           -0.3963246</span></span>
-<span><span class="co">##                                                                          oddsratio</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                 -0.352006404</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                        -0.177630591</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_           -0.035029623</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                          -0.109121028</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                               -0.174363721</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE -0.069925263</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                         0.007407511</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                          -0.165198973</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                   -0.123566497</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                              -0.274408753</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                     -0.011521398</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                               -0.097412306</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A           -0.062994096</span></span>
-<span><span class="co">##                                                                            pvalue</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                 0.001038605</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                        0.003005928</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_           0.003978543</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                          0.004268044</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                               0.004632733</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE 0.004641338</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                        0.005209758</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                          0.006106393</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                   0.006361512</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                              0.008037105</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                     0.008192979</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                               0.008713546</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A           0.009351959</span></span>
-<span><span class="co">##                                                                       BH_pvalue</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                 0.3809652</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                        0.3809652</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_           0.3809652</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                          0.3809652</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                               0.3809652</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE 0.3809652</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                        0.3809652</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                          0.3809652</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                   0.3809652</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                              0.3809652</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                     0.3809652</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                               0.3809652</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A           0.3809652</span></span>
-<span><span class="co">##                                                                       SignedBH_pvalue</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                      -0.3809652</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                             -0.3809652</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                -0.3809652</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                               -0.3809652</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                    -0.3809652</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE      -0.3809652</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                             -0.3809652</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                               -0.3809652</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                        -0.3809652</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                   -0.3809652</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                          -0.3809652</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                    -0.3809652</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                -0.3809652</span></span>
-<span><span class="co">##                                                                       background_n</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                           NA</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                                  NA</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                     NA</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                                    NA</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                         NA</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE           NA</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                                  NA</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                                    NA</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                             NA</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                        NA</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                               NA</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                         NA</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                     NA</span></span>
-<span><span class="co">##                                                                       background_mean</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                              NA</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                                     NA</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                        NA</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                                       NA</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                            NA</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE              NA</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                                     NA</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                                       NA</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                                NA</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                           NA</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                                  NA</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                            NA</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                        NA</span></span>
-<span><span class="co">##                                                                          comp</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                 Image_2</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                        Image_2</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_           Image_2</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                          Image_2</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                               Image_2</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE Image_2</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                        Image_2</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                          Image_2</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                   Image_2</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                              Image_2</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                     Image_2</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                               Image_2</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A           Image_2</span></span>
-<span><span class="co">##                                                                                                                                    krbpaths</span></span>
-<span><span class="co">## BIOCARTA_NFKB_PATHWAY                                                                                                 BIOCARTA_NFKB_PATHWAY</span></span>
-<span><span class="co">## KEGG_APOPTOSIS                                                                                                               KEGG_APOPTOSIS</span></span>
-<span><span class="co">## REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_                     REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_</span></span>
-<span><span class="co">## KEGG_CITRATE_CYCLE_TCA_CYCLE                                                                                   KEGG_CITRATE_CYCLE_TCA_CYCLE</span></span>
-<span><span class="co">## BIOCARTA_STRESS_PATHWAY                                                                                             BIOCARTA_STRESS_PATHWAY</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE</span></span>
-<span><span class="co">## REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE                                               REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE</span></span>
-<span><span class="co">## KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION                                                   KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION</span></span>
-<span><span class="co">## KEGG_NEUROTROPHIN_SIGNALING_PATHWAY                                                                     KEGG_NEUROTROPHIN_SIGNALING_PATHWAY</span></span>
-<span><span class="co">## REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS                                                           REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS</span></span>
-<span><span class="co">## REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21                                         REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21</span></span>
-<span><span class="co">## KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION                                                             KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION</span></span>
-<span><span class="co">## REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A                     REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A</span></span></code></pre>
-<p>We can see that numerous pathways are coming up as enriched across
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">ingroupnames</span><span class="op">)</span><span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">BH_pvalue</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span>options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>scrollX <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-10b3b7155e8045a1b2ad" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-10b3b7155e8045a1b2ad">{"x":{"filter":"none","vertical":false,"data":[["BIOCARTA_NFKB_PATHWAY","KEGG_APOPTOSIS","REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_","KEGG_CITRATE_CYCLE_TCA_CYCLE","BIOCARTA_STRESS_PATHWAY","REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE","REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE","KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION","KEGG_NEUROTROPHIN_SIGNALING_PATHWAY","REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS","REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21","KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION","REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A"],[12,38,46,26,15,51,42,16,59,8,43,42,48],[-0.9666485000898259,-0.476908217090423,-0.434067352786292,-0.558668369966864,-0.5554351529040999,-0.433334229191894,-0.387206512572817,-0.589814562453831,-0.330911931387972,-0.913354690156772,-0.413213982001927,-0.340278372873405,-0.399057406912468],[6653,6653,6653,6653,6653,6653,6653,6653,6653,6653,6653,6653,6653],[0.0021902911633455,0.00343880687845084,0.00379458347171595,0.00274997683058279,0.00157406523588917,0.00420392727578209,0.00308824032055794,0.00178326398323151,0.00371952828193754,0.00137864858891586,0.00337477706098437,0.00271395587935489,0.00364158850414416],[-1.21000535642903,-0.555071678795347,-0.448728123614108,-0.635601275798098,-0.471736128203755,-0.427502492349419,-0.406336357028364,-0.68048455788275,-0.29505848744854,-1.12306859332034,-0.419158032417381,-0.39329632379277,-0.396324586338981],[-0.352006404483138,-0.17763059141399,-0.0350296227767601,-0.109121027576446,-0.174363721271557,-0.0699252634739054,0.00740751083898261,-0.165198972614163,-0.123566496547583,-0.274408752793622,-0.0115213983121518,-0.0974123062614418,-0.0629940958671069],[0.00103860482943054,0.00300592793859477,0.00397854258520382,0.00426804420719721,0.00463273255956714,0.00464133821129978,0.00520975821662699,0.00610639326548892,0.0063615122167402,0.008037105392772,0.00819297911247128,0.00871354559521428,0.00935195890613239],[0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736,0.3809651633850736],[-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736,-0.3809651633850736],[null,null,null,null,null,null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null,null,null,null,null,null],["Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2","Image_2"],["BIOCARTA_NFKB_PATHWAY","KEGG_APOPTOSIS","REACTOME_CYCLIN_E_ASSOCIATED_EVENTS_DURING_G1_S_TRANSITION_","KEGG_CITRATE_CYCLE_TCA_CYCLE","BIOCARTA_STRESS_PATHWAY","REACTOME_REGULATION_OF_APC_ACTIVATORS_BETWEEN_G1_S_AND_EARLY_ANAPHASE","REACTOME_REGULATION_OF_ORNITHINE_DECARBOXYLASE","KEGG_PROXIMAL_TUBULE_BICARBONATE_RECLAMATION","KEGG_NEUROTROPHIN_SIGNALING_PATHWAY","REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS","REACTOME_SCF_SKP2_MEDIATED_DEGRADATION_OF_P27_P21","KEGG_VASCULAR_SMOOTH_MUSCLE_CONTRACTION","REACTOME_CDC20_PHOSPHO_APC_MEDIATED_DEGRADATION_OF_CYCLIN_A"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>ingroup_n<\/th>\n      <th>ingroup_mean<\/th>\n      <th>outgroup_n<\/th>\n      <th>outgroup_mean<\/th>\n      <th>zscore<\/th>\n      <th>oddsratio<\/th>\n      <th>pvalue<\/th>\n      <th>BH_pvalue<\/th>\n      <th>SignedBH_pvalue<\/th>\n      <th>background_n<\/th>\n      <th>background_mean<\/th>\n      <th>comp<\/th>\n      <th>krbpaths<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollX":true,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"ingroup_n","targets":1},{"name":"ingroup_mean","targets":2},{"name":"outgroup_n","targets":3},{"name":"outgroup_mean","targets":4},{"name":"zscore","targets":5},{"name":"oddsratio","targets":6},{"name":"pvalue","targets":7},{"name":"BH_pvalue","targets":8},{"name":"SignedBH_pvalue","targets":9},{"name":"background_n","targets":10},{"name":"background_mean","targets":11},{"name":"comp","targets":12},{"name":"krbpaths","targets":13}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script><p>We can see that numerous pathways are coming up as enriched across
 images, including ribosomal and translation related pathways. Now we can
 select proteins from a particular pathway and visualize those as
 well.</p>
@@ -793,7 +512,7 @@ well.</p>
 <div class="section level3">
 <h3 id="plotting-pathways-from-gradient">Plotting pathways from gradient<a class="anchor" aria-label="anchor" href="#plotting-pathways-from-gradient"></a>
 </h3>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rprots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">enriched.paths</span>, <span class="va">krbpaths</span> <span class="op">==</span> <span class="st">"REACTOME_ACTIVATION_OF_BH3_ONLY_PROTEINS"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">comp</span>, <span class="va">ingroupnames</span><span class="op">)</span></span>
 <span></span>
@@ -816,7 +535,7 @@ well.</p>
 graph. The correlation code takes a while but then we can reduce the
 graph to the proteins we are most interested in, or those that are most
 correlated.</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidygraph.data-imaginist.com" class="external-link">tidygraph</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Attaching package: 'tidygraph'</span></span></code></pre>
@@ -829,10 +548,10 @@ correlated.</p>
 <pre><code><span><span class="co">## The following object is masked from 'package:stats':</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##     filter</span></span></code></pre>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggraph.data-imaginist.com" class="external-link">ggraph</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: ggplot2</span></span></code></pre>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##correlation analysis can be slow, so let's only evaluate the top 1000 most variable proteins</span></span>
 <span><span class="va">varprots</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">img.spes</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,<span class="fl">1</span>,<span class="va">var</span>,na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/sort.html" class="external-link">sort</a></span><span class="op">(</span>decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -841,7 +560,7 @@ correlated.</p>
 <span><span class="va">full_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spatial_network.html">spatial_network</a></span><span class="op">(</span><span class="va">img.spes</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>,target_features <span class="op">=</span> <span class="va">rprots</span>,</span>
 <span>                              <span class="st">'proteomics'</span>,<span class="st">'PrimaryGeneName'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Joining with `by = join_by(rowval)`</span></span></code></pre>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##how subset for only those 81 proteins</span></span>
 <span><span class="va">rgraph</span> <span class="op">&lt;-</span> <span class="va">full_graph</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidygraph</span><span class="fu">::</span><span class="fu"><a href="https://tidygraph.data-imaginist.com/reference/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">nodes</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -902,11 +621,11 @@ proteomics data in spammR.</p>
 <span><span class="co">##  [1] ggraph_2.2.2                ggplot2_4.0.3              </span></span>
 <span><span class="co">##  [3] tidygraph_1.3.1             leapR_1.0.0                </span></span>
 <span><span class="co">##  [5] BiocFileCache_3.2.0         dbplyr_2.6.0               </span></span>
-<span><span class="co">##  [7] spammR_0.99.23              limma_3.68.4               </span></span>
+<span><span class="co">##  [7] spammR_0.99.24              limma_3.68.5               </span></span>
 <span><span class="co">##  [9] SpatialExperiment_1.22.0    SingleCellExperiment_1.34.0</span></span>
 <span><span class="co">## [11] SummarizedExperiment_1.42.0 Biobase_2.72.0             </span></span>
 <span><span class="co">## [13] GenomicRanges_1.64.0        Seqinfo_1.2.0              </span></span>
-<span><span class="co">## [15] IRanges_2.46.0              S4Vectors_0.50.1           </span></span>
+<span><span class="co">## [15] IRanges_2.46.0              S4Vectors_0.50.2           </span></span>
 <span><span class="co">## [17] BiocGenerics_0.58.1         generics_0.1.4             </span></span>
 <span><span class="co">## [19] MatrixGenerics_1.24.0       matrixStats_1.5.0          </span></span>
 <span><span class="co">## [21] BiocStyle_2.40.0           </span></span>
@@ -914,35 +633,35 @@ proteomics data in spammR.</p>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] RColorBrewer_1.1-3  jsonlite_2.0.0      wk_0.9.5           </span></span>
 <span><span class="co">##   [4] magrittr_2.0.5      magick_2.9.1        farver_2.1.2       </span></span>
-<span><span class="co">##   [7] rmarkdown_2.31      fs_2.1.0            ragg_1.5.2         </span></span>
+<span><span class="co">##   [7] rmarkdown_2.32      fs_2.1.0            ragg_1.5.2         </span></span>
 <span><span class="co">##  [10] vctrs_0.7.3         spdep_1.4-2         memoise_2.0.1      </span></span>
-<span><span class="co">##  [13] rstatix_1.0.0       htmltools_0.5.9     S4Arrays_1.12.0    </span></span>
-<span><span class="co">##  [16] curl_7.1.0          broom_1.0.13        s2_1.1.11          </span></span>
-<span><span class="co">##  [19] SparseArray_1.12.2  Formula_1.2-5       sass_0.4.10        </span></span>
-<span><span class="co">##  [22] spData_2.3.5        KernSmooth_2.23-26  bslib_0.11.0       </span></span>
-<span><span class="co">##  [25] htmlwidgets_1.6.4   desc_1.4.3          httr2_1.2.3        </span></span>
-<span><span class="co">##  [28] impute_1.86.0       plotly_4.12.0       cachem_1.1.0       </span></span>
+<span><span class="co">##  [13] rstatix_1.1.0       htmltools_0.5.9     S4Arrays_1.12.0    </span></span>
+<span><span class="co">##  [16] curl_8.0.0          broom_1.0.13        s2_1.1.11          </span></span>
+<span><span class="co">##  [19] SparseArray_1.12.2  Formula_1.2-6       sass_0.4.10        </span></span>
+<span><span class="co">##  [22] spData_2.3.5        KernSmooth_2.23-26  bslib_0.12.0       </span></span>
+<span><span class="co">##  [25] htmlwidgets_1.6.4   desc_1.4.3          httr2_1.3.0        </span></span>
+<span><span class="co">##  [28] impute_1.86.0       plotly_4.12.1       cachem_1.1.0       </span></span>
 <span><span class="co">##  [31] igraph_2.3.3        lifecycle_1.0.5     pkgconfig_2.0.3    </span></span>
 <span><span class="co">##  [34] Matrix_1.7-5        R6_2.6.1            fastmap_1.2.0      </span></span>
 <span><span class="co">##  [37] digest_0.6.39       ggnewscale_0.5.2    textshaping_1.0.5  </span></span>
-<span><span class="co">##  [40] RSQLite_3.53.3      ggpubr_1.0.0        filelock_1.0.3     </span></span>
-<span><span class="co">##  [43] labeling_0.4.3      httr_1.4.8          polyclip_1.10-7    </span></span>
-<span><span class="co">##  [46] abind_1.4-8         compiler_4.6.1      proxy_0.4-29       </span></span>
-<span><span class="co">##  [49] bit64_4.8.2         withr_3.0.3         S7_0.2.2           </span></span>
-<span><span class="co">##  [52] backports_1.5.1     carData_3.0-6       viridis_0.6.5      </span></span>
-<span><span class="co">##  [55] DBI_1.3.0           ggforce_0.5.0       ggsignif_0.6.4     </span></span>
-<span><span class="co">##  [58] MASS_7.3-65         rappdirs_0.3.4      DelayedArray_0.38.2</span></span>
+<span><span class="co">##  [40] crosstalk_1.2.2     RSQLite_3.53.3      ggpubr_1.0.0       </span></span>
+<span><span class="co">##  [43] filelock_1.0.3      labeling_0.4.3      httr_1.4.9         </span></span>
+<span><span class="co">##  [46] polyclip_1.10-7     abind_1.4-8         compiler_4.6.1     </span></span>
+<span><span class="co">##  [49] proxy_0.4-29        bit64_4.8.6         withr_3.0.3        </span></span>
+<span><span class="co">##  [52] S7_0.2.2            backports_1.5.1     carData_3.0-6      </span></span>
+<span><span class="co">##  [55] viridis_0.6.5       DBI_1.3.0           ggforce_0.5.0      </span></span>
+<span><span class="co">##  [58] ggsignif_0.6.4      MASS_7.3-65         DelayedArray_0.38.2</span></span>
 <span><span class="co">##  [61] rjson_0.2.23        classInt_0.4-11     tools_4.6.1        </span></span>
 <span><span class="co">##  [64] units_1.0-1         otel_0.2.0          glue_1.8.1         </span></span>
-<span><span class="co">##  [67] grid_4.6.1          sf_1.1-1            gtable_0.3.6       </span></span>
+<span><span class="co">##  [67] grid_4.6.1          sf_1.1-2            gtable_0.3.6       </span></span>
 <span><span class="co">##  [70] tzdb_0.5.0          class_7.3-23        tidyr_1.3.2        </span></span>
-<span><span class="co">##  [73] data.table_1.18.4   hms_1.1.4           sp_2.2-1           </span></span>
+<span><span class="co">##  [73] data.table_1.18.6.1 hms_1.1.4           sp_2.2-3           </span></span>
 <span><span class="co">##  [76] car_3.1-5           XVector_0.52.0      ggrepel_0.9.8      </span></span>
 <span><span class="co">##  [79] pillar_1.11.1       dplyr_1.2.1         tweenr_2.0.3       </span></span>
 <span><span class="co">##  [82] lattice_0.22-9      bit_4.6.0           deldir_2.0-4       </span></span>
 <span><span class="co">##  [85] tidyselect_1.2.1    knitr_1.51          gridExtra_2.3.1    </span></span>
-<span><span class="co">##  [88] bookdown_0.47       xfun_0.59           graphlayouts_1.2.4 </span></span>
-<span><span class="co">##  [91] statmod_1.5.2       lazyeval_0.2.3      yaml_2.3.12        </span></span>
+<span><span class="co">##  [88] bookdown_0.48       xfun_0.60           graphlayouts_1.2.5 </span></span>
+<span><span class="co">##  [91] statmod_1.5.2       DT_0.34.0           yaml_2.3.12        </span></span>
 <span><span class="co">##  [94] boot_1.3-32         evaluate_1.0.5      tibble_3.3.1       </span></span>
 <span><span class="co">##  [97] BiocManager_1.30.27 cli_3.6.6           reticulate_1.46.0  </span></span>
 <span><span class="co">## [100] systemfonts_1.3.2   jquerylib_0.1.4     Rcpp_1.1.2         </span></span>
